@@ -83,8 +83,8 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     // m_robotContainer.getPneumatics().setExtenderState(Value.kReverse);
-    m_robotContainer.getExtendArm().setServoAngle(Constants.ArmConstants.restServoAngle);
-    m_robotContainer.getPneumatics().setGripperState(Value.kReverse);
+    // m_robotContainer.getExtendArm().setServoAngle(Constants.ArmConstants.restServoAngle);
+    // m_robotContainer.getPneumatics().setGripperState(Value.kReverse);
   }
 
   @Override
@@ -97,7 +97,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_robotContainer.getExtendArm().setServoAngle(Constants.ArmConstants.restServoAngle);
+    // m_robotContainer.getExtendArm().setServoAngle(Constants.ArmConstants.restServoAngle);
     // m_robotContainer.getSwerveSubsytem().getNavX().reset();
     // m_robotContainer.getSwerveSubsytem().getOdometry().resetPosition(new
     // Rotation2d(),

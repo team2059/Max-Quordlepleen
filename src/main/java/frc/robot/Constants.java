@@ -26,46 +26,10 @@ public final class Constants {
 
         }
 
-        public static final class Pneumatics {
-                public static final int pneumaticsHubId = 17;
-
-        }
-
         public static final class Presets {
 
-                public static final double CUBE_LIMELIGHT_FRONT_OFFSET_INCHES = 0;
-                public static final double CONE_LIMELIGHT_FRONT_OFFSET_INCHES = 0;
-                public static final double CONE_LIMELIGHT_TAG_OFFSET_INCHES_LEFT = 23.5;
-                public static final double CONE_LIMELIGHT_TAG_OFFSET_INCHES_RIGHT = -23.5;
+                public static final double PLACE_HOLDER = 0;
 
-                public static final double SUBSTATION_TILT = 0.75;
-                public static final double SUBSTATION_EXTEND = 0;
-                public static final double SUBSTATION_LIMELIGHT_TAG_OFFSET_INCHES_LEFT = -33;
-                public static final double SUBSTATION_LIMELIGHT_TAG_OFFSET_INCHES_RIGHT = 33;
-                public static final double SUBSTATION_LIMELIGHT_TAG_OFFSET_INCHES_FRONT = 5;
-
-                public static final double PICKUP_TILT = 0.74; // 0.37
-                public static final double PICKUP_EXTEND = 12.5;
-
-                public static final double REST_TILT = 0.57; // 0.32
-                public static final double REST_EXTEND = -1.5;
-
-                public static final double LOW_CUBE_ARM_TILT = 0.63; // 0.36
-                public static final double LOW_CUBE_ARM_EXTEND = 7.5;
-
-                public static final double MID_CUBE_ARM_TILT = 0.75; // 0.52
-                public static final double MID_CUBE_ARM_EXTEND = 25;
-
-                public static final double UPPER_CUBE_ARM_TILT = 0.79; // 0.55
-                public static final double UPPER_CUBE_ARM_EXTEND = 50;
-
-                public static final double MID_CONE_ARM_TILT = 0.79; // 0.57
-                public static final double MID_CONE_ARM_TILT_AFTER = MID_CONE_ARM_TILT - 0.075;
-                public static final double MID_CONE_ARM_EXTEND = 17.5;
-
-                public static final double UPPER_CONE_ARM_TILT = 0.83; // 0.59
-                public static final double UPPER_CONE_ARM_TILT_AFTER = UPPER_CONE_ARM_TILT - 0.05;
-                public static final double UPPER_CONE_ARM_EXTEND = 57.5;
         }
 
         public static final class Swerve {
