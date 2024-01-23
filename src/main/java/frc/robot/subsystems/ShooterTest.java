@@ -36,7 +36,7 @@ public class ShooterTest extends SubsystemBase {
   // }
 
   public CANSparkMax shooter9;
-  public CANSparkMax shooter10;
+  public CANSparkMax shooter11;
 
   // public DutyCycleEncoder thruBoreEncoder;
   // public double thruBorePosition;
@@ -46,7 +46,7 @@ public class ShooterTest extends SubsystemBase {
   public ShooterTest() {
 
     shooter9 = new CANSparkMax(9, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
-    shooter10 = new CANSparkMax(10, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
+    shooter11 = new CANSparkMax(11, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
 
     // thruBoreEncoder = new DutyCycleEncoder(Constants.ArmConstants.thruBoreDIO);
 
@@ -62,11 +62,10 @@ public class ShooterTest extends SubsystemBase {
      * parameters will not persist between power cycles
      */
     shooter9.restoreFactoryDefaults();
-    // tiltMotor.setIdleMode(IdleMode.kBrake);
-    shooter9.setInverted(false);
+    shooter9.setInverted(true);
 
-    shooter10.restoreFactoryDefaults();
-    shooter9.setInverted(false);
+    shooter11.restoreFactoryDefaults();
+    shooter11.setInverted(true);
 
     // extensionEncoder.setPosition(0);
 
@@ -75,10 +74,11 @@ public class ShooterTest extends SubsystemBase {
   @Override
   public void periodic() {
     double value = RobotContainer.logitech.getRawAxis(3);
-    value = 0 + ((Math.abs(value - 1)) / 2.0);
+    //value = 0 + ((Math.abs(value - 1)) / 2.0);
+    if (Math.abs(value)<=0.1) value=0; //deadband
     SmartDashboard.putNumber("value", value);
     shooter9.set(value);
-    shooter10.set(value);
+    shooter11.set(value);
     // SmartDashboard.putNumber("relative tilt pos",
     // tiltMotor.getEncoder().getPosition());
 
