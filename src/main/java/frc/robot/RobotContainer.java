@@ -34,7 +34,7 @@ import frc.robot.subsystems.*;
 public class RobotContainer {
 
   /* XBOX CONTROLLER */
-  public final XboxController controller = new XboxController(0);
+  public static final XboxController controller = new XboxController(0);
 
   /* BUTTON BOX ONE */
   public final ButtonBox buttonBox = new ButtonBox(1);

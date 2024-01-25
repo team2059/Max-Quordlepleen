@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.revrobotics.CANSparkMax;
 
 //import com.revrobotics.CANSparkMax.IdleMode;
@@ -38,6 +40,8 @@ public class ShooterTest extends SubsystemBase {
   public CANSparkMax shooter9;
   public CANSparkMax shooter11;
 
+  public VictorSPX tilt12;
+
   // public DutyCycleEncoder thruBoreEncoder;
   // public double thruBorePosition;
   // public PIDController tiltController;
@@ -47,6 +51,8 @@ public class ShooterTest extends SubsystemBase {
 
     shooter9 = new CANSparkMax(9, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
     shooter11 = new CANSparkMax(11, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
+
+    tilt12 = new VictorSPX(12);
 
     // thruBoreEncoder = new DutyCycleEncoder(Constants.ArmConstants.thruBoreDIO);
 
@@ -67,18 +73,28 @@ public class ShooterTest extends SubsystemBase {
     shooter11.restoreFactoryDefaults();
     shooter11.setInverted(true);
 
+    tilt12.setInverted(true);
+
+
     // extensionEncoder.setPosition(0);
 
   }
 
   @Override
   public void periodic() {
-    double value = RobotContainer.logitech.getRawAxis(3);
+    double shooterValue = RobotContainer.controller.getRawAxis(5);
+    double tiltValue = RobotContainer.controller.getRawAxis(1);
     //value = 0 + ((Math.abs(value - 1)) / 2.0);
-    if (Math.abs(value)<=0.1) value=0; //deadband
-    SmartDashboard.putNumber("value", value);
-    shooter9.set(value);
-    shooter11.set(value);
+    if (Math.abs(shooterValue)<=0.1) shooterValue=0; //deadband
+    if (Math.abs(tiltValue)<=0.1) tiltValue=0; //deadband
+
+    SmartDashboard.putNumber("shooter", shooterValue);
+    SmartDashboard.putNumber("tilt", tiltValue);
+
+    shooter9.set(shooterValue);
+    shooter11.set(shooterValue);
+
+    tilt12.set(VictorSPXControlMode.PercentOutput, tiltValue*0.4); //super basic manual control
     // SmartDashboard.putNumber("relative tilt pos",
     // tiltMotor.getEncoder().getPosition());
 
