@@ -18,8 +18,8 @@ public class Limelight extends SubsystemBase {
 
   private PhotonCamera camera;
 
-  public final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(34.125);
-  public final double TARGET_HEIGHT_METERS = Units.inchesToMeters(25);
+  public final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(24.5);
+  public final double TARGET_HEIGHT_METERS = Units.inchesToMeters(20.5);
   public final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(0);
 
   /** Creates a new Limelight. */
@@ -87,12 +87,12 @@ public class Limelight extends SubsystemBase {
       SmartDashboard.putNumber("z (yaw)",
           Units.radiansToDegrees(bestCameraToTarget.getRotation().getZ()));
 
-      SmartDashboard.putNumber("x",
-          bestCameraToTarget.getX());
-      SmartDashboard.putNumber("y",
-          bestCameraToTarget.getY());
-      SmartDashboard.putNumber("z",
-          bestCameraToTarget.getZ());
+      SmartDashboard.putNumber("x inches",
+          Units.metersToInches(bestCameraToTarget.getX()));
+      SmartDashboard.putNumber("y inches",
+          Units.metersToInches(bestCameraToTarget.getY()));
+      SmartDashboard.putNumber("z inches",
+          Units.metersToInches(bestCameraToTarget.getZ()));
 
     }
 

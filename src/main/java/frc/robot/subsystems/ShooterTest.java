@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkBase.IdleMode;
 
 //import com.revrobotics.CANSparkMax.IdleMode;
 
@@ -47,6 +48,8 @@ public class ShooterTest extends SubsystemBase {
 
     shooter9 = new CANSparkMax(9, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
     shooter11 = new CANSparkMax(11, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
+    shooter9.setIdleMode(IdleMode.kCoast);
+    shooter9.setIdleMode(IdleMode.kCoast);
 
     tilt12 = new VictorSPX(12);
 
@@ -77,7 +80,8 @@ public class ShooterTest extends SubsystemBase {
 
   @Override
   public void periodic() {
-    double shooterValue = RobotContainer.controller.getRawAxis(5);
+    // double shooterValue = RobotContainer.controller.getRawAxis(5);
+    double shooterValue = -0.95;
     double tiltValue = RobotContainer.controller.getRawAxis(1);
     // value = 0 + ((Math.abs(value - 1)) / 2.0);
     if (Math.abs(shooterValue) <= 0.1)
@@ -91,7 +95,7 @@ public class ShooterTest extends SubsystemBase {
     shooter9.set(shooterValue);
     shooter11.set(shooterValue);
 
-    tilt12.set(VictorSPXControlMode.PercentOutput, tiltValue * 0.4); // super basic manual control
+    tilt12.set(VictorSPXControlMode.PercentOutput, -tiltValue * 0.4); // super basic manual control
     // SmartDashboard.putNumber("relative tilt pos",
     // tiltMotor.getEncoder().getPosition());
 

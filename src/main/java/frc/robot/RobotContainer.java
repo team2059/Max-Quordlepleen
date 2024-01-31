@@ -56,6 +56,8 @@ public class RobotContainer {
 
   private final JoystickButton zeroGyro = new JoystickButton(logitech, kZeroGyro);
 
+  private final JoystickButton goToTag = new JoystickButton(logitech, 12);
+
   /* Driver Buttons */
 
   // private final JoystickButton alignWithTarget = new JoystickButton(driver,
@@ -66,7 +68,7 @@ public class RobotContainer {
   /* Subsystems */
   private final SwerveBase swerveBase = new SwerveBase();
 
-  //private final ShooterTest shooterTest = new ShooterTest();
+  private final ShooterTest shooterTest = new ShooterTest();
 
   private final Limelight limelight = new Limelight();
   // private final PowerDistributionPanel powerDistributionPanel = new
@@ -111,6 +113,7 @@ public class RobotContainer {
     /* Driver Buttons */
 
     zeroGyro.onTrue(new InstantCommand(() -> swerveBase.getNavX().reset()));
+    goToTag.onTrue(new GoToTagCmd(swerveBase, limelight, 0, 0));
 
     // alignWithTarget.whileTrue(new VisionAlignCmd(limelight, swerveBase));
 

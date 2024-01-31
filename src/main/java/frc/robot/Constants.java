@@ -85,12 +85,13 @@ public final class Constants {
         }
 
         public static final class LimelightConstants {
-                public static final double xCameraOffsetInches = 2;
-                public static final double yCameraOffsetInches = -5.5;
+                // x = x offset between robot center (center of the drivetrain) to camera
+                // y = y offset between robot center (center of the drivetrain) to camera
+                public static final double xCameraOffsetInches = 13.875;
+                public static final double yCameraOffsetInches = 0;
                 // public static final double originToFront = Units.inchesToMeters(18.75 +
                 // 14.625);
-                public static final double originToFrontInches = 27.5; // 27.5
-
+                public static final double originToFrontInches = 15; // 27.5
         }
 
         public static final class AutoConstants {
