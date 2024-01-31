@@ -5,6 +5,15 @@
 package frc.robot.commands;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import com.pathplanner.lib.commands.FollowPathHolonomic;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -14,6 +23,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ProxyCommand;
@@ -129,27 +139,76 @@ public class GoToTagCmd extends SequentialCommandGroup {
                                                         endingPose,
                                                         config);
 
+                                        // Create a list of bezier points from poses. Each pose represents one waypoint.
+                                        // The rotation component of the pose should be the direction of travel. Do not
+                                        // use holonomic rotation.
+                                        List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(startingPose,
+                                                        new Pose2d(interiorOne, interiorOne.getAngle()),
+                                                        new Pose2d(interiorTwo, interiorTwo.getAngle()), endingPose);
+
+                                        // Create the path using the bezier points created above
+
+                                        PathPlannerPath path = new PathPlannerPath(
+                                                        bezierPoints,
+                                                        // The constraints for this path. If using a differential
+                                                        // drivetrain, the angular constraints have no effect.
+                                                        new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI),
+                                                        new GoalEndState(0.0, Rotation2d.fromDegrees(
+                                                                        endingPose.getRotation().getDegrees())));
+                                        // Goal end state. You can set a holonomic rotation here. If using a
+                                        // differential drivetrain, the rotation will have no effect.
+
                                         swerveBase.resetOdometry(trajectory.getInitialPose());
 
-                                        // 3. Define PID controllers for tracking trajectory
-                                        PIDController xController = new PIDController(0.5, 0,
-                                                        0);
-                                        PIDController yController = new PIDController(0.5, 0,
-                                                        0);
-                                        ProfiledPIDController thetaController = new ProfiledPIDController(
-                                                        AutoConstants.kPThetaController + 2.5, 0, 0.001,
-                                                        AutoConstants.kThetaControllerConstraints);
-                                        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+                                        return new FollowPathHolonomic(
+                                                        path,
+                                                        swerveBase::getPose, // Robot pose supplier
+                                                        swerveBase::getRobotRelativeSpeeds, // ChassisSpeeds supplier.
+                                                                                            // MUST BE
+                                                                                            // ROBOT RELATIVE
+                                                        swerveBase::driveRobotRelative, // Method that will drive the
+                                                                                        // robot
+                                                        // given ROBOT RELATIVE ChassisSpeeds
+                                                        new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig,
+                                                                                         // this should likely live in
+                                                                                         // your Constants class
+                                                                        new PIDConstants(3, 0.0, 0.0), // Translation
+                                                                                                       // PID constants
+                                                                        new PIDConstants(3, 0.0, 0.0), // Rotation PID
+                                                                                                       // constants
+                                                                        3.5, // Max module speed, in m/s
+                                                                        0.3, // Drive base radius in meters. Distance
+                                                                             // from robot center to furthest module.
+                                                                        new ReplanningConfig() // Default path
+                                                                                               // replanning config. See
+                                                                                               // the API for the
+                                                                                               // options here
+                                                        ),
+                                                        () -> {
+                                                                return false;
+                                                        },
+                                                        swerveBase // Reference to this subsystem to set requirements
+                                        );
 
-                                        return new SwerveControllerCommand(
-                                                        trajectory,
-                                                        swerveBase::getPose,
-                                                        Swerve.kinematics,
-                                                        xController,
-                                                        yController,
-                                                        thetaController,
-                                                        swerveBase::setModuleStates,
-                                                        swerveBase);
+                                        // 3. Define PID controllers for tracking trajectory
+                                        // PIDController xController = new PIDController(0.5, 0,
+                                        // 0);
+                                        // PIDController yController = new PIDController(0.5, 0,
+                                        // 0);
+                                        // ProfiledPIDController thetaController = new ProfiledPIDController(
+                                        // AutoConstants.kPThetaController + 2.5, 0, 0.001,
+                                        // AutoConstants.kThetaControllerConstraints);
+                                        // thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+                                        // return new SwerveControllerCommand(
+                                        // trajectory,
+                                        // swerveBase::getPose,
+                                        // Swerve.kinematics,
+                                        // xController,
+                                        // yController,
+                                        // thetaController,
+                                        // swerveBase::setModuleStates,
+                                        // swerveBase);
 
                                 }
                         } catch (NullPointerException ex) {
