@@ -9,14 +9,10 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.revrobotics.CANSparkMax;
 
 //import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.RobotContainer;
 
 public class ShooterTest extends SubsystemBase {
@@ -75,7 +71,6 @@ public class ShooterTest extends SubsystemBase {
 
     tilt12.setInverted(true);
 
-
     // extensionEncoder.setPosition(0);
 
   }
@@ -84,9 +79,11 @@ public class ShooterTest extends SubsystemBase {
   public void periodic() {
     double shooterValue = RobotContainer.controller.getRawAxis(5);
     double tiltValue = RobotContainer.controller.getRawAxis(1);
-    //value = 0 + ((Math.abs(value - 1)) / 2.0);
-    if (Math.abs(shooterValue)<=0.1) shooterValue=0; //deadband
-    if (Math.abs(tiltValue)<=0.1) tiltValue=0; //deadband
+    // value = 0 + ((Math.abs(value - 1)) / 2.0);
+    if (Math.abs(shooterValue) <= 0.1)
+      shooterValue = 0; // deadband
+    if (Math.abs(tiltValue) <= 0.1)
+      tiltValue = 0; // deadband
 
     SmartDashboard.putNumber("shooter", shooterValue);
     SmartDashboard.putNumber("tilt", tiltValue);
@@ -94,7 +91,7 @@ public class ShooterTest extends SubsystemBase {
     shooter9.set(shooterValue);
     shooter11.set(shooterValue);
 
-    tilt12.set(VictorSPXControlMode.PercentOutput, tiltValue*0.4); //super basic manual control
+    tilt12.set(VictorSPXControlMode.PercentOutput, tiltValue * 0.4); // super basic manual control
     // SmartDashboard.putNumber("relative tilt pos",
     // tiltMotor.getEncoder().getPosition());
 

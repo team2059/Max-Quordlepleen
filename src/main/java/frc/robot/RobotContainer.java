@@ -66,7 +66,7 @@ public class RobotContainer {
   /* Subsystems */
   private final SwerveBase swerveBase = new SwerveBase();
 
-  private final ShooterTest shooterTest = new ShooterTest();
+  //private final ShooterTest shooterTest = new ShooterTest();
 
   private final Limelight limelight = new Limelight();
   // private final PowerDistributionPanel powerDistributionPanel = new
