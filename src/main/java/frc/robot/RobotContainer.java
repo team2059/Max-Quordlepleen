@@ -50,13 +50,14 @@ public class RobotContainer {
   private final int kLogitechSliderAxis = 3;
   private final int kZeroGyro = 5;
   private final int kFieldOriented = 6;
-  private final int kInverted = 1;
+  private final int kInverted = 12; // switch
+  private final int kGoToTagButton = 1; // switch
   private final int kStrafeOnly = 2;
   private final int kSlowEverything = 3;
 
   private final JoystickButton zeroGyro = new JoystickButton(logitech, kZeroGyro);
 
-  private final JoystickButton goToTag = new JoystickButton(logitech, 12);
+  private final JoystickButton goToTag = new JoystickButton(logitech, kGoToTagButton);
 
   /* Driver Buttons */
 

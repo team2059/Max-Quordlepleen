@@ -54,101 +54,110 @@ public class GoToTagCmd extends SequentialCommandGroup {
 
                 var result = limelight.getCamera().getLatestResult();
 
-                if (result.hasTargets() == false && result.getBestTarget().getPoseAmbiguity() >= 0.2) {
-
+                if (result.hasTargets() == false) {
                         return new InstantCommand();
                 } else {
+                        try {
+                                var bestTarget = result.getBestTarget();
+                                if (bestTarget.getPoseAmbiguity() >= 0.5) {
+                                        return new InstantCommand();
+                                } else {
+                                        double yawTheta = bestTarget.getBestCameraToTarget().getRotation().getZ();
+                                        if (Math.abs(yawTheta) >= 177.5) {
+                                                yawTheta = Math.signum(yawTheta) * (180);
+                                        }
 
-                        var bestTarget = result.getBestTarget();
+                                        double xLL = bestTarget.getBestCameraToTarget().getX();
+                                        double yLL = bestTarget.getBestCameraToTarget().getY();
 
-                        double yawTheta = bestTarget.getBestCameraToTarget().getRotation().getZ();
-                        if (Math.abs(yawTheta) >= 177.5) {
-                                yawTheta = Math.signum(yawTheta) * (180);
+                                        // robot final to robot initial rotation (used to rotate vectors in rf frame to
+                                        // ri frame)
+                                        Rotation2d rf_to_ri = new Rotation2d(yawTheta - Math.PI);
+
+                                        // april tag in robot final coordiante frame
+                                        Translation2d A_rf = new Translation2d(
+                                                        Units.inchesToMeters(LimelightConstants.originToFrontInches)
+                                                                        + Units.inchesToMeters(frontOffset),
+                                                        Units.inchesToMeters(sideOffset));
+                                        System.out.println("A in robot final" + A_rf.toString());
+
+                                        // april tag in limelight initial coordinate frame
+                                        Translation2d A_l0 = new Translation2d(xLL, yLL);
+                                        System.out.println("A in limelight initial" + A_l0.toString());
+
+                                        // limelight in robot initial coordinate frame
+                                        Translation2d Originl0_rO = new Translation2d(
+                                                        Units.inchesToMeters(LimelightConstants.xCameraOffsetInches),
+                                                        Units.inchesToMeters(LimelightConstants.yCameraOffsetInches));
+                                        System.out.println("Limelight in robot initial" + Originl0_rO.toString());
+
+                                        // april tag in robot initial coordinate frame
+                                        Translation2d A_r0 = A_l0.plus(Originl0_rO);
+                                        System.out.println("A in robot initial" + A_r0.toString());
+
+                                        Translation2d finalTranslation = A_r0.minus(A_rf.rotateBy(rf_to_ri));
+                                        System.out.println(finalTranslation.toString());
+
+                                        Pose2d endingPose = new Pose2d(finalTranslation.getX(),
+                                                        finalTranslation.getY(),
+                                                        rf_to_ri);
+
+                                        // Pose2d endingPose = new Pose2d(finalTranslation.getX(),
+                                        // finalTranslation.getY(),
+                                        // new Rotation2d());
+
+                                        Translation2d interiorOne = new Translation2d(endingPose.getX() / 3.0,
+                                                        endingPose.getY() / 3.0);
+                                        Translation2d interiorTwo = new Translation2d(2.0 * endingPose.getX() / 3.0,
+                                                        2.0 * endingPose.getY() / 3.0);
+
+                                        var interiorWaypoints = new ArrayList<Translation2d>();
+                                        interiorWaypoints.add(interiorOne);
+                                        interiorWaypoints.add(interiorTwo);
+
+                                        System.out.println("START = " + startingPose.toString());
+                                        System.out.println("interiorOne" + interiorOne.toString());
+                                        System.out.println("interiorTwo" + interiorTwo.toString());
+                                        System.out.println("ENDING = " + endingPose.toString());
+
+                                        TrajectoryConfig config = new TrajectoryConfig(3, 1);
+                                        config.setReversed(false);
+
+                                        var trajectory = TrajectoryGenerator.generateTrajectory(
+                                                        startingPose,
+                                                        interiorWaypoints,
+                                                        endingPose,
+                                                        config);
+
+                                        swerveBase.resetOdometry(trajectory.getInitialPose());
+
+                                        // 3. Define PID controllers for tracking trajectory
+                                        PIDController xController = new PIDController(0.5, 0,
+                                                        0);
+                                        PIDController yController = new PIDController(0.5, 0,
+                                                        0);
+                                        ProfiledPIDController thetaController = new ProfiledPIDController(
+                                                        AutoConstants.kPThetaController + 2.5, 0, 0.001,
+                                                        AutoConstants.kThetaControllerConstraints);
+                                        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+                                        return new SwerveControllerCommand(
+                                                        trajectory,
+                                                        swerveBase::getPose,
+                                                        Swerve.kinematics,
+                                                        xController,
+                                                        yController,
+                                                        thetaController,
+                                                        swerveBase::setModuleStates,
+                                                        swerveBase);
+
+                                }
+                        } catch (NullPointerException ex) {
+                                ex.printStackTrace();
+                                return new InstantCommand();
                         }
 
-                        double xLL = bestTarget.getBestCameraToTarget().getX();
-                        double yLL = bestTarget.getBestCameraToTarget().getY();
-
-                        // robot final to robot initial rotation (used to rotate vectors in rf frame to
-                        // ri frame)
-                        Rotation2d rf_to_ri = new Rotation2d(yawTheta - Math.PI);
-
-                        // april tag in robot final coordiante frame
-                        Translation2d A_rf = new Translation2d(
-                                        Units.inchesToMeters(LimelightConstants.originToFrontInches)
-                                                        + Units.inchesToMeters(frontOffset),
-                                        Units.inchesToMeters(sideOffset));
-                        System.out.println("A in robot final" + A_rf.toString());
-
-                        // april tag in limelight initial coordinate frame
-                        Translation2d A_l0 = new Translation2d(xLL, yLL);
-                        System.out.println("A in limelight initial" + A_l0.toString());
-
-                        // limelight in robot initial coordinate frame
-                        Translation2d Originl0_rO = new Translation2d(
-                                        Units.inchesToMeters(LimelightConstants.xCameraOffsetInches),
-                                        Units.inchesToMeters(LimelightConstants.yCameraOffsetInches));
-                        System.out.println("Limelight in robot initial" + Originl0_rO.toString());
-
-                        // april tag in robot initial coordinate frame
-                        Translation2d A_r0 = A_l0.plus(Originl0_rO);
-                        System.out.println("A in robot initial" + A_r0.toString());
-
-                        Translation2d finalTranslation = A_r0.minus(A_rf.rotateBy(rf_to_ri));
-                        System.out.println(finalTranslation.toString());
-
-                        Pose2d endingPose = new Pose2d(finalTranslation.getX(),
-                                        finalTranslation.getY(),
-                                        rf_to_ri);
-
-                        // Pose2d endingPose = new Pose2d(finalTranslation.getX(),
-                        // finalTranslation.getY(),
-                        // new Rotation2d());
-
-                        Translation2d interiorOne = new Translation2d(endingPose.getX() / 3.0, endingPose.getY() / 3.0);
-                        Translation2d interiorTwo = new Translation2d(2.0 * endingPose.getX() / 3.0,
-                                        2.0 * endingPose.getY() / 3.0);
-
-                        var interiorWaypoints = new ArrayList<Translation2d>();
-                        interiorWaypoints.add(interiorOne);
-                        interiorWaypoints.add(interiorTwo);
-
-                        System.out.println("START = " + startingPose.toString());
-                        System.out.println("interiorOne" + interiorOne.toString());
-                        System.out.println("interiorTwo" + interiorTwo.toString());
-                        System.out.println("ENDING = " + endingPose.toString());
-
-                        TrajectoryConfig config = new TrajectoryConfig(3, 1);
-                        config.setReversed(false);
-
-                        var trajectory = TrajectoryGenerator.generateTrajectory(
-                                        startingPose,
-                                        interiorWaypoints,
-                                        endingPose,
-                                        config);
-
-                        swerveBase.resetOdometry(trajectory.getInitialPose());
-
-                        // 3. Define PID controllers for tracking trajectory
-                        PIDController xController = new PIDController(0.5, 0,
-                                        0);
-                        PIDController yController = new PIDController(0.5, 0,
-                                        0);
-                        ProfiledPIDController thetaController = new ProfiledPIDController(
-                                        AutoConstants.kPThetaController+2.5, 0, 0.001,
-                                        AutoConstants.kThetaControllerConstraints);
-                        thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-                        return new SwerveControllerCommand(
-                                        trajectory,
-                                        swerveBase::getPose,
-                                        Swerve.kinematics,
-                                        xController,
-                                        yController,
-                                        thetaController,
-                                        swerveBase::setModuleStates,
-                                        swerveBase);
-
                 }
+
         }
 }
