@@ -7,22 +7,17 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
 public final class Constants {
+
         public static final class PowerDistribution {
                 public static final int pdpID = 15;
         }
 
-        public static final class ArmConstants {
+        public static final class ShooterConstants {
 
-                public static final int tiltId = 16;
-                public static final int extendId = 99;
-                // public static final int restServoAngle = 10;
-                // public static final int extendServoAngle = 25;
-                public static final int restServoAngle = 75;
-                public static final int extendServoAngle = 0;
-                public static final int thruBoreDIO = 0;
-                public static final double tiltkP = 7.5;
-                public static final double tiltkD = 0.01;
-                public static final double extensionkP = 0.01;
+                public static final int shooter1ID = 9;
+                public static final int shooter2ID = 11;
+                public static final int tiltID = 12;
+                public static final int elevatorID = 10;
 
         }
 
@@ -94,22 +89,35 @@ public final class Constants {
                 public static final double originToFrontInches = 25; // 27.5
         }
 
+        public static final class GoToTagConstants {
+
+                // Max linear velocity (M/S)
+                public static final double maxVelocityMps = 3.0;
+
+                // Max linear acceleration (M/S^2)
+                public static final double maxAccelerationMpsSq = 3.0;
+
+                // Max angular velocity (Rad/S)
+                public static final double maxAngularVelocityRps = 2 * Math.PI;
+
+                // Max angular acceleration (Rad/S^2)
+                public static final double maxAngularAccelerationRpsSq = 4 * Math.PI;
+
+                public static final double translationkP = 3;
+                public static final double translationkI = 0;
+                public static final double translationkD = 0;
+
+                public static final double rotationkP = 3;
+                public static final double rotationkI = 0;
+                public static final double rotationkD = 0;
+
+                // Max module speed, in m/s
+                public static final double maxModuleSpeed = 3.5;
+                // Drive base radius in meters. Distance from robot center to furthest module.
+                public static final double driveBaseRadius = Units.inchesToMeters(11.811);
+        }
+
         public static final class AutoConstants {
-
-                public static final double kPXController = 0.75;
-                public static final double kPYController = 0.75;
-                public static final double kPThetaController = 5;
-
-                public static final double kMaxSpeedMetersPerSecond = Swerve.maxSpeed / 4;
-                public static final double kMaxAngularSpeedRadiansPerSecond = //
-                                Swerve.maxAngularVelocity / 10;
-                public static final double kMaxAccelerationMetersPerSecondSquared = 3;
-                public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4;
-
-                public static final TrapezoidProfile.Constraints kThetaControllerConstraints = //
-                                new TrapezoidProfile.Constraints(
-                                                kMaxAngularSpeedRadiansPerSecond,
-                                                kMaxAngularAccelerationRadiansPerSecondSquared);
 
         }
 

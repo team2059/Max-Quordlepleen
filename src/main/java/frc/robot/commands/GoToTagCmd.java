@@ -6,7 +6,6 @@ package frc.robot.commands;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import com.pathplanner.lib.commands.FollowPathHolonomic;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
@@ -14,24 +13,16 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
-
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
-import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.GoToTagConstants;
 import frc.robot.Constants.LimelightConstants;
-import frc.robot.Constants.Swerve;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.SwerveBase;
 
@@ -130,15 +121,6 @@ public class GoToTagCmd extends SequentialCommandGroup {
                                         System.out.println("interiorTwo" + interiorTwo.toString());
                                         System.out.println("ENDING = " + endingPose.toString());
 
-                                        TrajectoryConfig config = new TrajectoryConfig(3, 1);
-                                        config.setReversed(false);
-
-                                        var trajectory = TrajectoryGenerator.generateTrajectory(
-                                                        startingPose,
-                                                        interiorWaypoints,
-                                                        endingPose,
-                                                        config);
-
                                         // Create a list of bezier points from poses. Each pose represents one waypoint.
                                         // The rotation component of the pose should be the direction of travel. Do not
                                         // use holonomic rotation.
@@ -152,13 +134,18 @@ public class GoToTagCmd extends SequentialCommandGroup {
                                                         bezierPoints,
                                                         // The constraints for this path. If using a differential
                                                         // drivetrain, the angular constraints have no effect.
-                                                        new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI),
+                                                        new PathConstraints(GoToTagConstants.maxVelocityMps,
+                                                                        GoToTagConstants.maxAccelerationMpsSq,
+                                                                        GoToTagConstants.maxAngularVelocityRps,
+                                                                        GoToTagConstants.maxAngularAccelerationRpsSq),
                                                         new GoalEndState(0.0, Rotation2d.fromDegrees(
                                                                         endingPose.getRotation().getDegrees())));
                                         // Goal end state. You can set a holonomic rotation here. If using a
                                         // differential drivetrain, the rotation will have no effect.
 
-                                        swerveBase.resetOdometry(trajectory.getInitialPose());
+                                        // not sure if i need to use getPreviewStartingHolonomicPose()
+
+                                        swerveBase.resetOdometry(path.getStartingDifferentialPose());
 
                                         return new FollowPathHolonomic(
                                                         path,
@@ -172,13 +159,23 @@ public class GoToTagCmd extends SequentialCommandGroup {
                                                         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig,
                                                                                          // this should likely live in
                                                                                          // your Constants class
-                                                                        new PIDConstants(3, 0.0, 0.0), // Translation
-                                                                                                       // PID constants
-                                                                        new PIDConstants(3, 0.0, 0.0), // Rotation PID
-                                                                                                       // constants
-                                                                        3.5, // Max module speed, in m/s
-                                                                        0.3, // Drive base radius in meters. Distance
-                                                                             // from robot center to furthest module.
+                                                                        new PIDConstants(GoToTagConstants.translationkP,
+                                                                                        GoToTagConstants.translationkI,
+                                                                                        GoToTagConstants.translationkD), // Translation
+                                                                        // PID constants
+                                                                        new PIDConstants(GoToTagConstants.rotationkP,
+                                                                                        GoToTagConstants.rotationkI,
+                                                                                        GoToTagConstants.rotationkD), // Rotation
+                                                                                                                      // PID
+                                                                        // constants
+                                                                        GoToTagConstants.maxModuleSpeed, // Max module
+                                                                                                         // speed, in
+                                                                                                         // m/s
+                                                                        GoToTagConstants.driveBaseRadius, // Drive base
+                                                                                                          // radius in
+                                                                                                          // meters.
+                                                                                                          // Distance
+                                                                        // from robot center to furthest module.
                                                                         new ReplanningConfig() // Default path
                                                                                                // replanning config. See
                                                                                                // the API for the
@@ -189,26 +186,6 @@ public class GoToTagCmd extends SequentialCommandGroup {
                                                         },
                                                         swerveBase // Reference to this subsystem to set requirements
                                         );
-
-                                        // 3. Define PID controllers for tracking trajectory
-                                        // PIDController xController = new PIDController(0.5, 0,
-                                        // 0);
-                                        // PIDController yController = new PIDController(0.5, 0,
-                                        // 0);
-                                        // ProfiledPIDController thetaController = new ProfiledPIDController(
-                                        // AutoConstants.kPThetaController + 2.5, 0, 0.001,
-                                        // AutoConstants.kThetaControllerConstraints);
-                                        // thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-                                        // return new SwerveControllerCommand(
-                                        // trajectory,
-                                        // swerveBase::getPose,
-                                        // Swerve.kinematics,
-                                        // xController,
-                                        // yController,
-                                        // thetaController,
-                                        // swerveBase::setModuleStates,
-                                        // swerveBase);
 
                                 }
                         } catch (NullPointerException ex) {

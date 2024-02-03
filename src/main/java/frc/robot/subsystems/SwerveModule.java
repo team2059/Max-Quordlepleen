@@ -1,26 +1,19 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.sensors.AbsoluteSensorRange;
-import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.IdleMode;
-//import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.Swerve;
 
 public class SwerveModule extends SubsystemBase {
@@ -299,8 +292,9 @@ public class SwerveModule extends SubsystemBase {
 
     rotationMotor.set(rotationController.calculate(getIntegratedAngle().getRadians(), angularSetPoint));
 
-    double angularVelolictySetpoint = optimizedDesiredState.speedMetersPerSecond /
-        (Swerve.wheelDiameter / 2.0);
+    // double angularVelolictySetpoint = optimizedDesiredState.speedMetersPerSecond
+    // /
+    // (Swerve.wheelDiameter / 2.0);
     // if (RobotState.isAutonomous() || isAutoBalancing == true) {
     // driveMotor.setVoltage(Swerve.driveFF.calculate(angularVelolictySetpoint));
 
