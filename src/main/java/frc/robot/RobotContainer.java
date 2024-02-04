@@ -113,7 +113,7 @@ public class RobotContainer {
     /* Driver Buttons */
 
     zeroGyro.onTrue(new InstantCommand(() -> swerveBase.getNavX().reset()));
-    goToTag.onTrue(new GoToTagCmd(swerveBase, limelight, 0, 0));
+    goToTag.onTrue(new GoToTagCmd(() -> goToTag.getAsBoolean(), swerveBase, limelight, 0, 0));
 
     // alignWithTarget.whileTrue(new VisionAlignCmd(limelight, swerveBase));
 

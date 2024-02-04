@@ -6,6 +6,9 @@ package frc.robot.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
+
 import com.pathplanner.lib.commands.FollowPathHolonomic;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
@@ -35,10 +38,12 @@ public class GoToTagCmd extends SequentialCommandGroup {
         double sideOffset;
         double frontOffset;
         int tagId;
+        BooleanSupplier whileTrue;
 
         /** Creates a new SequentialChaseTagCmd. */
-        public GoToTagCmd(SwerveBase swerveBase,
+        public GoToTagCmd(BooleanSupplier whileTrue, SwerveBase swerveBase,
                         Limelight limelight, double sideOffset, double frontOffset) {
+                this.whileTrue = whileTrue;
                 this.limelight = limelight;
                 this.swerveBase = swerveBase;
                 this.sideOffset = sideOffset;
@@ -185,7 +190,7 @@ public class GoToTagCmd extends SequentialCommandGroup {
                                                                 return false;
                                                         },
                                                         swerveBase // Reference to this subsystem to set requirements
-                                        );
+                                        ).onlyWhile(whileTrue);
 
                                 }
                         } catch (NullPointerException ex) {
