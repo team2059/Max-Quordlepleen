@@ -112,7 +112,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     /* Driver Buttons */
 
-    zeroGyro.onTrue(new InstantCommand(() -> swerveBase.getNavX().reset()));
+    zeroGyro.onTrue(new InstantCommand(() -> swerveBase.getNavX().zeroYaw()));
     goToTag.onTrue(new GoToTagCmd(() -> goToTag.getAsBoolean(), swerveBase, limelight, 0, 0));
 
     // alignWithTarget.whileTrue(new VisionAlignCmd(limelight, swerveBase));
@@ -131,6 +131,14 @@ public class RobotContainer {
 
   public SwerveBase getSwerveBase() {
     return swerveBase;
+  }
+
+  public Shooter getShooter() {
+    return shooter;
+  }
+
+  public Limelight getLimelight() {
+    return limelight;
   }
 
 }

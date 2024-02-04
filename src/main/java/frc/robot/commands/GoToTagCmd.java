@@ -65,7 +65,7 @@ public class GoToTagCmd extends SequentialCommandGroup {
                 } else {
                         try {
                                 var bestTarget = result.getBestTarget();
-                                if (bestTarget.getPoseAmbiguity() >= 0.5) {
+                                if (bestTarget.getPoseAmbiguity() >= 0.2) {
                                         return new InstantCommand();
                                 } else {
                                         double yawTheta = bestTarget.getBestCameraToTarget().getRotation().getZ();
