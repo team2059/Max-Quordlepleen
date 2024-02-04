@@ -123,9 +123,9 @@ public class TeleopSwerve extends Command {
     }
 
     drive.drive(
-        -fwdX,
-        -fwdY,
-        -rot,
+        fwdX,
+        fwdY,
+        rot,
         fieldOrientedFunction.get());
 
   }

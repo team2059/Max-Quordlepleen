@@ -11,11 +11,14 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.Odometry;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -70,6 +73,18 @@ public class SwerveBase extends SubsystemBase {
   public SwerveModule getFrontRight() {
     return frontRight;
   }
+
+  // WPILib
+  StructArrayPublisher<SwerveModuleState> actual = NetworkTableInstance.getDefault()
+      .getStructArrayTopic("actualStates", SwerveModuleState.struct).publish();
+
+  // WPILib
+  StructArrayPublisher<SwerveModuleState> commanded = NetworkTableInstance.getDefault()
+      .getStructArrayTopic("commandedStates", SwerveModuleState.struct).publish();
+
+  // WPILib
+  StructArrayPublisher<Rotation2d> rotationLog = NetworkTableInstance.getDefault()
+      .getStructArrayTopic("rotationLog", Rotation2d.struct).publish();
 
   private final SwerveModule rearLeft = new SwerveModule(2,
       Swerve.rearLeftDriveMotorId,
@@ -140,6 +155,7 @@ public class SwerveBase extends SubsystemBase {
 
   @Override
   public void periodic() {
+    getStates();
 
     // update the odometry every 20ms
     odometry.update(getHeading(), getModulePositions());
@@ -200,6 +216,7 @@ public class SwerveBase extends SubsystemBase {
     ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02);
     SwerveModuleState[] newStates = Constants.Swerve.kinematics.toSwerveModuleStates(discreteSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(newStates, Constants.Swerve.maxSpeed);
+    commanded.set(newStates);
     setModuleStates(newStates);
   }
 
@@ -209,8 +226,11 @@ public class SwerveBase extends SubsystemBase {
    * @return The robot-relative {@link ChassisSpeeds}.
    */
   public ChassisSpeeds getRobotRelativeSpeeds() {
-    return ChassisSpeeds.fromFieldRelativeSpeeds(Constants.Swerve.kinematics.toChassisSpeeds(getStates()),
+    ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+        Constants.Swerve.kinematics.toChassisSpeeds(getStates()),
         getHeading());
+
+    return chassisSpeeds;
   }
 
   /**
@@ -236,34 +256,13 @@ public class SwerveBase extends SubsystemBase {
             forward, strafe, rotation, getHeading())
         : new ChassisSpeeds(forward, strafe, rotation);
 
+    speeds = ChassisSpeeds.discretize(speeds, 0.02);
+
     // use kinematics (wheel placements) to convert overall robot state to array of
     // individual module states
     SwerveModuleState[] states = Swerve.kinematics.toSwerveModuleStates(speeds);
 
     setModuleStates(states);
-
-  }
-
-  public void drive(double forward, double strafe, double rotation, boolean isFieldRelative, boolean isAutoBalancing) {
-
-    /**
-     * ChassisSpeeds object to represent the overall state of the robot
-     * ChassisSpeeds takes a forward and sideways linear value and a rotational
-     * value
-     * 
-     * speeds is set to field relative or default (robot relative) based on
-     * parameter
-     */
-    ChassisSpeeds speeds = isFieldRelative
-        ? ChassisSpeeds.fromFieldRelativeSpeeds(
-            forward, strafe, rotation, getHeading())
-        : new ChassisSpeeds(forward, strafe, rotation);
-
-    // use kinematics (wheel placements) to convert overall robot state to array of
-    // individual module states
-    SwerveModuleState[] states = Swerve.kinematics.toSwerveModuleStates(speeds);
-
-    setModuleStates(states, isAutoBalancing);
 
   }
 
@@ -275,25 +274,11 @@ public class SwerveBase extends SubsystemBase {
   public void setModuleStates(SwerveModuleState[] moduleStates) {
     // make sure the wheels don't try to spin faster than the maximum speed possible
     SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Swerve.maxSpeed);
+    commanded.set(moduleStates);
     frontLeft.setDesiredStateClosedLoop(moduleStates[0]);
     frontRight.setDesiredStateClosedLoop(moduleStates[1]);
     rearLeft.setDesiredStateClosedLoop(moduleStates[2]);
     rearRight.setDesiredStateClosedLoop(moduleStates[3]);
-
-  }
-
-  /**
-   * Method to set the desired state for each swerve module
-   * Uses PID and feedforward control to control the linear and rotational values
-   * for the modules
-   */
-  public void setModuleStates(SwerveModuleState[] moduleStates, boolean isAutoBalancing) {
-    // make sure the wheels don't try to spin faster than the maximum speed possible
-    SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Swerve.maxSpeed);
-    frontLeft.setDesiredStateClosedLoop(moduleStates[0], isAutoBalancing);
-    frontRight.setDesiredStateClosedLoop(moduleStates[1], isAutoBalancing);
-    rearLeft.setDesiredStateClosedLoop(moduleStates[2], isAutoBalancing);
-    rearRight.setDesiredStateClosedLoop(moduleStates[3], isAutoBalancing);
 
   }
 
@@ -308,6 +293,8 @@ public class SwerveBase extends SubsystemBase {
     for (SwerveModule module : modules) {
       states[module.getModuleID()] = module.getState();
     }
+    actual.set(states);
+
     return states;
   }
 
@@ -355,6 +342,11 @@ public class SwerveBase extends SubsystemBase {
 
   // get the current heading of the robot based on the gyro
   public Rotation2d getHeading() {
+
+    Rotation2d[] rotArr = new Rotation2d[1];
+    rotArr[0] = Rotation2d.fromDegrees(-navX.getYaw());
+
+    rotationLog.set(rotArr);
 
     return Rotation2d.fromDegrees(-navX.getYaw());
 

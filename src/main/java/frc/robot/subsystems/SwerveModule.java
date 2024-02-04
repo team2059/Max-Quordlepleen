@@ -274,8 +274,9 @@ public class SwerveModule extends SubsystemBase {
       driveMotor.setVoltage(-Swerve.driveFF.calculate(angularVelolictySetpoint));
 
     } else {
-      // driveMotor.setVoltage(-Swerve.driveFF.calculate(angularVelolictySetpoint));
-      driveMotor.set(-optimizedDesiredState.speedMetersPerSecond / Swerve.maxSpeed);
+      driveMotor.setVoltage(Swerve.driveFF.calculate(angularVelolictySetpoint));
+      // driveMotor.set(-optimizedDesiredState.speedMetersPerSecond /
+      // Swerve.maxSpeed);
     }
   }
 
