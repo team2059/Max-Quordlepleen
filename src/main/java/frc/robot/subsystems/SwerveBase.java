@@ -171,7 +171,24 @@ public class SwerveBase extends SubsystemBase {
     SmartDashboard.putNumber("pitch",
         navX.getPitch());
 
-    SmartDashboard.putNumber("frontLeft angle rotations", frontLeft.getCanCoderAngle().getRotations());
+    // SmartDashboard.putNumber("frontLeft voltage",
+    // frontLeft.getDriveMotor().getBusVoltage());
+    // SmartDashboard.putNumber("frontRight voltage",
+    // frontRight.getDriveMotor().getBusVoltage());
+    // SmartDashboard.putNumber("rearLeft voltage",
+    // rearLeft.getDriveMotor().getBusVoltage());
+    // SmartDashboard.putNumber("rearRight voltage",
+    // rearRight.getDriveMotor().getBusVoltage());
+
+    SmartDashboard.putNumber("frontLeft angluar setpoint", frontLeft.angularSetPoint);
+    SmartDashboard.putNumber("frontRight angluar setpoint", frontRight.angularSetPoint);
+    SmartDashboard.putNumber("rearLeft angluar setpoint", rearLeft.angularSetPoint);
+    SmartDashboard.putNumber("rearRight angluar setpoint", rearRight.angularSetPoint);
+
+    SmartDashboard.putNumber("frontLeft actual angluar setpoint", frontLeft.getIntegratedAngle().getRadians());
+    SmartDashboard.putNumber("frontRight actual angluar setpoint", frontRight.getIntegratedAngle().getRadians());
+    SmartDashboard.putNumber("rearLeft actual angluar setpoint", rearLeft.getIntegratedAngle().getRadians());
+    SmartDashboard.putNumber("rearRight actual angluar setpoint", rearRight.getIntegratedAngle().getRadians());
 
     // System.out.println("pitch = " + navX.getPitch());
 
@@ -216,7 +233,7 @@ public class SwerveBase extends SubsystemBase {
     ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02);
     SwerveModuleState[] newStates = Constants.Swerve.kinematics.toSwerveModuleStates(discreteSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(newStates, Constants.Swerve.maxSpeed);
-    commanded.set(newStates);
+    // commanded.set(newStates);
     setModuleStates(newStates);
   }
 
@@ -274,7 +291,15 @@ public class SwerveBase extends SubsystemBase {
   public void setModuleStates(SwerveModuleState[] moduleStates) {
     // make sure the wheels don't try to spin faster than the maximum speed possible
     SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Swerve.maxSpeed);
-    commanded.set(moduleStates);
+
+    SwerveModuleState[] optimizedModuleStates = new SwerveModuleState[4];
+    optimizedModuleStates[0] = SwerveModule.optimize(frontLeft.getState(), frontLeft.getIntegratedAngle());
+    optimizedModuleStates[1] = SwerveModule.optimize(frontRight.getState(), frontRight.getIntegratedAngle());
+    optimizedModuleStates[2] = SwerveModule.optimize(rearLeft.getState(), rearLeft.getIntegratedAngle());
+    optimizedModuleStates[3] = SwerveModule.optimize(rearRight.getState(), rearRight.getIntegratedAngle());
+
+    commanded.set(optimizedModuleStates);
+
     frontLeft.setDesiredStateClosedLoop(moduleStates[0]);
     frontRight.setDesiredStateClosedLoop(moduleStates[1]);
     rearLeft.setDesiredStateClosedLoop(moduleStates[2]);
@@ -362,59 +387,5 @@ public class SwerveBase extends SubsystemBase {
     rearRight.stop();
     rearLeft.stop();
   }
-
-  // public SequentialCommandGroup followPathCmd(String pathName) {
-
-  // PathPlannerTrajectory trajectory = getPathPlannerTrajectory(pathName);
-  // PathPlannerState state =
-  // PathPlannerTrajectory.transformStateForAlliance(trajectory.getInitialState(),
-  // DriverStation.getAlliance());
-
-  // Command ppCommand = getPathPlannerCommand(trajectory);
-
-  // return new SequentialCommandGroup(
-
-  // new InstantCommand(
-  // () -> this.resetOdometry(new Pose2d(state.poseMeters.getTranslation(),
-  // state.holonomicRotation))),
-  // ppCommand,
-  // new InstantCommand(() -> this.stopModules()));
-  // }
-
-  // public PathPlannerTrajectory getPathPlannerTrajectory(String pathName) {
-
-  // PathConstraints constraints = PathPlanner.getConstraintsFromPath(pathName);
-  // PathPlannerTrajectory ppTrajectory = PathPlanner.loadPath(pathName,
-  // constraints, false);
-  // return ppTrajectory;
-
-  // }
-
-  // public Command getPathPlannerCommand(PathPlannerTrajectory trajectory) {
-
-  // trajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory,
-  // DriverStation.getAlliance());
-
-  // // System.out.println("GET ALLIANCE: " +
-  // // DriverStation.getAlliance().toString());
-
-  // PIDController xController = new PIDController(3, 0, 0);
-  // PIDController yController = new PIDController(3, 0, 0);
-  // PIDController thetaController = new PIDController(
-  // 1, 0.0, 0.0);
-  // thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-  // PPSwerveControllerCommand command = new PPSwerveControllerCommand(
-  // trajectory,
-  // this::getPose,
-  // Swerve.kinematics,
-  // xController,
-  // yController,
-  // thetaController,
-  // this::setModuleStates,
-  // this);
-
-  // return command;
-  // }
 
 }

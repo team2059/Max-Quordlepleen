@@ -31,6 +31,8 @@ public class SwerveModule extends SubsystemBase {
   private static final double rotationkP = 0.5;
   private static final double rotationkD = 0.0;
 
+  public static double angularSetPoint;
+
   private static final double drivekP = 0.015;
 
   private final CANSparkMax driveMotor;
@@ -65,7 +67,7 @@ public class SwerveModule extends SubsystemBase {
 
     driveEncoder = driveMotor.getEncoder();
     rotationEncoder = rotationMotor.getEncoder();
-    rotationController = new PIDController(0.5, 0, 0.0);
+    rotationController = new PIDController(0.8, 0, 0.0);
     rotationController.enableContinuousInput(-Math.PI, Math.PI);
 
     canCoder = new CANcoder(canCoderId);
@@ -263,20 +265,20 @@ public class SwerveModule extends SubsystemBase {
 
     SwerveModuleState optimizedDesiredState = optimize(unoptimizedDesiredState, getIntegratedAngle());
 
-    double angularSetPoint = placeInAppropriate0To360Scope(
+    angularSetPoint = placeInAppropriate0To360Scope(
         optimizedDesiredState.angle.getRadians(), optimizedDesiredState.angle.getRadians());
 
     rotationMotor.set(rotationController.calculate(getIntegratedAngle().getRadians(), angularSetPoint));
 
     double angularVelolictySetpoint = optimizedDesiredState.speedMetersPerSecond /
         (Swerve.wheelDiameter / 2.0);
+
     if (RobotState.isAutonomous()) {
       driveMotor.setVoltage(-Swerve.driveFF.calculate(angularVelolictySetpoint));
-
     } else {
-      driveMotor.setVoltage(Swerve.driveFF.calculate(angularVelolictySetpoint));
-      // driveMotor.set(-optimizedDesiredState.speedMetersPerSecond /
-      // Swerve.maxSpeed);
+      // driveMotor.setVoltage(Swerve.driveFF.calculate(angularVelolictySetpoint));
+      driveMotor.set(optimizedDesiredState.speedMetersPerSecond /
+          Swerve.maxSpeed);
     }
   }
 
