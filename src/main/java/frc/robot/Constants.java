@@ -49,7 +49,7 @@ public final class Constants {
                 );
 
                 /* Swerve Profiling Values */
-                public static final double maxSpeed = 3.5; // meters per second
+                public static final double maxSpeed = 4.5; // meters per second
                 public static final double maxAngularVelocity = 11.5;
 
                 public static final int frontLeftRotationMotorId = 7;

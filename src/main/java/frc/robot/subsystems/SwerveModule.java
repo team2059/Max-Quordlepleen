@@ -34,13 +34,14 @@ public class SwerveModule extends SubsystemBase {
   private static final double rotationkP = 0.5;
   private static final double rotationkD = 0.0;
 
-  public static double angularSetPoint;
-
   public static double DrivePIDOutput = 0;
   public static double feedForwardOutputVoltage = 0;
   public static double driveOutput = 0;
   public static double velolictySetpoint = 0;
   public static double currentDriveVelocity = 0;
+
+  public static double angularSetpoint = 0;
+  public static double actualAngle = 0;
 
   private static final double drivekP = 0.015;
 
@@ -76,6 +77,7 @@ public class SwerveModule extends SubsystemBase {
 
     driveEncoder = driveMotor.getEncoder();
     rotationEncoder = rotationMotor.getEncoder();
+
     rotationController = new PIDController(0.8, 0, 0.0);
     rotationController.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -106,7 +108,9 @@ public class SwerveModule extends SubsystemBase {
     driveEncoder.setVelocityConversionFactor(0.047286787200699704 / 60);
 
     // set the output of the rotation encoder to be in radians
-    rotationEncoder.setPositionConversionFactor(2 * Math.PI / Swerve.angleGearRatio);
+    // rotationEncoder.setPositionConversionFactor(2 * Math.PI /
+    // Swerve.angleGearRatio);
+    rotationEncoder.setPositionConversionFactor(16.8 * 0.01745);
 
     // configure the CANCoder to output in unsigned (wrap around from 360 to 0
     // degrees)
@@ -115,6 +119,9 @@ public class SwerveModule extends SubsystemBase {
     config.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
     config.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
     canCoder.getConfigurator().apply(config);
+
+    driveMotor.burnFlash();
+    rotationMotor.burnFlash();
 
   }
 
@@ -278,31 +285,48 @@ public class SwerveModule extends SubsystemBase {
 
     SwerveModuleState optimizedDesiredState = optimize(unoptimizedDesiredState, getIntegratedAngle());
 
-    angularSetPoint = placeInAppropriate0To360Scope(
-        optimizedDesiredState.angle.getRadians(), optimizedDesiredState.angle.getRadians());
+    angularSetpoint = optimizedDesiredState.angle.getRadians();
 
-    rotationMotor.set(rotationController.calculate(getIntegratedAngle().getRadians(), angularSetPoint));
+    // angularSetPoint = placeInAppropriate0To360Scope(
+    // optimizedDesiredState.angle.getRadians(),
+    // optimizedDesiredState.angle.getRadians());
+
+    actualAngle = getIntegratedAngle().getRadians();
 
     velolictySetpoint = optimizedDesiredState.speedMetersPerSecond;
 
+    currentDriveVelocity = getCurrentVelocityMetersPerSecond();
+
     if (RobotState.isAutonomous()) {
-      driveMotor.setVoltage(-Swerve.driveFF.calculate(velolictySetpoint));
+      // driveMotor.setVoltage(-Swerve.driveFF.calculate(velolictySetpoint));
+
+      // DrivePIDOutput = new PIDController(1, 0,
+      // 0).calculate(currentDriveVelocity,
+      // velolictySetpoint);
+      // DrivePIDOutput = 0;
+      feedForwardOutputVoltage = (new SimpleMotorFeedforward(0.012, 2.7, 0.0)
+          .calculate(velolictySetpoint));
+      // driveOutput = (0 + feedForwardOutputVoltage);
+
+      rotationMotor.set(rotationController.calculate(actualAngle, angularSetpoint));
+
+      driveMotor.setVoltage(-feedForwardOutputVoltage);
+
     } else {
       // Swerve.driveFF.calculate(angularVelolictySetpoint);
       // driveMotor.getPIDController().setP(0.0020645);
       // driveMotor.getPIDController().setI(0.0);
       // driveMotor.getPIDController().setD(0.0);
 
-      currentDriveVelocity = getCurrentVelocityMetersPerSecond();
-
-      DrivePIDOutput = new PIDController(0.0020645, 0, 0).calculate(currentDriveVelocity,
+      DrivePIDOutput = new PIDController(0.1, 0, 0).calculate(currentDriveVelocity,
           velolictySetpoint);
       // DrivePIDOutput = 0;
-      feedForwardOutputVoltage = (new SimpleMotorFeedforward(0.012, 0.2, 0)
+      feedForwardOutputVoltage = (new SimpleMotorFeedforward(0.012, 2.7, 0)
           .calculate(velolictySetpoint));
       driveOutput = (DrivePIDOutput + feedForwardOutputVoltage);
 
-      driveMotor.set(driveOutput);
+      rotationMotor.set(rotationController.calculate(actualAngle, angularSetpoint));
+      driveMotor.setVoltage(driveOutput);
 
       // driveMotor.getPIDController().setReference(angularVelolictySetpoint,
       // ControlType.kVelocity);

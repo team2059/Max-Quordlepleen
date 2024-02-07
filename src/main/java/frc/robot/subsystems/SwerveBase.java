@@ -178,6 +178,10 @@ public class SwerveBase extends SubsystemBase {
           modules[module.getModuleID()].velolictySetpoint);
       SmartDashboard.putNumber(modules[module.getModuleID()] + "actual velocity",
           modules[module.getModuleID()].currentDriveVelocity);
+      SmartDashboard.putNumber(modules[module.getModuleID()] + "angular setpoint",
+          modules[module.getModuleID()].angularSetpoint);
+      SmartDashboard.putNumber(modules[module.getModuleID()] + "actual angle",
+          modules[module.getModuleID()].actualAngle);
     }
 
     // SmartDashboard.putNumber("frontLeft angluar setpoint",
@@ -237,9 +241,9 @@ public class SwerveBase extends SubsystemBase {
         this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-            new PIDConstants(3, 0.0, 0.0), // Translation PID constants
-            new PIDConstants(3, 0.0, 0.0), // Rotation PID constants
-            3.5, // Max module speed, in m/s
+            new PIDConstants(10, 0.0, 0.0), // Translation PID constants
+            new PIDConstants(10, 0.0, 0.0), // Rotation PID constants
+            4.5, // Max module speed, in m/s
             0.3, // Drive base radius in meters. Distance from robot center to furthest module.
             new ReplanningConfig() // Default path replanning config. See the API for the options here
         ),
@@ -270,6 +274,7 @@ public class SwerveBase extends SubsystemBase {
     SwerveDriveKinematics.desaturateWheelSpeeds(newStates, Constants.Swerve.maxSpeed);
     // commanded.set(newStates);
     setModuleStates(newStates);
+
   }
 
   /**
@@ -314,6 +319,8 @@ public class SwerveBase extends SubsystemBase {
     // individual module states
     SwerveModuleState[] states = Swerve.kinematics.toSwerveModuleStates(speeds);
 
+    SwerveDriveKinematics.desaturateWheelSpeeds(states, Swerve.maxSpeed);
+
     setModuleStates(states);
 
   }
@@ -324,8 +331,6 @@ public class SwerveBase extends SubsystemBase {
    * for the modules
    */
   public void setModuleStates(SwerveModuleState[] moduleStates) {
-    // make sure the wheels don't try to spin faster than the maximum speed possible
-    SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Swerve.maxSpeed);
 
     SwerveModuleState[] optimizedModuleStates = new SwerveModuleState[4];
     optimizedModuleStates[0] = SwerveModule.optimize(frontLeft.getState(), frontLeft.getIntegratedAngle());
@@ -362,10 +367,10 @@ public class SwerveBase extends SubsystemBase {
   public SwerveModulePosition[] getModulePositions() {
 
     SwerveModulePosition[] positions = {
-        new SwerveModulePosition(frontLeft.getCurrentDistanceMetersPerSecond(), frontLeft.getIntegratedAngle()),
-        new SwerveModulePosition(frontRight.getCurrentDistanceMetersPerSecond(), frontRight.getIntegratedAngle()),
-        new SwerveModulePosition(rearLeft.getCurrentDistanceMetersPerSecond(), rearLeft.getIntegratedAngle()),
-        new SwerveModulePosition(rearRight.getCurrentDistanceMetersPerSecond(), rearRight.getIntegratedAngle())
+        new SwerveModulePosition(-frontLeft.getCurrentDistanceMetersPerSecond(), frontLeft.getIntegratedAngle()),
+        new SwerveModulePosition(-frontRight.getCurrentDistanceMetersPerSecond(), frontRight.getIntegratedAngle()),
+        new SwerveModulePosition(-rearLeft.getCurrentDistanceMetersPerSecond(), rearLeft.getIntegratedAngle()),
+        new SwerveModulePosition(-rearRight.getCurrentDistanceMetersPerSecond(), rearRight.getIntegratedAngle())
 
     };
 
