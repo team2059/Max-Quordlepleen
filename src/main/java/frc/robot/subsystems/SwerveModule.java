@@ -176,7 +176,7 @@ public class SwerveModule extends SubsystemBase {
 
   public double getCurrentDistanceMetersPerSecond() {
     return driveEncoder.getPosition();
-   // return driveEncoder.getPosition() * (Swerve.wheelDiameter / 2.0);
+    // return driveEncoder.getPosition() * (Swerve.wheelDiameter / 2.0);
   }
 
   // unwraps a target angle to be [0,2π]
@@ -295,10 +295,10 @@ public class SwerveModule extends SubsystemBase {
 
       currentDriveVelocity = getCurrentVelocityMetersPerSecond();
 
-      // DrivePIDOutput = new PIDController(0, 0, 0).calculate(currentDriveVelocity,
-      // velolictySetpoint);
-      DrivePIDOutput = 0;
-      feedForwardOutputVoltage = (new SimpleMotorFeedforward(0.012, 0.001, 0)
+      DrivePIDOutput = new PIDController(0.0020645, 0, 0).calculate(currentDriveVelocity,
+          velolictySetpoint);
+      // DrivePIDOutput = 0;
+      feedForwardOutputVoltage = (new SimpleMotorFeedforward(0.012, 0.2, 0)
           .calculate(velolictySetpoint));
       driveOutput = (DrivePIDOutput + feedForwardOutputVoltage);
 
