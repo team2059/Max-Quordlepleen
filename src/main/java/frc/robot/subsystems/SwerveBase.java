@@ -8,6 +8,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -44,10 +46,10 @@ public class SwerveBase extends SubsystemBase {
   // private static final double rearRightAngleOffset =
   // Units.degreesToRadians(232.229 + 2);
 
-  private static final double frontLeftAngleOffset = Units.degreesToRadians(104);
-  private static final double frontRightAngleOffset = Units.degreesToRadians(44.209);
-  private static final double rearLeftAngleOffset = Units.degreesToRadians(144);
-  private static final double rearRightAngleOffset = Units.degreesToRadians(1.5);
+  private static final double frontLeftAngleOffset = Units.rotationsToRadians(0.29);
+  private static final double frontRightAngleOffset = Units.rotationsToRadians(0.117);
+  private static final double rearLeftAngleOffset = Units.rotationsToRadians(0.395);
+  private static final double rearRightAngleOffset = Units.rotationsToRadians(0);
 
   /**
    * SwerveModule objects
@@ -171,6 +173,31 @@ public class SwerveBase extends SubsystemBase {
     SmartDashboard.putNumber("pitch",
         navX.getPitch());
 
+    for (SwerveModule module : modules) {
+      SmartDashboard.putNumber(modules[module.getModuleID()] + "velocity setpoint",
+          modules[module.getModuleID()].velolictySetpoint);
+      SmartDashboard.putNumber(modules[module.getModuleID()] + "actual velocity",
+          modules[module.getModuleID()].currentDriveVelocity);
+    }
+
+    // SmartDashboard.putNumber("frontLeft angluar setpoint",
+    // frontLeft.angularSetPoint);
+    // SmartDashboard.putNumber("frontRight angluar setpoint",
+    // frontRight.angularSetPoint);
+    // SmartDashboard.putNumber("rearLeft angluar setpoint",
+    // rearLeft.angularSetPoint);
+    // SmartDashboard.putNumber("rearRight angluar setpoint",
+    // rearRight.angularSetPoint);
+
+    // SmartDashboard.putNumber("frontLeft actual angluar setpoint",
+    // frontLeft.getIntegratedAngle().getRadians());
+    // SmartDashboard.putNumber("frontRight actual angluar setpoint",
+    // frontRight.getIntegratedAngle().getRadians());
+    // SmartDashboard.putNumber("rearLeft actual angluar setpoint",
+    // rearLeft.getIntegratedAngle().getRadians());
+    // SmartDashboard.putNumber("rearRight actual angluar setpoint",
+    // rearRight.getIntegratedAngle().getRadians());
+
     // SmartDashboard.putNumber("frontLeft voltage",
     // frontLeft.getDriveMotor().getBusVoltage());
     // SmartDashboard.putNumber("frontRight voltage",
@@ -180,15 +207,23 @@ public class SwerveBase extends SubsystemBase {
     // SmartDashboard.putNumber("rearRight voltage",
     // rearRight.getDriveMotor().getBusVoltage());
 
-    SmartDashboard.putNumber("frontLeft angluar setpoint", frontLeft.angularSetPoint);
-    SmartDashboard.putNumber("frontRight angluar setpoint", frontRight.angularSetPoint);
-    SmartDashboard.putNumber("rearLeft angluar setpoint", rearLeft.angularSetPoint);
-    SmartDashboard.putNumber("rearRight angluar setpoint", rearRight.angularSetPoint);
+    // SmartDashboard.putNumber("frontLeft angluar setpoint",
+    // frontLeft.angularSetPoint);
+    // SmartDashboard.putNumber("frontRight angluar setpoint",
+    // frontRight.angularSetPoint);
+    // SmartDashboard.putNumber("rearLeft angluar setpoint",
+    // rearLeft.angularSetPoint);
+    // SmartDashboard.putNumber("rearRight angluar setpoint",
+    // rearRight.angularSetPoint);
 
-    SmartDashboard.putNumber("frontLeft actual angluar setpoint", frontLeft.getIntegratedAngle().getRadians());
-    SmartDashboard.putNumber("frontRight actual angluar setpoint", frontRight.getIntegratedAngle().getRadians());
-    SmartDashboard.putNumber("rearLeft actual angluar setpoint", rearLeft.getIntegratedAngle().getRadians());
-    SmartDashboard.putNumber("rearRight actual angluar setpoint", rearRight.getIntegratedAngle().getRadians());
+    // SmartDashboard.putNumber("frontLeft actual angluar setpoint",
+    // frontLeft.getIntegratedAngle().getRadians());
+    // SmartDashboard.putNumber("frontRight actual angluar setpoint",
+    // frontRight.getIntegratedAngle().getRadians());
+    // SmartDashboard.putNumber("rearLeft actual angluar setpoint",
+    // rearLeft.getIntegratedAngle().getRadians());
+    // SmartDashboard.putNumber("rearRight actual angluar setpoint",
+    // rearRight.getIntegratedAngle().getRadians());
 
     // System.out.println("pitch = " + navX.getPitch());
 
@@ -327,10 +362,10 @@ public class SwerveBase extends SubsystemBase {
   public SwerveModulePosition[] getModulePositions() {
 
     SwerveModulePosition[] positions = {
-        new SwerveModulePosition(-frontLeft.getCurrentDistanceMetersPerSecond(), frontLeft.getIntegratedAngle()),
-        new SwerveModulePosition(-frontRight.getCurrentDistanceMetersPerSecond(), frontRight.getIntegratedAngle()),
-        new SwerveModulePosition(-rearLeft.getCurrentDistanceMetersPerSecond(), rearLeft.getIntegratedAngle()),
-        new SwerveModulePosition(-rearRight.getCurrentDistanceMetersPerSecond(), rearRight.getIntegratedAngle())
+        new SwerveModulePosition(frontLeft.getCurrentDistanceMetersPerSecond(), frontLeft.getIntegratedAngle()),
+        new SwerveModulePosition(frontRight.getCurrentDistanceMetersPerSecond(), frontRight.getIntegratedAngle()),
+        new SwerveModulePosition(rearLeft.getCurrentDistanceMetersPerSecond(), rearLeft.getIntegratedAngle()),
+        new SwerveModulePosition(rearRight.getCurrentDistanceMetersPerSecond(), rearRight.getIntegratedAngle())
 
     };
 

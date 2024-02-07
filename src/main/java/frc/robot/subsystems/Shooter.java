@@ -40,7 +40,7 @@ public class Shooter extends SubsystemBase {
   public CANSparkMax shooter1Motor;
   public CANSparkMax shooter2Motor;
   public VictorSPX tiltMotor;
-  public TalonSRX elevatorMotor;
+  // public TalonSRX elevatorMotor;
 
   // public DutyCycleEncoder thruBoreEncoder;
   // public double thruBorePosition;
@@ -57,7 +57,7 @@ public class Shooter extends SubsystemBase {
     shooter2Motor.setIdleMode(IdleMode.kCoast);
 
     tiltMotor = new VictorSPX(Constants.ShooterConstants.tiltID);
-    elevatorMotor = new TalonSRX(Constants.ShooterConstants.elevatorID);
+    // elevatorMotor = new TalonSRX(Constants.ShooterConstants.elevatorID);
 
     // thruBoreEncoder = new DutyCycleEncoder(Constants.ArmConstants.thruBoreDIO);
 
@@ -81,8 +81,8 @@ public class Shooter extends SubsystemBase {
     tiltMotor.configFactoryDefault();
     tiltMotor.setInverted(true);
 
-    elevatorMotor.configFactoryDefault();
-    elevatorMotor.setInverted(true);
+    // elevatorMotor.configFactoryDefault();
+    // elevatorMotor.setInverted(true);
 
   }
 
@@ -100,7 +100,7 @@ public class Shooter extends SubsystemBase {
 
     SmartDashboard.putNumber("elevatorValue", shooterValue);
 
-    elevatorMotor.set(TalonSRXControlMode.PercentOutput, shooterValue);
+    // elevatorMotor.set(TalonSRXControlMode.PercentOutput, shooterValue);
 
     // SmartDashboard.putNumber("shooter", shooterValue);
     // SmartDashboard.putNumber("tilt", tiltValue);

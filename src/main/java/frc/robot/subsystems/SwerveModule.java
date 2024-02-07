@@ -7,12 +7,15 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.RobotState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Swerve;
 
@@ -32,6 +35,12 @@ public class SwerveModule extends SubsystemBase {
   private static final double rotationkD = 0.0;
 
   public static double angularSetPoint;
+
+  public static double DrivePIDOutput = 0;
+  public static double feedForwardOutputVoltage = 0;
+  public static double driveOutput = 0;
+  public static double velolictySetpoint = 0;
+  public static double currentDriveVelocity = 0;
 
   private static final double drivekP = 0.015;
 
@@ -86,13 +95,15 @@ public class SwerveModule extends SubsystemBase {
     driveController.setP(drivekP);
 
     // set the output of the drive encoder to be in radians for linear measurement
-    driveEncoder.setPositionConversionFactor(
-        2.0 * Math.PI / Swerve.driveGearRatio);
+    // driveEncoder.setPositionConversionFactor(
+    // 2.0 * Math.PI / Swerve.driveGearRatio);
+    driveEncoder.setPositionConversionFactor(0.047286787200699704);
 
     // set the output of the drive encoder to be in radians per second for velocity
     // measurement
-    driveEncoder.setVelocityConversionFactor(
-        2.0 * Math.PI / 60 / Swerve.driveGearRatio);
+    // driveEncoder.setVelocityConversionFactor(
+    // 2.0 * Math.PI / 60 / Swerve.driveGearRatio);
+    driveEncoder.setVelocityConversionFactor(0.047286787200699704 / 60);
 
     // set the output of the rotation encoder to be in radians
     rotationEncoder.setPositionConversionFactor(2 * Math.PI / Swerve.angleGearRatio);
@@ -150,20 +161,22 @@ public class SwerveModule extends SubsystemBase {
 
   }
 
-  public double getCurrentVelocityRadiansPerSecond() {
+  // public double getCurrentVelocityRadiansPerSecond() {
 
+  // return driveEncoder.getVelocity();
+
+  // }
+
+  public double getCurrentVelocityMetersPerSecond() {
+
+    // return driveEncoder.getVelocity() * (Swerve.wheelDiameter / 2.0);
     return driveEncoder.getVelocity();
 
   }
 
-  public double getCurrentVelocityMetersPerSecond() {
-
-    return driveEncoder.getVelocity() * (Swerve.wheelDiameter / 2.0);
-
-  }
-
   public double getCurrentDistanceMetersPerSecond() {
-    return driveEncoder.getPosition() * (Swerve.wheelDiameter / 2.0);
+    return driveEncoder.getPosition();
+   // return driveEncoder.getPosition() * (Swerve.wheelDiameter / 2.0);
   }
 
   // unwraps a target angle to be [0,2π]
@@ -270,15 +283,37 @@ public class SwerveModule extends SubsystemBase {
 
     rotationMotor.set(rotationController.calculate(getIntegratedAngle().getRadians(), angularSetPoint));
 
-    double angularVelolictySetpoint = optimizedDesiredState.speedMetersPerSecond /
-        (Swerve.wheelDiameter / 2.0);
+    velolictySetpoint = optimizedDesiredState.speedMetersPerSecond;
 
     if (RobotState.isAutonomous()) {
-      driveMotor.setVoltage(-Swerve.driveFF.calculate(angularVelolictySetpoint));
+      driveMotor.setVoltage(-Swerve.driveFF.calculate(velolictySetpoint));
     } else {
+      // Swerve.driveFF.calculate(angularVelolictySetpoint);
+      // driveMotor.getPIDController().setP(0.0020645);
+      // driveMotor.getPIDController().setI(0.0);
+      // driveMotor.getPIDController().setD(0.0);
+
+      currentDriveVelocity = getCurrentVelocityMetersPerSecond();
+
+      // DrivePIDOutput = new PIDController(0, 0, 0).calculate(currentDriveVelocity,
+      // velolictySetpoint);
+      DrivePIDOutput = 0;
+      feedForwardOutputVoltage = (new SimpleMotorFeedforward(0.012, 0.001, 0)
+          .calculate(velolictySetpoint));
+      driveOutput = (DrivePIDOutput + feedForwardOutputVoltage);
+
+      driveMotor.set(driveOutput);
+
+      // driveMotor.getPIDController().setReference(angularVelolictySetpoint,
+      // ControlType.kVelocity);
+
+      // driveMotor.set(
+      // new PIDController(0.01, 0, 0).calculate(getCurrentVelocityMetersPerSecond(),
+      // angularVelolictySetpoint));
+
       // driveMotor.setVoltage(Swerve.driveFF.calculate(angularVelolictySetpoint));
-      driveMotor.set(optimizedDesiredState.speedMetersPerSecond /
-          Swerve.maxSpeed);
+      // driveMotor.set(optimizedDesiredState.speedMetersPerSecond /
+      // Swerve.maxSpeed);
     }
   }
 
