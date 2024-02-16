@@ -46,11 +46,6 @@ public class SwerveBase extends SubsystemBase {
   // private static final double rearRightAngleOffset =
   // Units.degreesToRadians(232.229 + 2);
 
-  private static final double frontLeftAngleOffset = Units.rotationsToRadians(0.29);
-  private static final double frontRightAngleOffset = Units.rotationsToRadians(0.117);
-  private static final double rearLeftAngleOffset = Units.rotationsToRadians(0.395);
-  private static final double rearRightAngleOffset = Units.rotationsToRadians(0);
-
   /**
    * SwerveModule objects
    * Parameters:
@@ -64,17 +59,25 @@ public class SwerveBase extends SubsystemBase {
       Swerve.frontLeftDriveMotorId,
       Swerve.frontLeftRotationMotorId,
       Swerve.frontLeftRotationEncoderId,
-      frontLeftAngleOffset);
+      Swerve.frontLeftAngleOffset);
 
   private final SwerveModule frontRight = new SwerveModule(1,
       Swerve.frontRightDriveMotorId,
       Swerve.frontRightRotationMotorId,
       Swerve.frontRightRotationEncoderId,
-      frontRightAngleOffset);
+      Swerve.frontRightAngleOffset);
 
-  public SwerveModule getFrontRight() {
-    return frontRight;
-  }
+  private final SwerveModule rearLeft = new SwerveModule(2,
+      Swerve.rearLeftDriveMotorId,
+      Swerve.rearLeftRotationMotorId,
+      Swerve.rearLeftRotationEncoderId,
+      Swerve.rearLeftAngleOffset);
+
+  private final SwerveModule rearRight = new SwerveModule(3,
+      Swerve.rearRightDriveMotorId,
+      Swerve.rearRightRotationMotorId,
+      Swerve.rearRightRotationEncoderId,
+      Swerve.rearLeftAngleOffset);
 
   // WPILib
   StructArrayPublisher<SwerveModuleState> actual = NetworkTableInstance.getDefault()
@@ -88,18 +91,6 @@ public class SwerveBase extends SubsystemBase {
   StructArrayPublisher<Rotation2d> rotationLog = NetworkTableInstance.getDefault()
       .getStructArrayTopic("rotationLog", Rotation2d.struct).publish();
 
-  private final SwerveModule rearLeft = new SwerveModule(2,
-      Swerve.rearLeftDriveMotorId,
-      Swerve.rearLeftRotationMotorId,
-      Swerve.rearLeftRotationEncoderId,
-      rearLeftAngleOffset);
-
-  private final SwerveModule rearRight = new SwerveModule(3,
-      Swerve.rearRightDriveMotorId,
-      Swerve.rearRightRotationMotorId,
-      Swerve.rearRightRotationEncoderId,
-      rearRightAngleOffset);
-
   private final SwerveModule[] modules = new SwerveModule[] { frontLeft, frontRight, rearLeft, rearRight };
 
   private final AHRS navX;
@@ -111,10 +102,6 @@ public class SwerveBase extends SubsystemBase {
    */
   private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(Swerve.kinematics, new Rotation2d(),
       getModulePositions());
-
-  public SwerveDriveOdometry getOdometry() {
-    return odometry;
-  }
 
   public SwerveBase() {
     navX = new AHRS(SPI.Port.kMXP);
@@ -241,10 +228,10 @@ public class SwerveBase extends SubsystemBase {
         this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-            new PIDConstants(10, 0.0, 0.0), // Translation PID constants
-            new PIDConstants(10, 0.0, 0.0), // Rotation PID constants
-            4.5, // Max module speed, in m/s
-            0.3, // Drive base radius in meters. Distance from robot center to furthest module.
+            new PIDConstants(Swerve.translationkP, 0.0, 0.0), // Translation PID constants
+            new PIDConstants(Swerve.rotationkP, 0.0, 0.0), // Rotation PID constants
+            Swerve.maxSpeed, // Max module speed, in m/s
+            Swerve.driveBaseRadius, // Drive base radius in meters. Distance from robot center to furthest module.
             new ReplanningConfig() // Default path replanning config. See the API for the options here
         ),
         () -> {

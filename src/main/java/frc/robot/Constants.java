@@ -30,6 +30,11 @@ public final class Constants {
 
         public static final class Swerve {
 
+                public static final double frontLeftAngleOffset = Units.rotationsToRadians(0.29);
+                public static final double frontRightAngleOffset = Units.rotationsToRadians(0.117);
+                public static final double rearLeftAngleOffset = Units.rotationsToRadians(0.395);
+                public static final double rearRightAngleOffset = Units.rotationsToRadians(0);
+
                 public static final SimpleMotorFeedforward driveFF = new SimpleMotorFeedforward(0.1, 0.15, 0.01);
                 /* Drivetrain Constants */
                 public static final double trackWidth = Units.inchesToMeters(18.75);
@@ -50,7 +55,13 @@ public final class Constants {
                 );
 
                 /* Swerve Profiling Values */
+                public static final double translationkP = 10;
+                public static final double rotationkP = 10;
+
                 public static final double maxSpeed = 4.5; // meters per second
+                public static final double driveBaseRadius = 0.3; // Drive base radius in meters. Distance from robot
+                                                                  // center to furthest module.
+
                 public static final double maxAngularVelocity = 11.5;
 
                 public static final int frontLeftRotationMotorId = 7;
@@ -80,6 +91,9 @@ public final class Constants {
         }
 
         public static final class LimelightConstants {
+                public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(24.5);
+                public static final double TARGET_HEIGHT_METERS = Units.inchesToMeters(20.5);
+                public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(0);
                 // x = x offset between robot center (center of the drivetrain) to camera
                 // y = y offset between robot center (center of the drivetrain) to camera
                 public static final double xCameraOffsetInches = 13.875;

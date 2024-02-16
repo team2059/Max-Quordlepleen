@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.LimelightConstants;
 
 import java.util.function.BooleanSupplier;
 
@@ -17,10 +18,6 @@ import org.photonvision.common.hardware.VisionLEDMode;
 public class Limelight extends SubsystemBase {
 
   private PhotonCamera camera;
-
-  public final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(24.5);
-  public final double TARGET_HEIGHT_METERS = Units.inchesToMeters(20.5);
-  public final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(0);
 
   /** Creates a new Limelight. */
   public Limelight() {
