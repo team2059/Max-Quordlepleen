@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 
@@ -37,8 +38,10 @@ public class Shooter extends SubsystemBase {
   // return tiltController;
   // }
 
-  public CANSparkMax shooter1Motor;
-  public CANSparkMax shooter2Motor;
+  public CANSparkFlex shooter1Motor;
+  public CANSparkFlex shooter2Motor;
+  public CANSparkMax intakeMotor;
+
   public VictorSPX tiltMotor;
   // public TalonSRX elevatorMotor;
 
@@ -49,14 +52,18 @@ public class Shooter extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   public Shooter() {
 
-    shooter1Motor = new CANSparkMax(Constants.ShooterConstants.shooter1ID,
-        com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
-    shooter2Motor = new CANSparkMax(Constants.ShooterConstants.shooter2ID,
-        com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
-    shooter1Motor.setIdleMode(IdleMode.kCoast);
-    shooter2Motor.setIdleMode(IdleMode.kCoast);
+    // shooter1Motor = new CANSparkFlex(Constants.ShooterConstants.shooter1ID,
+    // com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
+    // shooter2Motor = new CANSparkFlex(Constants.ShooterConstants.shooter2ID,
+    // com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
+    // intakeMotor = new CANSparkMax(Constants.ShooterConstants.intakeID,
+    // com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
 
-    tiltMotor = new VictorSPX(Constants.ShooterConstants.tiltID);
+    // intakeMotor.setIdleMode(IdleMode.kCoast);
+    // shooter1Motor.setIdleMode(IdleMode.kCoast);
+    // shooter2Motor.setIdleMode(IdleMode.kCoast);
+
+    // tiltMotor = new VictorSPX(Constants.ShooterConstants.tiltID);
     // elevatorMotor = new TalonSRX(Constants.ShooterConstants.elevatorID);
 
     // thruBoreEncoder = new DutyCycleEncoder(Constants.ArmConstants.thruBoreDIO);
@@ -72,14 +79,14 @@ public class Shooter extends SubsystemBase {
      * these
      * parameters will not persist between power cycles
      */
-    shooter1Motor.restoreFactoryDefaults();
-    shooter1Motor.setInverted(true);
+    // shooter1Motor.restoreFactoryDefaults();
+    // shooter1Motor.setInverted(false);
 
-    shooter2Motor.restoreFactoryDefaults();
-    shooter2Motor.setInverted(true);
+    // shooter2Motor.restoreFactoryDefaults();
+    // shooter2Motor.setInverted(true);
 
-    tiltMotor.configFactoryDefault();
-    tiltMotor.setInverted(true);
+    // tiltMotor.configFactoryDefault();
+    // tiltMotor.setInverted(true);
 
     // elevatorMotor.configFactoryDefault();
     // elevatorMotor.setInverted(true);
@@ -90,6 +97,8 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
 
     double shooterValue = RobotContainer.logitech.getRawAxis(3); // slider
+    shooterValue = 0 + ((shooterValue - 1) / (2.0) * 0.75);
+
     // double shooterValue = -0.95;
     // double tiltValue = RobotContainer.controller.getRawAxis(1);
     // value = 0 + ((Math.abs(value - 1)) / 2.0);
@@ -105,8 +114,9 @@ public class Shooter extends SubsystemBase {
     // SmartDashboard.putNumber("shooter", shooterValue);
     // SmartDashboard.putNumber("tilt", tiltValue);
 
-    // shooter9.set(shooterValue);
-    // shooter11.set(shooterValue);
+    // shooter1Motor.set(shooterValue);
+    // shooter2Motor.set(shooterValue);
+    // intakeMotor.set(shooterValue);
 
     // tilt12.set(VictorSPXControlMode.PercentOutput, -tiltValue * 0.4); // super
     // basic manual control

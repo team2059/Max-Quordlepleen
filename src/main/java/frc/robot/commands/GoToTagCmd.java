@@ -150,7 +150,7 @@ public class GoToTagCmd extends SequentialCommandGroup {
 
                                         // not sure if i need to use getPreviewStartingHolonomicPose()
 
-                                        swerveBase.resetOdometry(path.getStartingDifferentialPose());
+                                        swerveBase.resetOdometry(startingPose);
 
                                         return new FollowPathHolonomic(
                                                         path,

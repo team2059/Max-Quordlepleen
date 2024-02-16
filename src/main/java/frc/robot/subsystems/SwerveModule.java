@@ -326,7 +326,7 @@ public class SwerveModule extends SubsystemBase {
       driveOutput = (DrivePIDOutput + feedForwardOutputVoltage);
 
       rotationMotor.set(rotationController.calculate(actualAngle, angularSetpoint));
-      driveMotor.setVoltage(driveOutput);
+      driveMotor.setVoltage(-driveOutput);
 
       // driveMotor.getPIDController().setReference(angularVelolictySetpoint,
       // ControlType.kVelocity);

@@ -15,9 +15,10 @@ public final class Constants {
         public static final class ShooterConstants {
 
                 public static final int shooter1ID = 9;
-                public static final int shooter2ID = 11;
+                public static final int shooter2ID = 10;
+                public static final int intakeID = 11;
                 public static final int tiltID = 12;
-                public static final int elevatorID = 10;
+                public static final int elevatorID = 13;
 
         }
 
