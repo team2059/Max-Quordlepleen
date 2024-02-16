@@ -28,17 +28,34 @@ public final class Constants {
 
         }
 
-        public static final class Swerve {
+        public static final class SwerveModuleConstants {
+
+                // https://yagsl.gitbook.io/yagsl/configuring-yagsl/standard-conversion-factors
+
+                public static final double rotationkP = 0.5;
+                public static final double driveEncoderPositionConversionFactor = 0.047286787200699704;
+                public static final double rotationEncoderPositionConversionFactor = 16.8 * 0.01745;
+
+                public static final SimpleMotorFeedforward driveFF = new SimpleMotorFeedforward(0.012, 2.7, 0.0);
+                public static final double drivekP = 0.1;
+
+        }
+
+        public static final class SwerveBaseConstants {
 
                 public static final double frontLeftAngleOffset = Units.rotationsToRadians(0.29);
                 public static final double frontRightAngleOffset = Units.rotationsToRadians(0.117);
                 public static final double rearLeftAngleOffset = Units.rotationsToRadians(0.395);
                 public static final double rearRightAngleOffset = Units.rotationsToRadians(0);
 
-                public static final SimpleMotorFeedforward driveFF = new SimpleMotorFeedforward(0.1, 0.15, 0.01);
                 /* Drivetrain Constants */
                 public static final double trackWidth = Units.inchesToMeters(18.75);
                 public static final double wheelBase = Units.inchesToMeters(24.5);
+
+                // Max module speed, in m/s
+                public static final double maxModuleSpeed = 4.5;
+                // Drive base radius in meters. Distance from robot center to furthest module.
+                public static final double driveBaseRadius = Units.inchesToMeters(11.811);
 
                 // nominal (real) divided by fudge factor
                 public static final double wheelDiameter = Units.inchesToMeters(4.0 / 1.01085);
@@ -55,12 +72,8 @@ public final class Constants {
                 );
 
                 /* Swerve Profiling Values */
-                public static final double translationkP = 10;
-                public static final double rotationkP = 10;
 
                 public static final double maxSpeed = 4.5; // meters per second
-                public static final double driveBaseRadius = 0.3; // Drive base radius in meters. Distance from robot
-                                                                  // center to furthest module.
 
                 public static final double maxAngularVelocity = 11.5;
 
@@ -81,12 +94,25 @@ public final class Constants {
                 public static final int rearLeftRotationEncoderId = 14;
                 public static final int rearRightRotationEncoderId = 11;
 
+                // used
+                public static final double translationkP = 3;
+                public static final double rotationkP = 3;
+
+                // Max linear velocity (M/S)
+                public static final double maxVelocityMps = 3.0;
+
+                // Max linear acceleration (M/S^2)
+                public static final double maxAccelerationMpsSq = 3.0;
+
+                // Max angular velocity (Rad/S)
+                public static final double maxAngularVelocityRps = 2 * Math.PI;
+
+                // Max angular acceleration (Rad/S^2)
+                public static final double maxAngularAccelerationRpsSq = 4 * Math.PI;
+
+                // max teleop speeds used in TeleopSwerve
                 public static final double kTeleDriveMaxSpeedMetersPerSecond = 7.5 / 4.0;
                 public static final double kTeleDriveMaxAngularSpeedRadiansPerSecond = 3.5;
-                public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 3;
-                public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 3;
-
-                public static final double cameraToFrontEdgeDistanceMeters = Units.inchesToMeters(7);
 
         }
 
@@ -101,34 +127,9 @@ public final class Constants {
                 // public static final double originToFront = Units.inchesToMeters(18.75 +
                 // 14.625);
                 public static final double originToFrontInches = 25; // 27.5
-        }
 
-        public static final class GoToTagConstants {
+                public static final double cameraToFrontEdgeDistanceMeters = Units.inchesToMeters(7);
 
-                // Max linear velocity (M/S)
-                public static final double maxVelocityMps = 3.0;
-
-                // Max linear acceleration (M/S^2)
-                public static final double maxAccelerationMpsSq = 3.0;
-
-                // Max angular velocity (Rad/S)
-                public static final double maxAngularVelocityRps = 2 * Math.PI;
-
-                // Max angular acceleration (Rad/S^2)
-                public static final double maxAngularAccelerationRpsSq = 4 * Math.PI;
-
-                public static final double translationkP = 3;
-                public static final double translationkI = 0;
-                public static final double translationkD = 0;
-
-                public static final double rotationkP = 3;
-                public static final double rotationkI = 0;
-                public static final double rotationkD = 0;
-
-                // Max module speed, in m/s
-                public static final double maxModuleSpeed = 3.5;
-                // Drive base radius in meters. Distance from robot center to furthest module.
-                public static final double driveBaseRadius = Units.inchesToMeters(11.811);
         }
 
         public static final class AutoConstants {

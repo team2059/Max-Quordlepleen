@@ -2,7 +2,8 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.Swerve;
+import frc.robot.Constants.SwerveBaseConstants;
+
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -56,28 +57,28 @@ public class SwerveBase extends SubsystemBase {
    */
 
   private final SwerveModule frontLeft = new SwerveModule(0,
-      Swerve.frontLeftDriveMotorId,
-      Swerve.frontLeftRotationMotorId,
-      Swerve.frontLeftRotationEncoderId,
-      Swerve.frontLeftAngleOffset);
+      SwerveBaseConstants.frontLeftDriveMotorId,
+      SwerveBaseConstants.frontLeftRotationMotorId,
+      SwerveBaseConstants.frontLeftRotationEncoderId,
+      SwerveBaseConstants.frontLeftAngleOffset);
 
   private final SwerveModule frontRight = new SwerveModule(1,
-      Swerve.frontRightDriveMotorId,
-      Swerve.frontRightRotationMotorId,
-      Swerve.frontRightRotationEncoderId,
-      Swerve.frontRightAngleOffset);
+      SwerveBaseConstants.frontRightDriveMotorId,
+      SwerveBaseConstants.frontRightRotationMotorId,
+      SwerveBaseConstants.frontRightRotationEncoderId,
+      SwerveBaseConstants.frontRightAngleOffset);
 
   private final SwerveModule rearLeft = new SwerveModule(2,
-      Swerve.rearLeftDriveMotorId,
-      Swerve.rearLeftRotationMotorId,
-      Swerve.rearLeftRotationEncoderId,
-      Swerve.rearLeftAngleOffset);
+      SwerveBaseConstants.rearLeftDriveMotorId,
+      SwerveBaseConstants.rearLeftRotationMotorId,
+      SwerveBaseConstants.rearLeftRotationEncoderId,
+      SwerveBaseConstants.rearLeftAngleOffset);
 
   private final SwerveModule rearRight = new SwerveModule(3,
-      Swerve.rearRightDriveMotorId,
-      Swerve.rearRightRotationMotorId,
-      Swerve.rearRightRotationEncoderId,
-      Swerve.rearLeftAngleOffset);
+      SwerveBaseConstants.rearRightDriveMotorId,
+      SwerveBaseConstants.rearRightRotationMotorId,
+      SwerveBaseConstants.rearRightRotationEncoderId,
+      SwerveBaseConstants.rearRightAngleOffset);
 
   // WPILib
   StructArrayPublisher<SwerveModuleState> actual = NetworkTableInstance.getDefault()
@@ -100,7 +101,7 @@ public class SwerveBase extends SubsystemBase {
    * rotational motion
    * Takes in kinematics and robot angle for parameters
    */
-  private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(Swerve.kinematics, new Rotation2d(),
+  private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(SwerveBaseConstants.kinematics, new Rotation2d(),
       getModulePositions());
 
   public SwerveBase() {
@@ -228,10 +229,11 @@ public class SwerveBase extends SubsystemBase {
         this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-            new PIDConstants(Swerve.translationkP, 0.0, 0.0), // Translation PID constants
-            new PIDConstants(Swerve.rotationkP, 0.0, 0.0), // Rotation PID constants
-            Swerve.maxSpeed, // Max module speed, in m/s
-            Swerve.driveBaseRadius, // Drive base radius in meters. Distance from robot center to furthest module.
+            new PIDConstants(SwerveBaseConstants.translationkP, 0.0, 0.0), // Translation PID constants
+            new PIDConstants(SwerveBaseConstants.rotationkP, 0.0, 0.0), // Rotation PID constants
+            SwerveBaseConstants.maxSpeed, // Max module speed, in m/s
+            SwerveBaseConstants.driveBaseRadius, // Drive base radius in meters. Distance from robot center to furthest
+                                                 // module.
             new ReplanningConfig() // Default path replanning config. See the API for the options here
         ),
         () -> {
@@ -257,8 +259,8 @@ public class SwerveBase extends SubsystemBase {
    */
   public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
     ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02);
-    SwerveModuleState[] newStates = Constants.Swerve.kinematics.toSwerveModuleStates(discreteSpeeds);
-    SwerveDriveKinematics.desaturateWheelSpeeds(newStates, Constants.Swerve.maxSpeed);
+    SwerveModuleState[] newStates = Constants.SwerveBaseConstants.kinematics.toSwerveModuleStates(discreteSpeeds);
+    SwerveDriveKinematics.desaturateWheelSpeeds(newStates, Constants.SwerveBaseConstants.maxSpeed);
     // commanded.set(newStates);
     setModuleStates(newStates);
 
@@ -271,7 +273,7 @@ public class SwerveBase extends SubsystemBase {
    */
   public ChassisSpeeds getRobotRelativeSpeeds() {
     ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-        Constants.Swerve.kinematics.toChassisSpeeds(getStates()),
+        Constants.SwerveBaseConstants.kinematics.toChassisSpeeds(getStates()),
         getHeading());
 
     return chassisSpeeds;
@@ -304,9 +306,9 @@ public class SwerveBase extends SubsystemBase {
 
     // use kinematics (wheel placements) to convert overall robot state to array of
     // individual module states
-    SwerveModuleState[] states = Swerve.kinematics.toSwerveModuleStates(speeds);
+    SwerveModuleState[] states = SwerveBaseConstants.kinematics.toSwerveModuleStates(speeds);
 
-    SwerveDriveKinematics.desaturateWheelSpeeds(states, Swerve.maxSpeed);
+    SwerveDriveKinematics.desaturateWheelSpeeds(states, SwerveBaseConstants.maxSpeed);
 
     setModuleStates(states);
 

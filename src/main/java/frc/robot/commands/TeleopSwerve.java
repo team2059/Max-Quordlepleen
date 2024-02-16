@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.Swerve;
+import frc.robot.Constants.SwerveBaseConstants;
 import frc.robot.subsystems.SwerveBase;
 
 public class TeleopSwerve extends Command {
@@ -54,9 +54,9 @@ public class TeleopSwerve extends Command {
     this.strafeOnly = strafeOnly;
     this.slowAll = slowAll;
 
-    this.xLimiter = new SlewRateLimiter(Swerve.kTeleDriveMaxAccelerationUnitsPerSecond);
-    this.yLimiter = new SlewRateLimiter(Swerve.kTeleDriveMaxAccelerationUnitsPerSecond);
-    this.turningLimiter = new SlewRateLimiter(Swerve.kTeleDriveMaxAngularAccelerationUnitsPerSecond);
+    this.xLimiter = new SlewRateLimiter(SwerveBaseConstants.maxAccelerationMpsSq);
+    this.yLimiter = new SlewRateLimiter(SwerveBaseConstants.maxAccelerationMpsSq);
+    this.turningLimiter = new SlewRateLimiter(SwerveBaseConstants.maxAccelerationMpsSq);
 
     addRequirements(subsystem);
 
@@ -77,15 +77,15 @@ public class TeleopSwerve extends Command {
     double rot = rotation.getAsDouble();
 
     // 2. Apply deadband
-    fwdX = Math.abs(fwdX) > 0.1 ? fwdX : 0.0;
-    fwdY = Math.abs(fwdY) > 0.25 ? fwdY : 0.0;
-    rot = Math.abs(rot) > 0.25 ? rot : 0.0;
+    fwdX = Math.abs(fwdX) > 0.25 ? fwdX : 0.0;
+    fwdY = Math.abs(fwdY) > 0.33 ? fwdY : 0.0;
+    rot = Math.abs(rot) > 0.4 ? rot : 0.0;
 
     // 3. Make the driving smoother
-    fwdX = xLimiter.calculate(fwdX) * Swerve.kTeleDriveMaxSpeedMetersPerSecond;
-    fwdY = yLimiter.calculate(fwdY) * Swerve.kTeleDriveMaxSpeedMetersPerSecond;
+    fwdX = xLimiter.calculate(fwdX) * SwerveBaseConstants.kTeleDriveMaxSpeedMetersPerSecond;
+    fwdY = yLimiter.calculate(fwdY) * SwerveBaseConstants.kTeleDriveMaxSpeedMetersPerSecond;
     rot = turningLimiter.calculate(rot)
-        * Swerve.kTeleDriveMaxAngularSpeedRadiansPerSecond;
+        * SwerveBaseConstants.kTeleDriveMaxAngularSpeedRadiansPerSecond;
 
     double slowVal = 0.25 + ((Math.abs(slowSlider.getAsDouble() - 1)) / (2.0) * 0.75);
 

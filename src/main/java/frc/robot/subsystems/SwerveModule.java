@@ -17,7 +17,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.Swerve;
+import frc.robot.Constants.SwerveModuleConstants;
 
 public class SwerveModule extends SubsystemBase {
 
@@ -31,9 +31,6 @@ public class SwerveModule extends SubsystemBase {
   public PIDController rotationController;
   private final int moduleID;
 
-  private static final double rotationkP = 0.5;
-  private static final double rotationkD = 0.0;
-
   public static double DrivePIDOutput = 0;
   public static double feedForwardOutputVoltage = 0;
   public static double driveOutput = 0;
@@ -43,10 +40,10 @@ public class SwerveModule extends SubsystemBase {
   public static double angularSetpoint = 0;
   public static double actualAngle = 0;
 
-  private static final double drivekP = 0.015;
-
   private final CANSparkMax driveMotor;
   private final CANSparkMax rotationMotor;
+
+  private final PIDController driveController = new PIDController(SwerveModuleConstants.drivekP, 0, 0);
 
   public CANSparkMax getDriveMotor() {
     return driveMotor;
@@ -64,7 +61,6 @@ public class SwerveModule extends SubsystemBase {
   // absolute offset for the CANCoder so that the wheels can be aligned when the
   // robot is turned on
   private final Rotation2d offset;
-  private final SparkPIDController driveController;
 
   public SwerveModule(int moduleID,
       int driveMotorId,
@@ -78,7 +74,7 @@ public class SwerveModule extends SubsystemBase {
     driveEncoder = driveMotor.getEncoder();
     rotationEncoder = rotationMotor.getEncoder();
 
-    rotationController = new PIDController(0.8, 0, 0.0);
+    rotationController = new PIDController(SwerveModuleConstants.rotationkP, 0, 0.0);
     rotationController.enableContinuousInput(-Math.PI, Math.PI);
 
     canCoder = new CANcoder(canCoderId);
@@ -88,29 +84,23 @@ public class SwerveModule extends SubsystemBase {
     driveMotor.setIdleMode(IdleMode.kBrake);
     rotationMotor.setIdleMode(IdleMode.kBrake);
 
-    driveController = driveMotor.getPIDController();
-
-    rotationController.setP(rotationkP);
-    rotationController.setD(rotationkD);
     this.moduleID = moduleID;
-
-    driveController.setP(drivekP);
 
     // set the output of the drive encoder to be in radians for linear measurement
     // driveEncoder.setPositionConversionFactor(
     // 2.0 * Math.PI / Swerve.driveGearRatio);
-    driveEncoder.setPositionConversionFactor(0.047286787200699704);
+    driveEncoder.setPositionConversionFactor(SwerveModuleConstants.driveEncoderPositionConversionFactor);
 
     // set the output of the drive encoder to be in radians per second for velocity
     // measurement
     // driveEncoder.setVelocityConversionFactor(
     // 2.0 * Math.PI / 60 / Swerve.driveGearRatio);
-    driveEncoder.setVelocityConversionFactor(0.047286787200699704 / 60);
+    driveEncoder.setVelocityConversionFactor(SwerveModuleConstants.driveEncoderPositionConversionFactor / 60.0);
 
     // set the output of the rotation encoder to be in radians
     // rotationEncoder.setPositionConversionFactor(2 * Math.PI /
     // Swerve.angleGearRatio);
-    rotationEncoder.setPositionConversionFactor(16.8 * 0.01745);
+    rotationEncoder.setPositionConversionFactor(SwerveModuleConstants.rotationEncoderPositionConversionFactor);
 
     // configure the CANCoder to output in unsigned (wrap around from 360 to 0
     // degrees)
@@ -186,20 +176,6 @@ public class SwerveModule extends SubsystemBase {
     // return driveEncoder.getPosition() * (Swerve.wheelDiameter / 2.0);
   }
 
-  // unwraps a target angle to be [0,2π]
-  // public static double placeInAppropriate0To360Scope(double unwrappedAngle) {
-
-  // double modAngle = unwrappedAngle % (2.0 * Math.PI);
-
-  // if (modAngle < 0.0)
-  // modAngle += 2.0 * Math.PI;
-
-  // double wrappedAngle = modAngle;
-
-  // return wrappedAngle;
-
-  // }
-
   public static double placeInAppropriate0To360Scope(double scopeReference, double newAngle) {
     double lowerBound;
     double upperBound;
@@ -240,8 +216,6 @@ public class SwerveModule extends SubsystemBase {
   public static SwerveModuleState optimize(
       SwerveModuleState desiredState, Rotation2d currentAngle) {
 
-    // double targetAngle =
-    // placeInAppropriate0To360Scope(desiredState.angle.getRadians());
     double targetAngle = placeInAppropriate0To360Scope(currentAngle.getRadians(), desiredState.angle.getRadians());
 
     double targetSpeed = desiredState.speedMetersPerSecond;
@@ -287,10 +261,6 @@ public class SwerveModule extends SubsystemBase {
 
     angularSetpoint = optimizedDesiredState.angle.getRadians();
 
-    // angularSetPoint = placeInAppropriate0To360Scope(
-    // optimizedDesiredState.angle.getRadians(),
-    // optimizedDesiredState.angle.getRadians());
-
     actualAngle = getIntegratedAngle().getRadians();
 
     velolictySetpoint = optimizedDesiredState.speedMetersPerSecond;
@@ -298,46 +268,26 @@ public class SwerveModule extends SubsystemBase {
     currentDriveVelocity = getCurrentVelocityMetersPerSecond();
 
     if (RobotState.isAutonomous()) {
-      // driveMotor.setVoltage(-Swerve.driveFF.calculate(velolictySetpoint));
-
-      // DrivePIDOutput = new PIDController(1, 0,
-      // 0).calculate(currentDriveVelocity,
+      // DrivePIDOutput = driveController.calculate(currentDriveVelocity,
       // velolictySetpoint);
-      // DrivePIDOutput = 0;
-      feedForwardOutputVoltage = (new SimpleMotorFeedforward(0.012, 2.7, 0.0)
-          .calculate(velolictySetpoint));
-      // driveOutput = (0 + feedForwardOutputVoltage);
+      feedForwardOutputVoltage = (SwerveModuleConstants.driveFF.calculate(velolictySetpoint));
+      // driveOutput = (DrivePIDOutput + feedForwardOutputVoltage);
+
+      driveOutput = (feedForwardOutputVoltage);
 
       rotationMotor.set(rotationController.calculate(actualAngle, angularSetpoint));
-
-      driveMotor.setVoltage(-feedForwardOutputVoltage);
+      driveMotor.setVoltage(-driveOutput);
 
     } else {
-      // Swerve.driveFF.calculate(angularVelolictySetpoint);
-      // driveMotor.getPIDController().setP(0.0020645);
-      // driveMotor.getPIDController().setI(0.0);
-      // driveMotor.getPIDController().setD(0.0);
 
-      DrivePIDOutput = new PIDController(0.1, 0, 0).calculate(currentDriveVelocity,
+      DrivePIDOutput = driveController.calculate(currentDriveVelocity,
           velolictySetpoint);
-      // DrivePIDOutput = 0;
-      feedForwardOutputVoltage = (new SimpleMotorFeedforward(0.012, 2.7, 0)
-          .calculate(velolictySetpoint));
+      feedForwardOutputVoltage = (SwerveModuleConstants.driveFF.calculate(velolictySetpoint));
       driveOutput = (DrivePIDOutput + feedForwardOutputVoltage);
 
       rotationMotor.set(rotationController.calculate(actualAngle, angularSetpoint));
       driveMotor.setVoltage(-driveOutput);
 
-      // driveMotor.getPIDController().setReference(angularVelolictySetpoint,
-      // ControlType.kVelocity);
-
-      // driveMotor.set(
-      // new PIDController(0.01, 0, 0).calculate(getCurrentVelocityMetersPerSecond(),
-      // angularVelolictySetpoint));
-
-      // driveMotor.setVoltage(Swerve.driveFF.calculate(angularVelolictySetpoint));
-      // driveMotor.set(optimizedDesiredState.speedMetersPerSecond /
-      // Swerve.maxSpeed);
     }
   }
 

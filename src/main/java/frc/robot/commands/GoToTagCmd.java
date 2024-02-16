@@ -24,8 +24,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants.GoToTagConstants;
 import frc.robot.Constants.LimelightConstants;
+import frc.robot.Constants.SwerveBaseConstants;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.SwerveBase;
 
@@ -139,10 +139,10 @@ public class GoToTagCmd extends SequentialCommandGroup {
                                                         bezierPoints,
                                                         // The constraints for this path. If using a differential
                                                         // drivetrain, the angular constraints have no effect.
-                                                        new PathConstraints(GoToTagConstants.maxVelocityMps,
-                                                                        GoToTagConstants.maxAccelerationMpsSq,
-                                                                        GoToTagConstants.maxAngularVelocityRps,
-                                                                        GoToTagConstants.maxAngularAccelerationRpsSq),
+                                                        new PathConstraints(SwerveBaseConstants.maxVelocityMps,
+                                                                        SwerveBaseConstants.maxAccelerationMpsSq,
+                                                                        SwerveBaseConstants.maxAngularVelocityRps,
+                                                                        SwerveBaseConstants.maxAngularAccelerationRpsSq),
                                                         new GoalEndState(0.0, Rotation2d.fromDegrees(
                                                                         endingPose.getRotation().getDegrees())));
                                         // Goal end state. You can set a holonomic rotation here. If using a
@@ -164,22 +164,25 @@ public class GoToTagCmd extends SequentialCommandGroup {
                                                         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig,
                                                                                          // this should likely live in
                                                                                          // your Constants class
-                                                                        new PIDConstants(GoToTagConstants.translationkP,
-                                                                                        GoToTagConstants.translationkI,
-                                                                                        GoToTagConstants.translationkD), // Translation
+                                                                        new PIDConstants(
+                                                                                        SwerveBaseConstants.translationkP,
+                                                                                        0,
+                                                                                        0), // Translation
                                                                         // PID constants
-                                                                        new PIDConstants(GoToTagConstants.rotationkP,
-                                                                                        GoToTagConstants.rotationkI,
-                                                                                        GoToTagConstants.rotationkD), // Rotation
-                                                                                                                      // PID
+                                                                        new PIDConstants(SwerveBaseConstants.rotationkP,
+                                                                                        0,
+                                                                                        0), // Rotation
+                                                                                            // PID
                                                                         // constants
-                                                                        GoToTagConstants.maxModuleSpeed, // Max module
-                                                                                                         // speed, in
-                                                                                                         // m/s
-                                                                        GoToTagConstants.driveBaseRadius, // Drive base
-                                                                                                          // radius in
-                                                                                                          // meters.
-                                                                                                          // Distance
+                                                                        SwerveBaseConstants.maxModuleSpeed, // Max
+                                                                                                            // module
+                                                                                                            // speed, in
+                                                                                                            // m/s
+                                                                        SwerveBaseConstants.driveBaseRadius, // Drive
+                                                                                                             // base
+                                                                        // radius in
+                                                                        // meters.
+                                                                        // Distance
                                                                         // from robot center to furthest module.
                                                                         new ReplanningConfig() // Default path
                                                                                                // replanning config. See
