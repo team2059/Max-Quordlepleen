@@ -1,143 +1,87 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
-import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-
-//import com.revrobotics.CANSparkMax.IdleMode;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 
-public class Shooter extends SubsystemBase {
+public class Shooter {
 
-  // public CANSparkMax getTiltMotor() {
-  // return tiltMotor;
-  // }
+    // upper & lower are vortex
+    // upper, lower, indexer, shootertilt, elevator
+    public CANSparkFlex shooterUpperMotor;
+    public CANSparkFlex shooterLowerMotor;
+    public CANSparkMax indexerMotor;
+    public CANSparkMax shooterTiltMotor;
+    public CANSparkMax elevatorMotor;
 
-  // public DutyCycleEncoder getThruBoreEncoder() {
-  // return thruBoreEncoder;
-  // }
+    public PIDController tiltController;
+    public PIDController elevatorController;
 
-  // public double getThruBorePosition() {
-  // return thruBoreEncoder.getAbsolutePosition();
-  // }
+    public DutyCycleEncoder shooterTiltThruBoreEncoder;
 
-  // public PIDController getTiltController() {
-  // return tiltController;
-  // }
+    public Shooter() {
+        shooterUpperMotor = new CANSparkFlex(Constants.ShooterConstants.shooterUpperID, MotorType.kBrushless);
+        shooterLowerMotor = new CANSparkFlex(Constants.ShooterConstants.shooterLowerID, MotorType.kBrushless);
+        indexerMotor = new CANSparkMax(Constants.ShooterConstants.indexerID, MotorType.kBrushless);
+        shooterTiltMotor = new CANSparkMax(Constants.ShooterConstants.shooterTiltID, MotorType.kBrushless);
+        elevatorMotor = new CANSparkMax(Constants.ShooterConstants.elevatorID, MotorType.kBrushless);
 
-  public CANSparkFlex shooter1Motor;
-  public CANSparkFlex shooter2Motor;
-  public CANSparkMax intakeMotor;
-  public CANSparkMax tiltMotor;
-  public DutyCycleEncoder shooterTiltThruBoreEncoder;
-  public DutyCycleEncoder shooterElevatorThruBoreEncoder;
-  public CANSparkMax elevatorMotor;
+        tiltController = new PIDController(Constants.ShooterConstants.tiltkP, 0, Constants.ShooterConstants.tiltkD);
+        elevatorController = new PIDController(Constants.ShooterConstants.elevatorkP, 0, Constants.ShooterConstants.elevatorkD);
 
-  // public TalonSRX elevatorMotor;
+        shooterTiltThruBoreEncoder = new DutyCycleEncoder(Constants.ShooterConstants.shooterTiltEThruBoreDIO);
+    }
 
-  // public DutyCycleEncoder thruBoreEncoder;
-  // public double thruBorePosition;
-  // public PIDController tiltController;
+    // Getters & setters for all motors, getters for thru bore encoder
+    public CANSparkFlex getUpperMotor() {
+        return shooterUpperMotor;
+    }
 
-  /** Creates a new ExampleSubsystem. */
-  public Shooter() {
+    public CANSparkFlex getLowerMotor() {
+        return shooterLowerMotor;
+    }
 
-    // shooter1Motor = new CANSparkFlex(Constants.ShooterConstants.shooter1ID,
-    // com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
-    // shooter2Motor = new CANSparkFlex(Constants.ShooterConstants.shooter2ID,
-    // com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
-    // intakeMotor = new CANSparkMax(Constants.ShooterConstants.intakeID,
-    // com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
+    public CANSparkMax getIndexerMotor() {
+        return indexerMotor;
+    }
 
-    // intakeMotor.setIdleMode(IdleMode.kCoast);
-    // shooter1Motor.setIdleMode(IdleMode.kCoast);
-    // shooter2Motor.setIdleMode(IdleMode.kCoast);
+    public CANSparkMax getTiltMotor() {
+        return shooterTiltMotor;
+    }
 
-    // tiltMotor = new VictorSPX(Constants.ShooterConstants.tiltID);
-    // elevatorMotor = new TalonSRX(Constants.ShooterConstants.elevatorID);
+    public CANSparkMax getElevatorMotor() {
+        return elevatorMotor;
+    }
 
-    // thruBoreEncoder = new DutyCycleEncoder(Constants.ArmConstants.thruBoreDIO);
+    public void setUpperMotor(double output) {
+        shooterUpperMotor.set(output);
+    }
 
-    // tiltController = new PIDController(Constants.ArmConstants.tiltkP, 0.00,
-    // Constants.ArmConstants.tiltkD);
-    // tiltController.enableContinuousInput(0, 1);
+    public void setLowerMotor(double output) {
+        shooterLowerMotor.set(output);
+    }
 
-    /**
-     * The restoreFactoryDefaults method can be used to reset the configuration
-     * parameters
-     * in the SPARK MAX to their factory default state. If no argument is passed,
-     * these
-     * parameters will not persist between power cycles
-     */
-    // shooter1Motor.restoreFactoryDefaults();
-    // shooter1Motor.setInverted(false);
+    public void setIndexerMotor(double output) {
+        indexerMotor.set(output);
+    }
 
-    // shooter2Motor.restoreFactoryDefaults();
-    // shooter2Motor.setInverted(true);
+    public void setTiltMotor(double output) {
+        shooterTiltMotor.set(output);
+    }
 
-    // tiltMotor.configFactoryDefault();
-    // tiltMotor.setInverted(true);
+    public void setElevatorMotor(double output) {
+        elevatorMotor.set(output);
+    }
 
-    // elevatorMotor.configFactoryDefault();
-    // elevatorMotor.setInverted(true);
-
-  }
-
-  @Override
-  public void periodic() {
-
-    double shooterValue = RobotContainer.logitech.getRawAxis(3); // slider
-    shooterValue = 0 + ((shooterValue - 1) / (2.0) * 0.75);
-
-    // double shooterValue = -0.95;
-    // double tiltValue = RobotContainer.controller.getRawAxis(1);
-    // value = 0 + ((Math.abs(value - 1)) / 2.0);
-    if (Math.abs(shooterValue) <= 0.1)
-      shooterValue = 0; // deadband
-    // if (Math.abs(tiltValue) <= 0.1)
-    // tiltValue = 0; // deadband
-
-    SmartDashboard.putNumber("elevatorValue", shooterValue);
-
-    // elevatorMotor.set(TalonSRXControlMode.PercentOutput, shooterValue);
-
-    // SmartDashboard.putNumber("shooter", shooterValue);
-    // SmartDashboard.putNumber("tilt", tiltValue);
-
-    // shooter1Motor.set(shooterValue);
-    // shooter2Motor.set(shooterValue);
-    // intakeMotor.set(shooterValue);
-
-    // tilt12.set(VictorSPXControlMode.PercentOutput, -tiltValue * 0.4); // super
-    // basic manual control
-    // SmartDashboard.putNumber("relative tilt pos",
-    // tiltMotor.getEncoder().getPosition());
-
-    // SmartDashboard.putNumber("TILTPERCENT", tiltMotor.getAppliedOutput());
-
-    // SmartDashboard.putNumber("TILTVOLTAGE", tiltMotor.getBusVoltage());
-    // SmartDashboard.putNumber("thru bore pos",
-    // thruBoreEncoder.getAbsolutePosition());
-
-  }
-
-  @Override
-  public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
-  }
+    public DutyCycleEncoder getTiltThruBoreEncoder() {
+        return shooterTiltThruBoreEncoder;
+    }
+    
+    public double getTiltThruBoreEncoderPosition() {
+        return shooterTiltThruBoreEncoder.getAbsolutePosition();
+    }
 }
