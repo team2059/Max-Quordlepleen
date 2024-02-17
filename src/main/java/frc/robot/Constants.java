@@ -1,14 +1,10 @@
 package frc.robot;
 
-import com.revrobotics.CANSparkMax;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 
 public final class Constants {
 
@@ -18,27 +14,42 @@ public final class Constants {
 
         public static final class ShooterConstants {
 
-                public static final int shooter1ID = 9;
-                public static final int shooter2ID = 10;
-                public static final int intakeID = 11;
-                public static final int tiltID = 12;
+                public static final int shooterUpperID = 9; //TODO: CHANGE ALL OF THESE AS NEEDED
+                public static final int shooterLowerID = 10;
+                public static final int indexerID = 11; 
+                public static final int shooterTiltID = 12;
                 public static final int elevatorID = 13;
+
+                public static final double alignToCollectorPos = 0; //encoder value for getting note from collector
+                public static final double restPos = 0;
+
+                public static final double tiltkP = 0;
+                public static final double tiltkD = 0;
+                public static final double elevatorkP = 0;
+                public static final double elevatorkD = 0;
+
+                public static final int climberTiltEThruBoreDIO = 0; 
 
         }
 
         public static final class ClimberConstants {
-                public static final int climberMotorID = 14;
-                public static final int climberThruBoreDIO = 0;
+                public static final int climberMotorID = 14;  //TODO: change placeholder CAN IDs
 
                 public static final double climbkP = 0;
                 public static final double climbkD = 0;
-
         }
 
         public static final class CollectorConstants {
-                public static final int collectorRollerMotorID = 15;
-                public static final int elevatorMotorID = 16;
-                public static final int collectorElevatorThruBoreEncoderDIO = 1;
+                public static final int collectorRollerID = 15;
+                public static final int collectorTiltID = 16;
+
+                public static final int collectorTiltThruBoreDIO = 1;
+
+                public static final double collectorTiltHomePos = 0; //encoder value for "retracted" collector
+                public static final double collectorTiltCollctPos = 0; //encoder value for collecting
+
+                public static final double tiltkD = 0;
+                public static final double tiltkP = 0;
 
         }
 
