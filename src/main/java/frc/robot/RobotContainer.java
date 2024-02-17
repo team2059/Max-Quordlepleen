@@ -6,7 +6,10 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathPlannerPath;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -87,7 +90,9 @@ public class RobotContainer {
     shooter = new Shooter();
     limelight = new Limelight();
 
-    NamedCommands.registerCommand("chaseTag", new GoToTagCmd(() -> true, swerveBase, limelight, 0, 0));
+    NamedCommands.registerCommand("chaseTag",
+        new GoToTagCmd(() -> true, swerveBase, limelight, 0, 0)
+            .andThen(new InstantCommand(() -> swerveBase.resetOdometry(new Pose2d(3.21, 5.94, new Rotation2d())))));
 
     // Configure the button bindings
     configureButtonBindings();

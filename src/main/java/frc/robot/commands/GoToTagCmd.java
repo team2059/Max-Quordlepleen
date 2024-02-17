@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
@@ -21,9 +22,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.SwerveBaseConstants;
 import frc.robot.subsystems.Limelight;
@@ -50,7 +53,8 @@ public class GoToTagCmd extends SequentialCommandGroup {
                 this.frontOffset = frontOffset;
 
                 addRequirements(limelight, swerveBase);
-                addCommands(new ProxyCommand(() -> getCommand()), new InstantCommand(() -> swerveBase.stopModules()));
+                addCommands(new DeferredCommand(() -> getCommand(), Set.of(swerveBase, limelight)),
+                                new InstantCommand(() -> swerveBase.stopModules()));
         }
 
         public Command getCommand() {

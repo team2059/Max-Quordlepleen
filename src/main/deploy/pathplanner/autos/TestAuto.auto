@@ -12,6 +12,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "chaseTag"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "New Path"
