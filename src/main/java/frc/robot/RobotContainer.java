@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -67,28 +68,26 @@ public class RobotContainer {
   // XboxController.Button.kX.value);
 
   /* Subsystems */
-  private final SwerveBase swerveBase = new SwerveBase();
+  private final SwerveBase swerveBase;
 
-  private final Shooter shooter = new Shooter();
+  private final Shooter shooter;
 
-  private final Limelight limelight = new Limelight();
+  private final Limelight limelight;
   // private final PowerDistributionPanel powerDistributionPanel = new
   // PowerDistributionPanel();
 
-  SendableChooser<Command> autoChooser = new SendableChooser<>();
+  SendableChooser<Command> autoChooser;
   /* Commands */
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    swerveBase = new SwerveBase();
+    shooter = new Shooter();
+    limelight = new Limelight();
 
-    swerveBase.setDefaultCommand(new TeleopSwerve(swerveBase, () -> logitech.getRawAxis(kLogitechTranslationAxis),
-        () -> logitech.getRawAxis(kLogitechStrafeAxis), () -> logitech.getRawAxis(kLogitechRotationAxis),
-        () -> logitech.getRawAxis(kLogitechSliderAxis),
-        () -> !logitech.getRawButton(kFieldOriented),
-        () -> logitech.getRawButton(kInverted), () -> logitech.getRawButton(kStrafeOnly),
-        () -> logitech.getRawButton(kSlowEverything)));
+    NamedCommands.registerCommand("chaseTag", new GoToTagCmd(() -> true, swerveBase, limelight, 0, 0));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -98,6 +97,13 @@ public class RobotContainer {
     autoChooser = AutoBuilder.buildAutoChooser();
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
+
+    swerveBase.setDefaultCommand(new TeleopSwerve(swerveBase, () -> logitech.getRawAxis(kLogitechTranslationAxis),
+        () -> logitech.getRawAxis(kLogitechStrafeAxis), () -> logitech.getRawAxis(kLogitechRotationAxis),
+        () -> logitech.getRawAxis(kLogitechSliderAxis),
+        () -> !logitech.getRawButton(kFieldOriented),
+        () -> logitech.getRawButton(kInverted), () -> logitech.getRawButton(kStrafeOnly),
+        () -> logitech.getRawButton(kSlowEverything)));
 
   }
 
