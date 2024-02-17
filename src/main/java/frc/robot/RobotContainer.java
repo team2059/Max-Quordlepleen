@@ -92,7 +92,11 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("chaseTag",
         new GoToTagCmd(() -> true, swerveBase, limelight, 0, 0)
-            .andThen(new InstantCommand(() -> swerveBase.resetOdometry(new Pose2d(3.21, 5.94, new Rotation2d())))));
+            .andThen(new InstantCommand(() -> swerveBase
+                .resetOdometry(PathPlannerPath.fromPathFile("New Path").getPreviewStartingHolonomicPose()))));
+
+    // NamedCommands.registerCommand("chaseTag",
+    // new GoToTagCmd(() -> true, swerveBase, limelight, 0, 0));
 
     // Configure the button bindings
     configureButtonBindings();

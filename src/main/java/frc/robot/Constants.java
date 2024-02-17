@@ -1,10 +1,14 @@
 package frc.robot;
 
+import com.revrobotics.CANSparkMax;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 
 public final class Constants {
 
@@ -19,6 +23,22 @@ public final class Constants {
                 public static final int intakeID = 11;
                 public static final int tiltID = 12;
                 public static final int elevatorID = 13;
+
+        }
+
+        public static final class ClimberConstants {
+                public static final int climberMotorID = 14;
+                public static final int climberThruBoreDIO = 0;
+
+                public static final double climbkP = 0;
+                public static final double climbkD = 0;
+
+        }
+
+        public static final class CollectorConstants {
+                public static final int collectorRollerMotorID = 15;
+                public static final int elevatorMotorID = 16;
+                public static final int collectorElevatorThruBoreEncoderDIO = 1;
 
         }
 

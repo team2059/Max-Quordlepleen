@@ -12,6 +12,8 @@ import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+
 //import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -41,8 +43,11 @@ public class Shooter extends SubsystemBase {
   public CANSparkFlex shooter1Motor;
   public CANSparkFlex shooter2Motor;
   public CANSparkMax intakeMotor;
+  public CANSparkMax tiltMotor;
+  public DutyCycleEncoder shooterTiltThruBoreEncoder;
+  public DutyCycleEncoder shooterElevatorThruBoreEncoder;
+  public CANSparkMax elevatorMotor;
 
-  public VictorSPX tiltMotor;
   // public TalonSRX elevatorMotor;
 
   // public DutyCycleEncoder thruBoreEncoder;
