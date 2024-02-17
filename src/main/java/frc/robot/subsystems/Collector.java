@@ -34,6 +34,34 @@ public class Collector extends SubsystemBase {
 
   }
 
+  public CANSparkMax getTiltMotor() {
+      return tiltMotor;
+  }
+
+  public CANSparkMax getRollerMotor() {
+      return rollerMotor;
+  }
+
+  public void setTiltMotor(double output) {
+      tiltMotor.set(output);
+  }
+
+  public void setRollerMotor(double output) {
+      rollerMotor.set(output);
+  }
+
+  public DutyCycleEncoder getThruBoreEncoder() {
+      return tiltThruBore; 
+  }
+
+  public double getThruBorePosition() {
+      return tiltThruBore.getAbsolutePosition();
+  }
+
+  public PIDController getTiltController() {
+      return tiltPidController;
+  }
+
   @Override
   public void periodic() {
 

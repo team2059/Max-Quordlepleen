@@ -28,7 +28,7 @@ public final class Constants {
                 public static final double elevatorkP = 0;
                 public static final double elevatorkD = 0;
 
-                public static final int climberTiltEThruBoreDIO = 0; 
+                public static final int shooterTiltEThruBoreDIO = 0; 
 
         }
 
