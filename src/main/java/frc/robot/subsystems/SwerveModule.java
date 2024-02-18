@@ -14,7 +14,9 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.RobotState;
+import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SwerveModuleConstants;
@@ -61,6 +63,12 @@ public class SwerveModule extends SubsystemBase {
   // absolute offset for the CANCoder so that the wheels can be aligned when the
   // robot is turned on
   private final Rotation2d offset;
+
+  // --- Simulation
+  private EncoderSim driveEncoderSim;
+  private double driveCurrentSim = 0;
+  private EncoderSim steerEncoderSim;
+  private double steerCurrentSim = 0;
 
   public SwerveModule(int moduleID,
       int driveMotorId,
@@ -113,6 +121,41 @@ public class SwerveModule extends SubsystemBase {
     driveMotor.burnFlash();
     rotationMotor.burnFlash();
 
+  }
+
+  // ----- Simulation
+
+  public void simulationUpdate(
+      double driveEncoderDist,
+      double driveEncoderRate,
+      double driveCurrent,
+      double steerEncoderDist,
+      double steerEncoderRate,
+      double steerCurrent) {
+    driveEncoderSim.setDistance(driveEncoderDist);
+    driveEncoderSim.setRate(driveEncoderRate);
+    this.driveCurrentSim = driveCurrent;
+    steerEncoderSim.setDistance(steerEncoderDist);
+    steerEncoderSim.setRate(steerEncoderRate);
+    this.steerCurrentSim = steerCurrent;
+  }
+
+  public double getDriveCurrentSim() {
+    return driveCurrentSim;
+  }
+
+  public double getSteerCurrentSim() {
+    return steerCurrentSim;
+  }
+
+  /** Voltage of the drive motor */
+  public double getDriveVoltage() {
+    return driveMotor.get() * RobotController.getBatteryVoltage();
+  }
+
+  /** Voltage of the steer motor */
+  public double getSteerVoltage() {
+    return rotationMotor.get() * RobotController.getBatteryVoltage();
   }
 
   public void resetDistance() {

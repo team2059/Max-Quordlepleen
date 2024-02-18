@@ -38,19 +38,19 @@ import frc.robot.subsystems.SwerveBase;
 public class GoToTagCmd extends SequentialCommandGroup {
         SwerveBase swerveBase;
         Limelight limelight;
-        double sideOffset;
-        double frontOffset;
+        double sideOffsetInches;
+        double frontOffsetInches;
         int tagId;
         BooleanSupplier whileTrue;
 
         /** Creates a new SequentialChaseTagCmd. */
         public GoToTagCmd(BooleanSupplier whileTrue, SwerveBase swerveBase,
-                        Limelight limelight, double sideOffset, double frontOffset) {
+                        Limelight limelight, double sideOffsetInches, double frontOffsetInches) {
                 this.whileTrue = whileTrue;
                 this.limelight = limelight;
                 this.swerveBase = swerveBase;
-                this.sideOffset = sideOffset;
-                this.frontOffset = frontOffset;
+                this.sideOffsetInches = sideOffsetInches;
+                this.frontOffsetInches = frontOffsetInches;
 
                 addRequirements(limelight, swerveBase);
                 addCommands(new DeferredCommand(() -> getCommand(), Set.of(swerveBase, limelight)),
@@ -87,8 +87,8 @@ public class GoToTagCmd extends SequentialCommandGroup {
                                         // april tag in robot final coordiante frame
                                         Translation2d A_rf = new Translation2d(
                                                         Units.inchesToMeters(LimelightConstants.originToFrontInches)
-                                                                        + Units.inchesToMeters(frontOffset),
-                                                        Units.inchesToMeters(sideOffset));
+                                                                        + Units.inchesToMeters(frontOffsetInches),
+                                                        Units.inchesToMeters(sideOffsetInches));
                                         System.out.println("A in robot final" + A_rf.toString());
 
                                         // april tag in limelight initial coordinate frame
