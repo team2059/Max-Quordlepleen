@@ -17,9 +17,15 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
@@ -27,9 +33,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.Constants.LimelightConstants;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.SwerveBaseConstants;
-import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.SwerveBase;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -37,175 +43,180 @@ import frc.robot.subsystems.SwerveBase;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class GoToTagCmd extends SequentialCommandGroup {
         SwerveBase swerveBase;
-        Limelight limelight;
+        Vision vision;
         double sideOffsetInches;
         double frontOffsetInches;
         int tagId;
         BooleanSupplier whileTrue;
 
+        public static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo
+                        .loadAprilTagLayoutField();
+
         /** Creates a new SequentialChaseTagCmd. */
         public GoToTagCmd(BooleanSupplier whileTrue, SwerveBase swerveBase,
-                        Limelight limelight, double sideOffsetInches, double frontOffsetInches) {
+                        Vision vision, double sideOffsetInches, double frontOffsetInches) {
                 this.whileTrue = whileTrue;
-                this.limelight = limelight;
+                this.vision = vision;
                 this.swerveBase = swerveBase;
                 this.sideOffsetInches = sideOffsetInches;
                 this.frontOffsetInches = frontOffsetInches;
 
-                addRequirements(limelight, swerveBase);
-                addCommands(new DeferredCommand(() -> getCommand(), Set.of(swerveBase, limelight)),
+                addRequirements(vision, swerveBase);
+                addCommands(new DeferredCommand(() -> getCommand(), Set.of(swerveBase, vision)),
                                 new InstantCommand(() -> swerveBase.stopModules()));
         }
 
         public Command getCommand() {
 
                 // robot pose
-                var startingPose = new Pose2d(0, 0, new Rotation2d());
+                // var startingPose = new Pose2d(0, 0, new Rotation2d());
 
-                var result = limelight.getCamera().getLatestResult();
+                var startingPose = swerveBase.getPose();
 
-                if (result.hasTargets() == false) {
-                        return new InstantCommand();
-                } else {
-                        try {
-                                var bestTarget = result.getBestTarget();
-                                if (bestTarget.getPoseAmbiguity() >= 0.2) {
-                                        return new InstantCommand();
-                                } else {
-                                        double yawTheta = bestTarget.getBestCameraToTarget().getRotation().getZ();
-                                        if (Math.abs(yawTheta) >= 177.5) {
-                                                yawTheta = Math.signum(yawTheta) * (180);
-                                        }
+                // var result = limelight.getCamera().getLatestResult();
 
-                                        double xLL = bestTarget.getBestCameraToTarget().getX();
-                                        double yLL = bestTarget.getBestCameraToTarget().getY();
+                // if (result.hasTargets() == false) {
+                // return new InstantCommand();
+                // } else {
+                // try {
+                // var bestTarget = result.getBestTarget();
+                // if (bestTarget.getPoseAmbiguity() >= 0.2) {
+                // return new InstantCommand();
+                // } else {
+                // double yawTheta = bestTarget.getBestCameraToTarget().getRotation().getZ();
+                // if (Math.abs(yawTheta) >= 177.5) {
+                // yawTheta = Math.signum(yawTheta) * (180);
+                // }
 
-                                        // robot final to robot initial rotation (used to rotate vectors in rf frame to
-                                        // ri frame)
-                                        Rotation2d rf_to_ri = new Rotation2d(yawTheta - Math.PI);
+                // double xLL = bestTarget.getBestCameraToTarget().getX();
+                // double yLL = bestTarget.getBestCameraToTarget().getY();
 
-                                        // april tag in robot final coordiante frame
-                                        Translation2d A_rf = new Translation2d(
-                                                        Units.inchesToMeters(LimelightConstants.originToFrontInches)
-                                                                        + Units.inchesToMeters(frontOffsetInches),
-                                                        Units.inchesToMeters(sideOffsetInches));
-                                        System.out.println("A in robot final" + A_rf.toString());
+                // // robot final to robot initial rotation (used to rotate vectors in rf frame
+                // to
+                // // ri frame)
+                // Rotation2d rf_to_ri = new Rotation2d(yawTheta - Math.PI);
 
-                                        // april tag in limelight initial coordinate frame
-                                        Translation2d A_l0 = new Translation2d(xLL, yLL);
-                                        System.out.println("A in limelight initial" + A_l0.toString());
+                // // april tag in robot final coordiante frame
+                // Translation2d A_rf = new Translation2d(
+                // Units.inchesToMeters(LimelightConstants.originToFrontInches)
+                // + Units.inchesToMeters(frontOffsetInches),
+                // Units.inchesToMeters(sideOffsetInches));
+                // System.out.println("A in robot final" + A_rf.toString());
 
-                                        // limelight in robot initial coordinate frame
-                                        Translation2d Originl0_rO = new Translation2d(
-                                                        Units.inchesToMeters(LimelightConstants.xCameraOffsetInches),
-                                                        Units.inchesToMeters(LimelightConstants.yCameraOffsetInches));
-                                        System.out.println("Limelight in robot initial" + Originl0_rO.toString());
+                // // april tag in limelight initial coordinate frame
+                // Translation2d A_l0 = new Translation2d(xLL, yLL);
+                // System.out.println("A in limelight initial" + A_l0.toString());
 
-                                        // april tag in robot initial coordinate frame
-                                        Translation2d A_r0 = A_l0.plus(Originl0_rO);
-                                        System.out.println("A in robot initial" + A_r0.toString());
+                // // limelight in robot initial coordinate frame
+                // Translation2d Originl0_rO = new Translation2d(
+                // Units.inchesToMeters(LimelightConstants.xCameraOffsetInches),
+                // Units.inchesToMeters(LimelightConstants.yCameraOffsetInches));
+                // System.out.println("Limelight in robot initial" + Originl0_rO.toString());
 
-                                        Translation2d finalTranslation = A_r0.minus(A_rf.rotateBy(rf_to_ri));
-                                        System.out.println(finalTranslation.toString());
+                // // april tag in robot initial coordinate frame
+                // Translation2d A_r0 = A_l0.plus(Originl0_rO);
+                // System.out.println("A in robot initial" + A_r0.toString());
 
-                                        Pose2d endingPose = new Pose2d(finalTranslation.getX(),
-                                                        finalTranslation.getY(),
-                                                        rf_to_ri);
+                // Translation2d finalTranslation = A_r0.minus(A_rf.rotateBy(rf_to_ri));
+                // System.out.println(finalTranslation.toString());
 
-                                        // Pose2d endingPose = new Pose2d(finalTranslation.getX(),
-                                        // finalTranslation.getY(),
-                                        // new Rotation2d());
+                // Pose2d endingPose = new Pose2d(finalTranslation.getX(),
+                // finalTranslation.getY(),
+                // rf_to_ri);
 
-                                        Translation2d interiorOne = new Translation2d(endingPose.getX() / 3.0,
-                                                        endingPose.getY() / 3.0);
-                                        Translation2d interiorTwo = new Translation2d(2.0 * endingPose.getX() / 3.0,
-                                                        2.0 * endingPose.getY() / 3.0);
+                Transform3d TAG_TO_GOAL = new Transform3d(new Translation3d(1, 0, 0), new Rotation3d(0, 0, Math.PI));
 
-                                        var interiorWaypoints = new ArrayList<Translation2d>();
-                                        interiorWaypoints.add(interiorOne);
-                                        interiorWaypoints.add(interiorTwo);
+                Pose2d endingPose = new Pose2d(aprilTagFieldLayout.getTagPose(7).get()
+                                .toPose2d().getTranslation(), new Rotation2d(Math.PI));
 
-                                        System.out.println("START = " + startingPose.toString());
-                                        System.out.println("interiorOne" + interiorOne.toString());
-                                        System.out.println("interiorTwo" + interiorTwo.toString());
-                                        System.out.println("ENDING = " + endingPose.toString());
+                Translation2d interiorOne = new Translation2d(startingPose.getX()
+                                + ((endingPose.getX() - startingPose.getX()) / 3.0),
+                                startingPose.getY() + ((endingPose.getY() - startingPose.getY())
+                                                / 3.0));
+                Translation2d interiorTwo = new Translation2d(startingPose.getX()
+                                + (2.0 * (endingPose.getX() - startingPose.getX()) / 3.0),
+                                startingPose.getY() + (2.0
+                                                * (endingPose.getY() - startingPose.getY())
+                                                / 3.0));
 
-                                        // Create a list of bezier points from poses. Each pose represents one waypoint.
-                                        // The rotation component of the pose should be the direction of travel. Do not
-                                        // use holonomic rotation.
-                                        List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(startingPose,
-                                                        new Pose2d(interiorOne, interiorOne.getAngle()),
-                                                        new Pose2d(interiorTwo, interiorTwo.getAngle()), endingPose);
+                var interiorWaypoints = new ArrayList<Translation2d>();
+                interiorWaypoints.add(interiorOne);
+                interiorWaypoints.add(interiorTwo);
 
-                                        // Create the path using the bezier points created above
+                System.out.println("START = " + startingPose.toString());
+                System.out.println("interiorOne" + interiorOne.toString());
+                System.out.println("interiorTwo" + interiorTwo.toString());
+                System.out.println("ENDING = " + endingPose.toString());
 
-                                        PathPlannerPath path = new PathPlannerPath(
-                                                        bezierPoints,
-                                                        // The constraints for this path. If using a differential
-                                                        // drivetrain, the angular constraints have no effect.
-                                                        new PathConstraints(SwerveBaseConstants.maxVelocityMps,
-                                                                        SwerveBaseConstants.maxAccelerationMpsSq,
-                                                                        SwerveBaseConstants.maxAngularVelocityRps,
-                                                                        SwerveBaseConstants.maxAngularAccelerationRpsSq),
-                                                        new GoalEndState(0.0, Rotation2d.fromDegrees(
-                                                                        endingPose.getRotation().getDegrees())));
-                                        // Goal end state. You can set a holonomic rotation here. If using a
-                                        // differential drivetrain, the rotation will have no effect.
+                // Create a list of bezier points from poses. Each pose represents one waypoint.
+                // The rotation component of the pose should be the direction of travel. Do not
+                // use holonomic rotation.
+                List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(startingPose,
+                                new Pose2d(interiorOne, interiorOne.getAngle()),
+                                new Pose2d(interiorTwo, interiorTwo.getAngle()), endingPose);
 
-                                        // not sure if i need to use getPreviewStartingHolonomicPose()
+                // Create the path using the bezier points created above
 
-                                        swerveBase.resetOdometry(startingPose);
+                PathPlannerPath path = new PathPlannerPath(
+                                bezierPoints,
+                                // The constraints for this path. If using a differential
+                                // drivetrain, the angular constraints have no effect.
+                                new PathConstraints(SwerveBaseConstants.maxVelocityMps,
+                                                SwerveBaseConstants.maxAccelerationMpsSq,
+                                                SwerveBaseConstants.maxAngularVelocityRps,
+                                                SwerveBaseConstants.maxAngularAccelerationRpsSq),
+                                new GoalEndState(0.0, Rotation2d.fromDegrees(
+                                                endingPose.getRotation().getDegrees())));
+                // Goal end state. You can set a holonomic rotation here. If using a
+                // differential drivetrain, the rotation will have no effect.
 
-                                        return new FollowPathHolonomic(
-                                                        path,
-                                                        swerveBase::getPose, // Robot pose supplier
-                                                        swerveBase::getRobotRelativeSpeeds, // ChassisSpeeds supplier.
-                                                                                            // MUST BE
-                                                                                            // ROBOT RELATIVE
-                                                        swerveBase::driveRobotRelative, // Method that will drive the
-                                                                                        // robot
-                                                        // given ROBOT RELATIVE ChassisSpeeds
-                                                        new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig,
-                                                                                         // this should likely live in
-                                                                                         // your Constants class
-                                                                        new PIDConstants(
-                                                                                        SwerveBaseConstants.translationkP,
-                                                                                        0,
-                                                                                        0), // Translation
-                                                                        // PID constants
-                                                                        new PIDConstants(SwerveBaseConstants.rotationkP,
-                                                                                        0,
-                                                                                        0), // Rotation
-                                                                                            // PID
-                                                                        // constants
-                                                                        SwerveBaseConstants.maxModuleSpeed, // Max
-                                                                                                            // module
-                                                                                                            // speed, in
-                                                                                                            // m/s
-                                                                        SwerveBaseConstants.driveBaseRadius, // Drive
-                                                                                                             // base
-                                                                        // radius in
-                                                                        // meters.
-                                                                        // Distance
-                                                                        // from robot center to furthest module.
-                                                                        new ReplanningConfig() // Default path
-                                                                                               // replanning config. See
-                                                                                               // the API for the
-                                                                                               // options here
-                                                        ),
-                                                        () -> {
-                                                                return false;
-                                                        },
-                                                        swerveBase // Reference to this subsystem to set requirements
-                                        ).onlyWhile(whileTrue);
+                // not sure if i need to use getPreviewStartingHolonomicPose()
 
-                                }
-                        } catch (NullPointerException ex) {
-                                ex.printStackTrace();
-                                return new InstantCommand();
-                        }
+                swerveBase.resetOdometry(startingPose);
 
-                }
+                return new FollowPathHolonomic(
+                                path,
+                                swerveBase::getPose, // Robot pose supplier
+                                swerveBase::getRobotRelativeSpeeds, // ChassisSpeeds supplier.
+                                                                    // MUST BE
+                                                                    // ROBOT RELATIVE
+                                swerveBase::driveRobotRelative, // Method that will drive the
+                                                                // robot
+                                // given ROBOT RELATIVE ChassisSpeeds
+                                new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig,
+                                                                 // this should likely live in
+                                                                 // your Constants class
+                                                new PIDConstants(
+                                                                SwerveBaseConstants.translationkP,
+                                                                0,
+                                                                0), // Translation
+                                                // PID constants
+                                                new PIDConstants(SwerveBaseConstants.rotationkP,
+                                                                0,
+                                                                0), // Rotation
+                                                                    // PID
+                                                // constants
+                                                SwerveBaseConstants.maxModuleSpeed, // Max
+                                                                                    // module
+                                                                                    // speed, in
+                                                                                    // m/s
+                                                SwerveBaseConstants.driveBaseRadius, // Drive
+                                                                                     // base
+                                                // radius in
+                                                // meters.
+                                                // Distance
+                                                // from robot center to furthest module.
+                                                new ReplanningConfig() // Default path
+                                                                       // replanning config. See
+                                                                       // the API for the
+                                                                       // options here
+                                ),
+                                () -> {
+                                        return false;
+                                },
+                                swerveBase // Reference to this subsystem to set requirements
+                ).onlyWhile(whileTrue);
 
         }
+
 }

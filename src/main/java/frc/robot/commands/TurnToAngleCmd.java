@@ -7,12 +7,12 @@ package frc.robot.commands;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.SwerveBase;
 
 public class TurnToAngleCmd extends Command {
   SwerveBase swerveBase;
-  Limelight limelight;
+  Vision vision;
   final double ANGULAR_P = 0.4;
   final double ANGULAR_D = 0.01;
   double yaw = 0;
@@ -24,10 +24,10 @@ public class TurnToAngleCmd extends Command {
   int counter = 0;
 
   /** Creates a new TurnToAngleCmd. */
-  public TurnToAngleCmd(SwerveBase swerveBase, Limelight limelight) {
+  public TurnToAngleCmd(SwerveBase swerveBase, Vision vision) {
     this.swerveBase = swerveBase;
-    this.limelight = limelight;
-    addRequirements(swerveBase, limelight);
+    this.vision = vision;
+    addRequirements(swerveBase, vision);
     turnController.enableContinuousInput(-180, 180);
     // turnController.setTolerance(0.5, 2.5);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -39,7 +39,7 @@ public class TurnToAngleCmd extends Command {
 
     // Vision-alignment mode
     // Query the latest result from PhotonVision
-    var result = limelight.getCamera().getLatestResult();
+    var result = vision.getCamera().getLatestResult();
 
     hasTarget = result.hasTargets();
 

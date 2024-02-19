@@ -4,7 +4,10 @@ import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -136,7 +139,14 @@ public final class Constants {
 
         }
 
-        public static final class LimelightConstants {
+        public static final class VisionConstants {
+
+                // Cam mounted facing forward, half a meter forward of center, half a meter up
+                // from center.
+                public static final Transform3d robotToCam = new Transform3d(
+                                new Translation3d(Units.inchesToMeters(15), 0.0, Units.inchesToMeters(24.5)),
+                                new Rotation3d(0, 0, 0));
+
                 public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(24.5);
                 public static final double TARGET_HEIGHT_METERS = Units.inchesToMeters(20.5);
                 public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(0);

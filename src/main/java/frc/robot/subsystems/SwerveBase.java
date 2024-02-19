@@ -14,6 +14,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.hal.SimDouble;
@@ -40,6 +41,7 @@ import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.simulation.ADXRS450_GyroSim;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SwerveBase extends SubsystemBase {
@@ -63,6 +65,8 @@ public class SwerveBase extends SubsystemBase {
    * external CANCoder can ID
    * measured CANCoder offset
    */
+
+  Field2d field2d = new Field2d();
 
   private final SwerveModule frontLeft = new SwerveModule(0,
       SwerveBaseConstants.frontLeftDriveMotorId,
@@ -103,7 +107,7 @@ public class SwerveBase extends SubsystemBase {
   // rearRight };
 
   private final SwerveDrivePoseEstimator poseEstimator;
-  private Limelight limelight = Limelight.getInstance();
+  private Vision vision = Vision.getInstance();
 
   /**
    * odometry for the robot, measured in meters for linear motion and radians for
@@ -202,7 +206,7 @@ public class SwerveBase extends SubsystemBase {
         getHeading(), getModulePositions());
 
     // Add vision to pose estimator
-    limelight.getEstimatedGlobalPose(poseEstimator.getEstimatedPosition())
+    vision.getEstimatedGlobalPose(poseEstimator.getEstimatedPosition())
         .ifPresent(pose -> poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(),
             pose.timestampSeconds));
 
@@ -241,12 +245,14 @@ public class SwerveBase extends SubsystemBase {
   }
 
   public void configureAutoBuilder() {
+
+    SmartDashboard.putData("pp_field", field2d);
     // Configure the AutoBuilder last
     AutoBuilder.configureHolonomic(
         this::getPose, // Robot pose supplier
         this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
         this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-        this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+        this::driveFieldRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
             new PIDConstants(SwerveBaseConstants.translationkP, 0.0, 0.0), // Translation PID constants
             new PIDConstants(SwerveBaseConstants.rotationkP, 0.0, 0.0), // Rotation PID constants
@@ -269,6 +275,10 @@ public class SwerveBase extends SubsystemBase {
         },
         this);
 
+    PathPlannerLogging.setLogTargetPoseCallback((Pose2d targetPose) -> {
+      field2d.setRobotPose(targetPose);
+    });
+
   }
 
   public Command pathFindToPose(Pose2d pose, PathConstraints constraints, double goalEndVel) {
@@ -285,6 +295,15 @@ public class SwerveBase extends SubsystemBase {
     SwerveModuleState[] newStates = Constants.SwerveBaseConstants.kinematics.toSwerveModuleStates(discreteSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(newStates, Constants.SwerveBaseConstants.maxSpeed);
     // commanded.set(newStates);
+    setModuleStates(newStates);
+
+  }
+
+  public void driveFieldRelative(ChassisSpeeds chassisSpeeds) {
+    ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02);
+    discreteSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(discreteSpeeds, getHeading());
+    SwerveModuleState[] newStates = Constants.SwerveBaseConstants.kinematics.toSwerveModuleStates(discreteSpeeds);
+    SwerveDriveKinematics.desaturateWheelSpeeds(newStates, Constants.SwerveBaseConstants.maxSpeed);
     setModuleStates(newStates);
 
   }

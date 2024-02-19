@@ -77,7 +77,7 @@ public class RobotContainer {
 
   private final Shooter shooter;
 
-  private final Limelight limelight;
+  private final Vision vision;
   // private final PowerDistributionPanel powerDistributionPanel = new
   // PowerDistributionPanel();
 
@@ -90,10 +90,10 @@ public class RobotContainer {
   public RobotContainer() {
     swerveBase = new SwerveBase();
     shooter = new Shooter();
-    limelight = new Limelight();
+    vision = new Vision();
 
     NamedCommands.registerCommand("chaseTag",
-        new GoToTagCmd(() -> true, swerveBase, limelight, 0, 0)
+        new GoToTagCmd(() -> true, swerveBase, vision, 0, 0)
             .andThen(new InstantCommand(() -> swerveBase
                 .resetOdometry(PathPlannerPath.fromPathFile("New Path").getPreviewStartingHolonomicPose()))));
 
@@ -129,14 +129,17 @@ public class RobotContainer {
   private void configureButtonBindings() {
     /* Driver Buttons */
 
-    goToTag.whileTrue(
-        swerveBase.pathFindToPose(new Pose2d(7, 5.55, Rotation2d.fromDegrees(-60)), new PathConstraints(
-            3.0, 4.0,
-            Units.degreesToRadians(540), Units.degreesToRadians(720)), 0));
+    // goToTag.whileTrue(
+    // swerveBase.pathFindToPose(new Pose2d(7, 5.55, Rotation2d.fromDegrees(-60)),
+    // new PathConstraints(
+    // 3.0, 4.0,
+    // Units.degreesToRadians(540), Units.degreesToRadians(720)), 0));
 
     zeroGyro.onTrue(new InstantCommand(() -> swerveBase.getNavX().zeroYaw()));
     // goToTag.onTrue(new GoToTagCmd(() -> goToTag.getAsBoolean(), swerveBase,
-    // limelight, 0, 6));
+    // vision, 0, 0));
+
+    goToTag.whileTrue(new PoseChaseTestCmd(swerveBase, vision));
 
     // alignWithTarget.whileTrue(new VisionAlignCmd(limelight, swerveBase));
 
@@ -160,8 +163,8 @@ public class RobotContainer {
     return shooter;
   }
 
-  public Limelight getLimelight() {
-    return limelight;
+  public Vision getVision() {
+    return vision;
   }
 
 }

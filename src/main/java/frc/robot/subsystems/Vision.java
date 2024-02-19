@@ -13,7 +13,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.LimelightConstants;
+import frc.robot.Constants.VisionConstants;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -25,29 +25,25 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.common.hardware.VisionLEDMode;
 
-public class Limelight extends SubsystemBase {
+public class Vision extends SubsystemBase {
 
   private PhotonCamera camera;
   AprilTagFieldLayout aprilTagFieldLayout;
   PhotonPoseEstimator photonPoseEstimator;
 
-  public static Limelight instance;
+  public static Vision instance;
 
-  public static Limelight getInstance() {
+  public static Vision getInstance() {
     if (instance == null) {
-      instance = new Limelight();
+      instance = new Vision();
     }
     return instance;
   }
 
   /** Creates a new Limelight. */
-  public Limelight() {
+  public Vision() {
 
     camera = new PhotonCamera("hhCam");
-
-    // Cam mounted facing forward, half a meter forward of center, half a meter up
-    // from center.
-    Transform3d robotToCam = new Transform3d(new Translation3d(Units.inchesToMeters(15), 0.0, Units.inchesToMeters(24.5)), new Rotation3d(0, 0, 0));
 
     try {
       aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
@@ -57,7 +53,7 @@ public class Limelight extends SubsystemBase {
 
     // Construct PhotonPoseEstimator
     photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout,
-        PoseStrategy.CLOSEST_TO_REFERENCE_POSE, camera, robotToCam);
+        PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camera, VisionConstants.robotToCam);
 
   }
 
