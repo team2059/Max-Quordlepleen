@@ -247,6 +247,7 @@ public class SwerveBase extends SubsystemBase {
   public void configureAutoBuilder() {
 
     SmartDashboard.putData("pp_field", field2d);
+
     // Configure the AutoBuilder last
     AutoBuilder.configureHolonomic(
         this::getPose, // Robot pose supplier
