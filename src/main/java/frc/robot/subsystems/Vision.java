@@ -7,15 +7,13 @@ package frc.robot.subsystems;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.util.Units;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
 
 import java.io.IOException;
+
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 
@@ -40,7 +38,6 @@ public class Vision extends SubsystemBase {
     return instance;
   }
 
-  /** Creates a new Limelight. */
   public Vision() {
 
     camera = new PhotonCamera("hhCam");
@@ -111,21 +108,22 @@ public class Vision extends SubsystemBase {
       SmartDashboard.putNumber("tag ID", result.getBestTarget().getFiducialId());
       SmartDashboard.putNumber("pose ambiguity", result.getBestTarget().getPoseAmbiguity());
 
-      Transform3d bestCameraToTarget = result.getBestTarget().getBestCameraToTarget();
+      // Transform3d bestCameraToTarget =
+      // result.getBestTarget().getBestCameraToTarget();
 
-      SmartDashboard.putNumber("x (roll)",
-          Units.radiansToDegrees(bestCameraToTarget.getRotation().getX()));
-      SmartDashboard.putNumber("y (pitch)",
-          Units.radiansToDegrees(bestCameraToTarget.getRotation().getY()));
-      SmartDashboard.putNumber("z (yaw)",
-          Units.radiansToDegrees(bestCameraToTarget.getRotation().getZ()));
+      // SmartDashboard.putNumber("x (roll)",
+      // Units.radiansToDegrees(bestCameraToTarget.getRotation().getX()));
+      // SmartDashboard.putNumber("y (pitch)",
+      // Units.radiansToDegrees(bestCameraToTarget.getRotation().getY()));
+      // SmartDashboard.putNumber("z (yaw)",
+      // Units.radiansToDegrees(bestCameraToTarget.getRotation().getZ()));
 
-      SmartDashboard.putNumber("x inches",
-          Units.metersToInches(bestCameraToTarget.getX()));
-      SmartDashboard.putNumber("y inches",
-          Units.metersToInches(bestCameraToTarget.getY()));
-      SmartDashboard.putNumber("z inches",
-          Units.metersToInches(bestCameraToTarget.getZ()));
+      // SmartDashboard.putNumber("x inches",
+      // Units.metersToInches(bestCameraToTarget.getX()));
+      // SmartDashboard.putNumber("y inches",
+      // Units.metersToInches(bestCameraToTarget.getY()));
+      // SmartDashboard.putNumber("z inches",
+      // Units.metersToInches(bestCameraToTarget.getZ()));
 
     }
 

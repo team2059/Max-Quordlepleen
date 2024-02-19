@@ -6,16 +6,14 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.PathPlannerLogging;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -92,13 +90,31 @@ public class RobotContainer {
     shooter = new Shooter();
     vision = new Vision();
 
-    NamedCommands.registerCommand("chaseTag",
-        new GoToTagCmd(() -> true, swerveBase, vision, 0, 0)
+    var field = new Field2d();
+    SmartDashboard.putData("Field", field);
+
+    // Logging callback for current robot pose
+    PathPlannerLogging.setLogCurrentPoseCallback((pose) -> {
+      // Do whatever you want with the pose here
+      field.setRobotPose(pose);
+    });
+
+    // Logging callback for target robot pose
+    PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
+      // Do whatever you want with the pose here
+      field.getObject("target pose").setPose(pose);
+    });
+
+    // Logging callback for the active path, this is sent as a list of poses
+    PathPlannerLogging.setLogActivePathCallback((poses) -> {
+      // Do whatever you want with the poses here
+      field.getObject("trajectory").setPoses(poses);
+    });
+
+    NamedCommands.registerCommand("PathfindToTagCmd",
+        new PathfindToTagCmd(swerveBase, vision, 7, 39)
             .andThen(new InstantCommand(() -> swerveBase
                 .resetOdometry(PathPlannerPath.fromPathFile("New Path").getPreviewStartingHolonomicPose()))));
-
-    // NamedCommands.registerCommand("chaseTag",
-    // new GoToTagCmd(() -> true, swerveBase, limelight, 0, 0));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -109,7 +125,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
-    swerveBase.setDefaultCommand(new TeleopSwerve(swerveBase, () -> logitech.getRawAxis(kLogitechTranslationAxis),
+    swerveBase.setDefaultCommand(new TeleopSwerveCmd(swerveBase, () -> logitech.getRawAxis(kLogitechTranslationAxis),
         () -> logitech.getRawAxis(kLogitechStrafeAxis), () -> logitech.getRawAxis(kLogitechRotationAxis),
         () -> logitech.getRawAxis(kLogitechSliderAxis),
         () -> !logitech.getRawButton(kFieldOriented),
@@ -129,19 +145,9 @@ public class RobotContainer {
   private void configureButtonBindings() {
     /* Driver Buttons */
 
-    // goToTag.whileTrue(
-    // swerveBase.pathFindToPose(new Pose2d(7, 5.55, Rotation2d.fromDegrees(-60)),
-    // new PathConstraints(
-    // 3.0, 4.0,
-    // Units.degreesToRadians(540), Units.degreesToRadians(720)), 0));
-
     zeroGyro.onTrue(new InstantCommand(() -> swerveBase.getNavX().zeroYaw()));
-    // goToTag.onTrue(new GoToTagCmd(() -> goToTag.getAsBoolean(), swerveBase,
-    // vision, 0, 0));
 
-    goToTag.whileTrue(new PoseChaseTestCmd(swerveBase, vision));
-
-    // alignWithTarget.whileTrue(new VisionAlignCmd(limelight, swerveBase));
+    goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 7, 39));
 
   }
 

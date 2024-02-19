@@ -4,8 +4,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.SwerveBaseConstants;
-import frc.robot.Constants.SwerveModuleConstants;
-import frc.robot.Robot;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -17,30 +15,19 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 
-import edu.wpi.first.hal.SimDouble;
-import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.Odometry;
+
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StructArrayPublisher;
-import edu.wpi.first.networktables.StructPublisher;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.simulation.ADXRS450_GyroSim;
+
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -65,8 +52,6 @@ public class SwerveBase extends SubsystemBase {
    * external CANCoder can ID
    * measured CANCoder offset
    */
-
-  Field2d field2d = new Field2d();
 
   private final SwerveModule frontLeft = new SwerveModule(0,
       SwerveBaseConstants.frontLeftDriveMotorId,
@@ -96,73 +81,22 @@ public class SwerveBase extends SubsystemBase {
 
   private final AHRS navX;
 
-  // ----- Simulation
-  // private SimDouble gyroSim;
-  // private final SwerveDriveSim swerveDriveSim;
-  // The robot pose estimator for tracking swerve odometry and applying vision
-  // corrections.
-
-  // private double totalCurrentDraw = 0;
-  // private SwerveModule[] swerveMods = { frontLeft, frontRight, rearLeft,
-  // rearRight };
-
   private final SwerveDrivePoseEstimator poseEstimator;
   private Vision vision = Vision.getInstance();
-
-  /**
-   * odometry for the robot, measured in meters for linear motion and radians for
-   * rotational motion
-   * Takes in kinematics and robot angle for parameters
-   */
-  // private final SwerveDriveOdometry odometry = new
-  // SwerveDriveOdometry(SwerveBaseConstants.kinematics, new Rotation2d(),
-  // getModulePositions());
 
   Pose2d poseA = new Pose2d();
   Pose2d poseB = new Pose2d();
 
-  // WPILib
-  // StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
-  // .getStructTopic("MyPose", Pose2d.struct).publish();
-  // StructArrayPublisher<Pose2d> arrayPublisher =
-  // NetworkTableInstance.getDefault()
-  // .getStructArrayTopic("MyPoseArray", Pose2d.struct).publish();
-
   public SwerveBase() {
 
-    // Define the standard deviations for the pose estimator, which determine how
-    // fast the pose
-    // estimate converges to the vision measurement. This should depend on the
-    // vision measurement
-    // noise
-    // and how many or how frequently vision measurements are applied to the pose
-    // estimator.
-    // var stateStdDevs = VecBuilder.fill(0.1, 0.1, 0.1);
-    // var visionStdDevs = VecBuilder.fill(1, 1, 1);
-
-    // ----- Simulation
-    // swerveDriveSim = new SwerveDriveSim(
-    // SwerveModuleConstants.driveFF,
-    // DCMotor.getNEO(1),
-    // SwerveBaseConstants.driveGearRatio,
-    // SwerveBaseConstants.wheelDiameter / 2.0,
-    // SwerveModuleConstants.driveFF,
-    // DCMotor.getNEO(1),
-    // SwerveBaseConstants.angleGearRatio,
-    // SwerveBaseConstants.kinematics);
-
     navX = new AHRS(SPI.Port.kMXP);
-    // new Thread(() -> {
-    // try {
-    // Thread.sleep(1000);
-    // navX.reset();
-    // poseEstimator.resetPosition(new Rotation2d(), getModulePositions(), new
-    // Pose2d());
-    // } catch (Exception e) {
-    // }
-    // }).start();
-
-    // odometry.resetPosition(new Rotation2d(), getModulePositions(), new Pose2d());
+    new Thread(() -> {
+      try {
+        Thread.sleep(1000);
+        navX.reset();
+      } catch (Exception e) {
+      }
+    }).start();
 
     // initialize the rotation offsets for the CANCoders
     frontLeft.initRotationOffset();
@@ -191,17 +125,15 @@ public class SwerveBase extends SubsystemBase {
     poseEstimator = new SwerveDrivePoseEstimator(
         SwerveBaseConstants.kinematics,
         getHeading(),
-        getModulePositions(), new Pose2d());
+        getModulePositions(), new Pose2d(0, 0, navX.getRotation2d()));
 
   }
 
   @Override
   public void periodic() {
 
-    // Update the odometry of the swerve drive using the wheel encoders and gyro.
-    // poseEstimator.update(getHeading(), getModulePositions());
-
-    // Update the odometry in the periodic block
+    // Update the odometry of the swerve drive using the wheel encoders and gyro in
+    // the periodic block every 20 ms
     poseEstimator.update(
         getHeading(), getModulePositions());
 
@@ -210,15 +142,7 @@ public class SwerveBase extends SubsystemBase {
         .ifPresent(pose -> poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(),
             pose.timestampSeconds));
 
-    // publisher.set(getPose());
     Logger.recordOutput("MyPose", getPose());
-
-    // arrayPublisher.set(new Pose2d[] { getPose(), });
-
-    getStates();
-
-    // update the odometry every 20ms
-    // odometry.update(getHeading(), getModulePositions());
 
     SmartDashboard.putString("Robot pose",
         getPose().toString());
@@ -228,25 +152,23 @@ public class SwerveBase extends SubsystemBase {
     // SmartDashboard.putNumber("yaw",
     // navX.getYaw());
 
-    SmartDashboard.putNumber("pitch",
-        navX.getPitch());
+    // SmartDashboard.putNumber("pitch",
+    // navX.getPitch());
 
-    for (SwerveModule module : modules) {
-      SmartDashboard.putNumber(modules[module.getModuleID()] + "velocity setpoint",
-          modules[module.getModuleID()].velolictySetpoint);
-      SmartDashboard.putNumber(modules[module.getModuleID()] + "actual velocity",
-          modules[module.getModuleID()].currentDriveVelocity);
-      SmartDashboard.putNumber(modules[module.getModuleID()] + "angular setpoint",
-          modules[module.getModuleID()].angularSetpoint);
-      SmartDashboard.putNumber(modules[module.getModuleID()] + "actual angle",
-          modules[module.getModuleID()].actualAngle);
-    }
+    // for (SwerveModule module : modules) {
+    // SmartDashboard.putNumber(modules[module.getModuleID()] + "velocity setpoint",
+    // modules[module.getModuleID()].velolictySetpoint);
+    // SmartDashboard.putNumber(modules[module.getModuleID()] + "actual velocity",
+    // modules[module.getModuleID()].currentDriveVelocity);
+    // SmartDashboard.putNumber(modules[module.getModuleID()] + "angular setpoint",
+    // modules[module.getModuleID()].angularSetpoint);
+    // SmartDashboard.putNumber(modules[module.getModuleID()] + "actual angle",
+    // modules[module.getModuleID()].actualAngle);
+    // }
 
   }
 
   public void configureAutoBuilder() {
-
-    SmartDashboard.putData("pp_field", field2d);
 
     // Configure the AutoBuilder last
     AutoBuilder.configureHolonomic(
@@ -275,10 +197,6 @@ public class SwerveBase extends SubsystemBase {
           return false;
         },
         this);
-
-    PathPlannerLogging.setLogTargetPoseCallback((Pose2d targetPose) -> {
-      field2d.setRobotPose(targetPose);
-    });
 
   }
 
@@ -439,6 +357,14 @@ public class SwerveBase extends SubsystemBase {
 
     return Rotation2d.fromDegrees(-navX.getYaw());
 
+  }
+
+  /** Zeroes the heading of the robot. */
+  public void zeroHeading() {
+    navX.reset();
+
+    var pose = this.poseEstimator.getEstimatedPosition();
+    pose = pose.rotateBy(navX.getRotation2d().times(-1));
   }
 
   public AHRS getNavX() {

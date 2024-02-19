@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.SwerveBaseConstants;
 import frc.robot.subsystems.SwerveBase;
 
-public class TeleopSwerve extends Command {
+public class TeleopSwerveCmd extends Command {
 
   /**
    * Command to allow for driver input in teleop
@@ -34,7 +34,7 @@ public class TeleopSwerve extends Command {
   private final Supplier<Boolean> strafeOnly;
   private final Supplier<Boolean> slowAll;
 
-  public TeleopSwerve(
+  public TeleopSwerveCmd(
       SwerveBase subsystem,
       DoubleSupplier fwdX,
       DoubleSupplier fwdY,
@@ -123,8 +123,8 @@ public class TeleopSwerve extends Command {
     }
 
     drive.drive(
-        -fwdX,
-        -fwdY,
+        fwdX,
+        fwdY,
         -rot,
         fieldOrientedFunction.get());
 
