@@ -1,13 +1,17 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.SwerveBaseConstants;
 import frc.robot.Constants.SwerveModuleConstants;
 import frc.robot.Robot;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -32,6 +36,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.simulation.ADXRS450_GyroSim;
@@ -83,18 +88,6 @@ public class SwerveBase extends SubsystemBase {
       SwerveBaseConstants.rearRightRotationEncoderId,
       SwerveBaseConstants.rearRightAngleOffset);
 
-  // WPILib
-  StructArrayPublisher<SwerveModuleState> actual = NetworkTableInstance.getDefault()
-      .getStructArrayTopic("actualStates", SwerveModuleState.struct).publish();
-
-  // WPILib
-  StructArrayPublisher<SwerveModuleState> commanded = NetworkTableInstance.getDefault()
-      .getStructArrayTopic("commandedStates", SwerveModuleState.struct).publish();
-
-  // WPILib
-  StructArrayPublisher<Rotation2d> rotationLog = NetworkTableInstance.getDefault()
-      .getStructArrayTopic("rotationLog", Rotation2d.struct).publish();
-
   private final SwerveModule[] modules = new SwerveModule[] { frontLeft, frontRight, rearLeft, rearRight };
 
   private final AHRS navX;
@@ -120,6 +113,16 @@ public class SwerveBase extends SubsystemBase {
   // private final SwerveDriveOdometry odometry = new
   // SwerveDriveOdometry(SwerveBaseConstants.kinematics, new Rotation2d(),
   // getModulePositions());
+
+  Pose2d poseA = new Pose2d();
+  Pose2d poseB = new Pose2d();
+
+  // WPILib
+  // StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
+  // .getStructTopic("MyPose", Pose2d.struct).publish();
+  // StructArrayPublisher<Pose2d> arrayPublisher =
+  // NetworkTableInstance.getDefault()
+  // .getStructArrayTopic("MyPoseArray", Pose2d.struct).publish();
 
   public SwerveBase() {
 
@@ -199,14 +202,14 @@ public class SwerveBase extends SubsystemBase {
         getHeading(), getModulePositions());
 
     // Add vision to pose estimator
+    limelight.getEstimatedGlobalPose(poseEstimator.getEstimatedPosition())
+        .ifPresent(pose -> poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(),
+            pose.timestampSeconds));
 
-    try {
-      limelight.getEstimatedGlobalPose(poseEstimator.getEstimatedPosition())
-          .ifPresent(pose -> poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(),
-              pose.timestampSeconds));
-    } catch (NullPointerException e) {
-      e.printStackTrace();
-    }
+    // publisher.set(getPose());
+    Logger.recordOutput("MyPose", getPose());
+
+    // arrayPublisher.set(new Pose2d[] { getPose(), });
 
     getStates();
 
@@ -268,119 +271,8 @@ public class SwerveBase extends SubsystemBase {
 
   }
 
-  // ----- Simulation
-
-  // public void simulationPeriodic() {
-
-  // // From NavX example
-  // int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
-  // gyroSim = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
-
-  // // Pass commanded motor voltages into swerve drive simulation
-  // double[] driveInputs = new double[swerveMods.length];
-  // double[] steerInputs = new double[swerveMods.length];
-  // for (int i = 0; i < swerveMods.length; i++) {
-  // driveInputs[i] = swerveMods[i].getDriveVoltage();
-  // steerInputs[i] = swerveMods[i].getSteerVoltage();
-  // }
-  // swerveDriveSim.setDriveInputs(driveInputs);
-  // swerveDriveSim.setSteerInputs(steerInputs);
-
-  // // Simulate one timestep
-  // swerveDriveSim.update(Robot.kDefaultPeriod);
-
-  // // Update module and gyro values with simulated values
-  // var driveStates = swerveDriveSim.getDriveStates();
-  // var steerStates = swerveDriveSim.getSteerStates();
-  // totalCurrentDraw = 0;
-  // double[] driveCurrents = swerveDriveSim.getDriveCurrentDraw();
-  // for (double current : driveCurrents)
-  // totalCurrentDraw += current;
-  // double[] steerCurrents = swerveDriveSim.getSteerCurrentDraw();
-  // for (double current : steerCurrents)
-  // totalCurrentDraw += current;
-  // for (int i = 0; i < swerveMods.length; i++) {
-  // double drivePos = driveStates.get(i).get(0, 0);
-  // double driveRate = driveStates.get(i).get(1, 0);
-  // double steerPos = steerStates.get(i).get(0, 0);
-  // double steerRate = steerStates.get(i).get(1, 0);
-  // swerveMods[i].simulationUpdate(
-  // drivePos, driveRate, driveCurrents[i], steerPos, steerRate,
-  // steerCurrents[i]);
-  // }
-
-  // // NavX expects clockwise positive, but sim outputs clockwise negative
-  // gyroSim.set(Math.IEEEremainder(-swerveDriveSim.getPose().getRotation().getDegrees(),
-  // 360));
-  // }
-
-  /**
-   * See {@link SwerveDrivePoseEstimator#addVisionMeasurement(Pose2d, double)}.
-   */
-  // public void addVisionMeasurement(Pose2d visionMeasurement, double
-  // timestampSeconds) {
-  // poseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds);
-  // }
-
-  /**
-   * See
-   * {@link SwerveDrivePoseEstimator#addVisionMeasurement(Pose2d, double,
-   * Matrix)}.
-   */
-  // public void addVisionMeasurement(
-  // Pose2d visionMeasurement, double timestampSeconds, Matrix<N3, N1> stdDevs) {
-  // poseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds,
-  // stdDevs);
-  // }
-
-  /**
-   * Reset the estimated pose of the swerve drive on the field.
-   *
-   * @param pose         New robot pose.
-   * @param resetSimPose If the simulated robot pose should also be reset. This
-   *                     effectively
-   *                     teleports the robot and should only be used during the
-   *                     setup of the simulation world.
-   */
-  // public void resetPose(Pose2d pose, boolean resetSimPose) {
-  // if (resetSimPose) {
-  // swerveDriveSim.reset(pose, false);
-  // // we shouldnt realistically be resetting pose after startup, but we will
-  // // handle
-  // // it anyway for
-  // // testing
-  // for (int i = 0; i < swerveMods.length; i++) {
-  // swerveMods[i].simulationUpdate(0, 0, 0, 0, 0, 0);
-  // }
-  // gyroSim.set(-pose.getRotation().getDegrees());
-
-  // }
-
-  // poseEstimator.resetPosition(getHeading(), getModulePositions(), pose);
-  // }
-
-  /**
-   * The "actual" pose of the robot on the field used in simulation. This is
-   * different from the
-   * swerve drive's estimated pose.
-   */
-  // public Pose2d getSimPose() {
-  // return swerveDriveSim.getPose();
-  // }
-
-  // public double getCurrentDraw() {
-  // return totalCurrentDraw;
-  // }
-
-  /** Get the estimated pose of the swerve drive on the field. */
-  public Pose2d getEstimatedPose() {
-
-    return poseEstimator.getEstimatedPosition();
-  }
-
-  /** The heading of the swerve drive's estimated pose on the field. */
-  public Rotation2d getEstimatedHeading() {
-    return getPose().getRotation();
+  public Command pathFindToPose(Pose2d pose, PathConstraints constraints, double goalEndVel) {
+    return AutoBuilder.pathfindToPose(pose, constraints, goalEndVel);
   }
 
   /**
@@ -458,8 +350,6 @@ public class SwerveBase extends SubsystemBase {
     optimizedModuleStates[2] = SwerveModule.optimize(rearLeft.getState(), rearLeft.getIntegratedAngle());
     optimizedModuleStates[3] = SwerveModule.optimize(rearRight.getState(), rearRight.getIntegratedAngle());
 
-    commanded.set(optimizedModuleStates);
-
     frontLeft.setDesiredStateClosedLoop(moduleStates[0]);
     frontRight.setDesiredStateClosedLoop(moduleStates[1]);
     rearLeft.setDesiredStateClosedLoop(moduleStates[2]);
@@ -478,7 +368,6 @@ public class SwerveBase extends SubsystemBase {
     for (SwerveModule module : modules) {
       states[module.getModuleID()] = module.getState();
     }
-    actual.set(states);
 
     return states;
   }
@@ -527,11 +416,6 @@ public class SwerveBase extends SubsystemBase {
 
   // get the current heading of the robot based on the gyro
   public Rotation2d getHeading() {
-
-    Rotation2d[] rotArr = new Rotation2d[1];
-    rotArr[0] = Rotation2d.fromDegrees(-navX.getYaw());
-
-    rotationLog.set(rotArr);
 
     return Rotation2d.fromDegrees(-navX.getYaw());
 

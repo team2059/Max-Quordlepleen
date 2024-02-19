@@ -47,7 +47,7 @@ public class Limelight extends SubsystemBase {
 
     // Cam mounted facing forward, half a meter forward of center, half a meter up
     // from center.
-    Transform3d robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
+    Transform3d robotToCam = new Transform3d(new Translation3d(Units.inchesToMeters(15), 0.0, Units.inchesToMeters(24.5)), new Rotation3d(0, 0, 0));
 
     try {
       aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);

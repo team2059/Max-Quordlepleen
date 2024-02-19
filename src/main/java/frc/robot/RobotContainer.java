@@ -6,10 +6,12 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -127,8 +129,14 @@ public class RobotContainer {
   private void configureButtonBindings() {
     /* Driver Buttons */
 
+    goToTag.whileTrue(
+        swerveBase.pathFindToPose(new Pose2d(7, 5.55, Rotation2d.fromDegrees(-60)), new PathConstraints(
+            3.0, 4.0,
+            Units.degreesToRadians(540), Units.degreesToRadians(720)), 0));
+
     zeroGyro.onTrue(new InstantCommand(() -> swerveBase.getNavX().zeroYaw()));
-    goToTag.onTrue(new GoToTagCmd(() -> goToTag.getAsBoolean(), swerveBase, limelight, 0, 6));
+    // goToTag.onTrue(new GoToTagCmd(() -> goToTag.getAsBoolean(), swerveBase,
+    // limelight, 0, 6));
 
     // alignWithTarget.whileTrue(new VisionAlignCmd(limelight, swerveBase));
 
