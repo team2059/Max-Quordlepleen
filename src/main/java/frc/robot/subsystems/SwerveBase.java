@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.SwerveBaseConstants;
+import frc.robot.Constants.VisionConstants;
 
 import java.util.Optional;
 
@@ -125,13 +126,13 @@ public class SwerveBase extends SubsystemBase {
 
     configureAutoBuilder();
 
-    // poseEstimator = new SwerveDrivePoseEstimator(SwerveBaseConstants.kinematics,
-    // getHeading(), getModulePositions(),
-    // new Pose2d(0, 0, navX.getRotation2d()), null, null);
-    poseEstimator = new SwerveDrivePoseEstimator(
-        SwerveBaseConstants.kinematics,
-        getHeading(),
-        getModulePositions(), new Pose2d(0, 0, navX.getRotation2d()));
+    poseEstimator = new SwerveDrivePoseEstimator(SwerveBaseConstants.kinematics,
+        getHeading(), getModulePositions(),
+        new Pose2d(0, 0, navX.getRotation2d()), VisionConstants.STATE_STDS, VisionConstants.VISION_STDS);
+    // poseEstimator = new SwerveDrivePoseEstimator(
+    // SwerveBaseConstants.kinematics,
+    // getHeading(),
+    // getModulePositions(), new Pose2d(0, 0, navX.getRotation2d()));
 
   }
 

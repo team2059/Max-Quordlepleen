@@ -2,6 +2,8 @@ package frc.robot;
 
 import com.revrobotics.CANSparkMax;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -9,6 +11,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -140,6 +143,21 @@ public final class Constants {
         }
 
         public static final class VisionConstants {
+
+                /**
+                 * Standard deviations of model states. Increase these numbers to trust your
+                 * model's state estimates less. This matrix is in the form [x, y, theta]ᵀ,
+                 * with units in meters and radians, then meters.
+                 */
+                public static final Vector<N3> STATE_STDS = VecBuilder.fill(0.1, 0.1,
+                                Units.degreesToRadians(572.958));
+
+                /**
+                 * Standard deviations of the vision measurements. Increase these numbers to
+                 * trust global measurements from vision less. This matrix is in the form
+                 * [x, y, theta]ᵀ, with units in meters and radians.
+                 */
+                public static final Vector<N3> VISION_STDS = VecBuilder.fill(5, 5, Units.degreesToRadians(28647.9));
 
                 // Cam mounted facing forward, half a meter forward of center, half a meter up
                 // from center.
