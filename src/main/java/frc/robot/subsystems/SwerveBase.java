@@ -5,7 +5,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.SwerveBaseConstants;
 
+import java.util.Optional;
+
 import org.littletonrobotics.junction.Logger;
+import org.photonvision.EstimatedRobotPose;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -122,6 +125,9 @@ public class SwerveBase extends SubsystemBase {
 
     configureAutoBuilder();
 
+    // poseEstimator = new SwerveDrivePoseEstimator(SwerveBaseConstants.kinematics,
+    // getHeading(), getModulePositions(),
+    // new Pose2d(0, 0, navX.getRotation2d()), null, null);
     poseEstimator = new SwerveDrivePoseEstimator(
         SwerveBaseConstants.kinematics,
         getHeading(),
@@ -132,15 +138,23 @@ public class SwerveBase extends SubsystemBase {
   @Override
   public void periodic() {
 
+    // Add vision to pose estimator
+    final Optional<EstimatedRobotPose> optionalEstimatedPose = vision
+        .getEstimatedGlobalPose(poseEstimator.getEstimatedPosition());
+    if (optionalEstimatedPose.isPresent()) {
+      final EstimatedRobotPose estimatedPose = optionalEstimatedPose.get();
+      poseEstimator.addVisionMeasurement(estimatedPose.estimatedPose.toPose2d(), estimatedPose.timestampSeconds);
+    }
+
+    // vision.getEstimatedGlobalPose(poseEstimator.getEstimatedPosition())
+    // .ifPresent(pose ->
+    // poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(),
+    // pose.timestampSeconds));
+
     // Update the odometry of the swerve drive using the wheel encoders and gyro in
     // the periodic block every 20 ms
     poseEstimator.update(
         getHeading(), getModulePositions());
-
-    // Add vision to pose estimator
-    vision.getEstimatedGlobalPose(poseEstimator.getEstimatedPosition())
-        .ifPresent(pose -> poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(),
-            pose.timestampSeconds));
 
     // if (Math.abs(poseEstimator.getEstimatedPosition().getRotation().getDegrees())
     // >= 178) {

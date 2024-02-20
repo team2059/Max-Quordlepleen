@@ -116,9 +116,7 @@ public class RobotContainer {
     });
 
     NamedCommands.registerCommand("PathfindToTagCmd",
-        new PathfindToTagCmd(swerveBase, vision, 7, 39)
-            .andThen(new InstantCommand(() -> swerveBase
-                .resetOdometry(PathPlannerPath.fromPathFile("New Path").getPreviewStartingHolonomicPose()))));
+        new PathfindToTagCmd(swerveBase, vision, 4, 78));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -154,7 +152,7 @@ public class RobotContainer {
 
     zeroGyro.onTrue(new InstantCommand(() -> swerveBase.getNavX().zeroYaw()));
 
-    goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 4, 100));
+    goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 4, 78));
 
   }
 
