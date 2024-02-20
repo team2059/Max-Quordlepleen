@@ -149,15 +149,19 @@ public final class Constants {
                  * model's state estimates less. This matrix is in the form [x, y, theta]ᵀ,
                  * with units in meters and radians, then meters.
                  */
-                public static final Vector<N3> STATE_STDS = VecBuilder.fill(0.1, 0.1,
-                                Units.degreesToRadians(572.958));
+
+                // values from Team Spectrum 3847’s X-Ray robot from last year
+                // https://www.chiefdelphi.com/t/swerve-drive-pose-estimator-and-add-vision-measurement-using-limelight-is-very-jittery/453306/5
+                public static final Vector<N3> STATE_STDS = VecBuilder.fill(0.1, 0.1, 10);
 
                 /**
                  * Standard deviations of the vision measurements. Increase these numbers to
                  * trust global measurements from vision less. This matrix is in the form
                  * [x, y, theta]ᵀ, with units in meters and radians.
                  */
-                public static final Vector<N3> VISION_STDS = VecBuilder.fill(5, 5, Units.degreesToRadians(28647.9));
+
+                // values from Team Spectrum 3847’s X-Ray robot from last year
+                public static final Vector<N3> VISION_STDS = VecBuilder.fill(5, 5, 500);
 
                 // Cam mounted facing forward, half a meter forward of center, half a meter up
                 // from center.

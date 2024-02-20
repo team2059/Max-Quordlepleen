@@ -10,6 +10,12 @@
           "data": {
             "pathName": "Center1Path"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PathfindToTagCmd"
+          }
         }
       ]
     }
