@@ -7,7 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
-
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -104,6 +105,12 @@ public class Vision extends SubsystemBase {
     SmartDashboard.putBoolean("Has target", hasTargets);
 
     if (hasTargets) {
+
+      if (result.getMultiTagResult().estimatedPose.isPresent) {
+        Transform3d fieldToCamera = result.getMultiTagResult().estimatedPose.best;
+        Logger.recordOutput("fieldToCamera", fieldToCamera);
+
+      }
 
       SmartDashboard.putNumber("tag ID", result.getBestTarget().getFiducialId());
       SmartDashboard.putNumber("pose ambiguity", result.getBestTarget().getPoseAmbiguity());

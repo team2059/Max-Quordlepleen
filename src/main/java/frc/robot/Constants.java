@@ -144,7 +144,7 @@ public final class Constants {
                 // Cam mounted facing forward, half a meter forward of center, half a meter up
                 // from center.
                 public static final Transform3d robotToCam = new Transform3d(
-                                new Translation3d(Units.inchesToMeters(15), 0.0, Units.inchesToMeters(24.5)),
+                                new Translation3d(Units.inchesToMeters(14.5), 0.0, Units.inchesToMeters(23)),
                                 new Rotation3d(0, 0, 0));
 
                 public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(24.5);

@@ -53,8 +53,8 @@ public class RobotContainer {
   private final int kLogitechRotationAxis = 2;
   private final int kLogitechSliderAxis = 3;
   private final int kZeroGyro = 5;
-  private final int kFieldOriented = 6;
-  private final int kInverted = 12; // switch
+  private final int kFieldOriented = 12;
+  private final int kInverted = 6; // switch
   private final int kGoToTagButton = 1; // switch
   private final int kStrafeOnly = 2;
   private final int kSlowEverything = 3;
@@ -62,6 +62,8 @@ public class RobotContainer {
   private final JoystickButton zeroGyro = new JoystickButton(logitech, kZeroGyro);
 
   private final JoystickButton goToTag = new JoystickButton(logitech, kGoToTagButton);
+
+  private final JoystickButton invertButton = new JoystickButton(logitech, kInverted);
 
   /* Driver Buttons */
 
@@ -80,6 +82,8 @@ public class RobotContainer {
   // PowerDistributionPanel();
 
   SendableChooser<Command> autoChooser;
+
+  boolean isbeinginverted = false;
   /* Commands */
 
   /**
@@ -125,6 +129,9 @@ public class RobotContainer {
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
+    // invertButton.toggleOnTrue(new InstantCommand(() -> isbeinginverted =
+    // !isbeinginverted)); invert toggle button
+
     swerveBase.setDefaultCommand(new TeleopSwerveCmd(swerveBase, () -> logitech.getRawAxis(kLogitechTranslationAxis),
         () -> logitech.getRawAxis(kLogitechStrafeAxis), () -> logitech.getRawAxis(kLogitechRotationAxis),
         () -> logitech.getRawAxis(kLogitechSliderAxis),
@@ -147,7 +154,7 @@ public class RobotContainer {
 
     zeroGyro.onTrue(new InstantCommand(() -> swerveBase.getNavX().zeroYaw()));
 
-    goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 7, 39));
+    goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 4, 100));
 
   }
 

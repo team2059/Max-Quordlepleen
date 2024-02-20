@@ -6,6 +6,8 @@ package frc.robot.commands;
 
 import java.util.Set;
 
+import org.photonvision.targeting.PhotonTrackedTarget;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import com.pathplanner.lib.path.PathConstraints;
@@ -32,6 +34,7 @@ import frc.robot.subsystems.SwerveBase;
 public class PathfindToTagCmd extends SequentialCommandGroup {
         SwerveBase swerveBase;
         Vision vision;
+        PhotonTrackedTarget targetToUse;
 
         public static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo
                         .loadAprilTagLayoutField();
@@ -68,27 +71,37 @@ public class PathfindToTagCmd extends SequentialCommandGroup {
                         return new InstantCommand();
                 } else {
                         try {
-                                var bestTarget = result.getBestTarget();
-                                if (bestTarget.getPoseAmbiguity() >= 0.2
-                                                && bestTarget.getFiducialId() != ID_OF_TAG_TO_CHASE) {
-                                        return new InstantCommand();
-                                } else {
+                                var allTargets = result.getTargets();
+                                for (PhotonTrackedTarget target : allTargets) {
+                                        if (target.getFiducialId() == ID_OF_TAG_TO_CHASE) {
+                                                targetToUse = target;
 
-                                        // Get the transformation from the camera to the tag
-                                        var camToTarget = bestTarget.getBestCameraToTarget();
-
-                                        // Transform the robot's pose to find the tag's pose
-                                        var cameraPose = robotPose3d.transformBy(VisionConstants.robotToCam);
-                                        var targetPose = cameraPose.transformBy(camToTarget);
-
-                                        // Transform the tag's pose to set our goal
-                                        var goalPose = targetPose.transformBy(TAG_TO_GOAL).toPose2d();
-
-                                        return AutoBuilder.pathfindToPose(goalPose, new PathConstraints(
-                                                        3.0, 2,
-                                                        Units.degreesToRadians(540), Units.degreesToRadians(720)), 0);
-
+                                        }
                                 }
+
+                                // this doesn't really do anything unless "always do single target estimation is
+                                // checked -> by deafulat, returns -1"
+                                if (targetToUse.getPoseAmbiguity() >= 0.2) {
+                                        return new InstantCommand();
+                                }
+
+                                // System.out.println("ID: " + targetToUse.getFiducialId() + " ambig = "
+                                // + targetToUse.getPoseAmbiguity());
+
+                                // Get the transformation from the camera to the tag
+                                var camToTarget = targetToUse.getBestCameraToTarget();
+
+                                // Transform the robot's pose to find the tag's pose
+                                var cameraPose = robotPose3d.transformBy(VisionConstants.robotToCam);
+                                var targetPose = cameraPose.transformBy(camToTarget);
+
+                                // Transform the tag's pose to set our goal
+                                var goalPose = targetPose.transformBy(TAG_TO_GOAL).toPose2d();
+
+                                return AutoBuilder.pathfindToPose(goalPose, new PathConstraints(
+                                                3.0, 2,
+                                                Units.degreesToRadians(540), Units.degreesToRadians(720)), 0);
+
                         } catch (NullPointerException ex) {
                                 ex.printStackTrace();
                                 return new InstantCommand();

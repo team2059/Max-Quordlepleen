@@ -142,6 +142,11 @@ public class SwerveBase extends SubsystemBase {
         .ifPresent(pose -> poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(),
             pose.timestampSeconds));
 
+    // if (Math.abs(poseEstimator.getEstimatedPosition().getRotation().getDegrees())
+    // >= 178) {
+    // zeroHeading();
+    // }
+
     Logger.recordOutput("MyPose", getPose());
 
     SmartDashboard.putString("Robot pose",
@@ -363,8 +368,8 @@ public class SwerveBase extends SubsystemBase {
   public void zeroHeading() {
     navX.reset();
 
-    var pose = this.poseEstimator.getEstimatedPosition();
-    pose = pose.rotateBy(navX.getRotation2d().times(-1));
+    // var pose = this.poseEstimator.getEstimatedPosition();
+    // pose = pose.rotateBy(navX.getRotation2d().times(-1));
   }
 
   public AHRS getNavX() {
