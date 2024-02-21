@@ -16,24 +16,26 @@ public class Collector extends SubsystemBase {
 
   // public CANSparkMax collectorRollorMotor;
   // public CANSparkMax elevatorMotor;
-  // public DutyCycleEncoder collectorElevatorThruBoreEncoder;
+  public DutyCycleEncoder collectorElevatorThruBoreEncoder;
 
   /** Creates a new Collector. */
   public Collector() {
 
-    // collectorRollorMotor = new CANSparkMax(CollectorConstants.collectorRollerMotorID,
-    //     com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
+    // collectorRollorMotor = new
+    // CANSparkMax(CollectorConstants.collectorRollerMotorID,
+    // com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
 
     // elevatorMotor = new CANSparkMax(CollectorConstants.elevatorMotorID,
-    //     com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
+    // com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
 
-    // collectorElevatorThruBoreEncoder = new DutyCycleEncoder(CollectorConstants.collectorElevatorThruBoreEncoderDIO);
+    collectorElevatorThruBoreEncoder = new DutyCycleEncoder(CollectorConstants.collectorElevatorThruBoreEncoderDIO);
 
   }
 
   @Override
   public void periodic() {
-    //SmartDashboard.putNumber("collector thrubore pos", collectorElevatorThruBoreEncoder.getAbsolutePosition());
+    SmartDashboard.putNumber("collector thrubore pos",
+        collectorElevatorThruBoreEncoder.getAbsolutePosition());
 
     // This method will be called once per scheduler run
   }

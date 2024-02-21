@@ -30,6 +30,8 @@ public final class Constants {
                 public static final int tiltID = 12;
                 public static final int elevatorID = 13;
 
+                public static final int shooterThruBoreEncoderDIO = 0;
+
         }
 
         public static final class ClimberConstants {
@@ -44,7 +46,7 @@ public final class Constants {
         public static final class CollectorConstants {
                 public static final int collectorRollerMotorID = 15;
                 public static final int elevatorMotorID = 16;
-                public static final int collectorElevatorThruBoreEncoderDIO = 1;
+                public static final int collectorElevatorThruBoreEncoderDIO = 9;
 
         }
 

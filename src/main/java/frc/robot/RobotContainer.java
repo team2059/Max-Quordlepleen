@@ -75,6 +75,8 @@ public class RobotContainer {
   /* Subsystems */
   private final SwerveBase swerveBase;
 
+  private final Collector collector;
+
   private final Shooter shooter;
 
   private final Vision vision;
@@ -93,6 +95,7 @@ public class RobotContainer {
     swerveBase = new SwerveBase();
     shooter = new Shooter();
     vision = new Vision();
+    collector = new Collector();
 
     var field = new Field2d();
     SmartDashboard.putData("Field", field);

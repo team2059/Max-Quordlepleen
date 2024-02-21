@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -21,6 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import frc.robot.Constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
 
@@ -45,12 +48,11 @@ public class Shooter extends SubsystemBase {
   public CANSparkMax intakeMotor;
   public CANSparkMax tiltMotor;
   public DutyCycleEncoder shooterTiltThruBoreEncoder;
-  public DutyCycleEncoder shooterElevatorThruBoreEncoder;
   public CANSparkMax elevatorMotor;
 
   // public TalonSRX elevatorMotor;
 
-  // public DutyCycleEncoder thruBoreEncoder;
+  public DutyCycleEncoder shooterThruBoreEncoder;
   // public double thruBorePosition;
   // public PIDController tiltController;
 
@@ -71,7 +73,7 @@ public class Shooter extends SubsystemBase {
     // tiltMotor = new VictorSPX(Constants.ShooterConstants.tiltID);
     // elevatorMotor = new TalonSRX(Constants.ShooterConstants.elevatorID);
 
-    // thruBoreEncoder = new DutyCycleEncoder(Constants.ArmConstants.thruBoreDIO);
+    shooterThruBoreEncoder = new DutyCycleEncoder(ShooterConstants.shooterThruBoreEncoderDIO);
 
     // tiltController = new PIDController(Constants.ArmConstants.tiltkP, 0.00,
     // Constants.ArmConstants.tiltkD);
@@ -133,6 +135,7 @@ public class Shooter extends SubsystemBase {
     // SmartDashboard.putNumber("TILTVOLTAGE", tiltMotor.getBusVoltage());
     // SmartDashboard.putNumber("thru bore pos",
     // thruBoreEncoder.getAbsolutePosition());
+    SmartDashboard.putNumber("shooter thrubore", shooterThruBoreEncoder.getAbsolutePosition());
 
   }
 
