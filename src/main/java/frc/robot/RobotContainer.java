@@ -6,14 +6,14 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.path.PathPlannerPath;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.PathPlannerLogging;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -53,8 +53,8 @@ public class RobotContainer {
   private final int kLogitechRotationAxis = 2;
   private final int kLogitechSliderAxis = 3;
   private final int kZeroGyro = 5;
-  private final int kFieldOriented = 6;
-  private final int kInverted = 12; // switch
+  private final int kFieldOriented = 12;
+  private final int kInverted = 6; // switch
   private final int kGoToTagButton = 1; // switch
   private final int kStrafeOnly = 2;
   private final int kSlowEverything = 3;
@@ -62,6 +62,8 @@ public class RobotContainer {
   private final JoystickButton zeroGyro = new JoystickButton(logitech, kZeroGyro);
 
   private final JoystickButton goToTag = new JoystickButton(logitech, kGoToTagButton);
+
+  private final JoystickButton invertButton = new JoystickButton(logitech, kInverted);
 
   /* Driver Buttons */
 
@@ -73,13 +75,17 @@ public class RobotContainer {
   /* Subsystems */
   private final SwerveBase swerveBase;
 
+  private final Collector collector;
+
   private final Shooter shooter;
 
-  private final Limelight limelight;
+  private final Vision vision;
   // private final PowerDistributionPanel powerDistributionPanel = new
   // PowerDistributionPanel();
 
   SendableChooser<Command> autoChooser;
+
+  boolean isbeinginverted = false;
   /* Commands */
 
   /**
@@ -88,15 +94,32 @@ public class RobotContainer {
   public RobotContainer() {
     swerveBase = new SwerveBase();
     shooter = new Shooter();
-    limelight = new Limelight();
+    vision = new Vision();
+    collector = new Collector();
 
-    NamedCommands.registerCommand("chaseTag",
-        new GoToTagCmd(() -> true, swerveBase, limelight, 0, 0)
-            .andThen(new InstantCommand(() -> swerveBase
-                .resetOdometry(PathPlannerPath.fromPathFile("New Path").getPreviewStartingHolonomicPose()))));
+    var field = new Field2d();
+    SmartDashboard.putData("Field", field);
 
-    // NamedCommands.registerCommand("chaseTag",
-    // new GoToTagCmd(() -> true, swerveBase, limelight, 0, 0));
+    // Logging callback for current robot pose
+    PathPlannerLogging.setLogCurrentPoseCallback((pose) -> {
+      // Do whatever you want with the pose here
+      field.setRobotPose(pose);
+    });
+
+    // Logging callback for target robot pose
+    PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
+      // Do whatever you want with the pose here
+      field.getObject("target pose").setPose(pose);
+    });
+
+    // Logging callback for the active path, this is sent as a list of poses
+    PathPlannerLogging.setLogActivePathCallback((poses) -> {
+      // Do whatever you want with the poses here
+      field.getObject("trajectory").setPoses(poses);
+    });
+
+    NamedCommands.registerCommand("PathfindToTagCmd",
+        new PathfindToTagCmd(swerveBase, vision, 4, 78));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -107,7 +130,10 @@ public class RobotContainer {
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
-    swerveBase.setDefaultCommand(new TeleopSwerve(swerveBase, () -> logitech.getRawAxis(kLogitechTranslationAxis),
+    // invertButton.toggleOnTrue(new InstantCommand(() -> isbeinginverted =
+    // !isbeinginverted)); invert toggle button
+
+    swerveBase.setDefaultCommand(new TeleopSwerveCmd(swerveBase, () -> logitech.getRawAxis(kLogitechTranslationAxis),
         () -> logitech.getRawAxis(kLogitechStrafeAxis), () -> logitech.getRawAxis(kLogitechRotationAxis),
         () -> logitech.getRawAxis(kLogitechSliderAxis),
         () -> !logitech.getRawButton(kFieldOriented),
@@ -128,9 +154,8 @@ public class RobotContainer {
     /* Driver Buttons */
 
     zeroGyro.onTrue(new InstantCommand(() -> swerveBase.getNavX().zeroYaw()));
-    goToTag.onTrue(new GoToTagCmd(() -> goToTag.getAsBoolean(), swerveBase, limelight, 0, 0));
 
-    // alignWithTarget.whileTrue(new VisionAlignCmd(limelight, swerveBase));
+    goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 4, 78));
 
   }
 
@@ -152,8 +177,8 @@ public class RobotContainer {
     return shooter;
   }
 
-  public Limelight getLimelight() {
-    return limelight;
+  public Vision getVision() {
+    return vision;
   }
 
 }

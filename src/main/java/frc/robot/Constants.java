@@ -1,9 +1,14 @@
 package frc.robot;
 
-
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 
 public final class Constants {
@@ -14,39 +19,40 @@ public final class Constants {
 
         public static final class ShooterConstants {
 
-                public static final int shooterUpperID = 9; //TODO: CHANGE ALL OF THESE AS NEEDED
+                public static final int shooterUpperID = 9; // TODO: CHANGE ALL OF THESE AS NEEDED
                 public static final int shooterLowerID = 10;
-                public static final int indexerID = 11; 
+                public static final int indexerID = 11;
                 public static final int shooterTiltID = 12;
                 public static final int elevatorID = 13;
 
-                public static final double alignToCollectorPos = 0; //encoder value for getting note from collector
+                public static final int shooterTiltThruBoreEncoderDIO = 0;
+
+                public static final double alignToCollectorPos = 0; // encoder value for getting note from collector
                 public static final double restPos = 0;
 
                 public static final double tiltkP = 0;
                 public static final double tiltkD = 0;
                 public static final double elevatorkP = 0;
                 public static final double elevatorkD = 0;
-
-                public static final int shooterTiltEThruBoreDIO = 0; 
-
         }
 
         public static final class ClimberConstants {
-                public static final int climberMotorID = 14;  //TODO: change placeholder CAN IDs
+                public static final int climberMotorID = 14; // TODO: change placeholder CAN IDs
 
                 public static final double climbkP = 0;
                 public static final double climbkD = 0;
         }
 
         public static final class CollectorConstants {
+                public static final int collectorRollerMotorID = 15;
+                public static final int elevatorMotorID = 16;
                 public static final int collectorRollerID = 15;
                 public static final int collectorTiltID = 16;
 
-                public static final int collectorTiltThruBoreDIO = 1;
+                public static final int collectorTiltThruBoreDIO = 9;
 
-                public static final double collectorTiltHomePos = 0; //encoder value for "retracted" collector
-                public static final double collectorTiltCollctPos = 0; //encoder value for collecting
+                public static final double collectorTiltHomePos = 0; // encoder value for "retracted" collector
+                public static final double collectorTiltCollctPos = 0; // encoder value for collecting
 
                 public static final double tiltkD = 0;
                 public static final double tiltkP = 0;
@@ -147,7 +153,33 @@ public final class Constants {
 
         }
 
-        public static final class LimelightConstants {
+        public static final class VisionConstants {
+
+                /**
+                 * Standard deviations of model states. Increase these numbers to trust your
+                 * model's state estimates less. This matrix is in the form [x, y, theta]ᵀ,
+                 * with units in meters and radians, then meters.
+                 */
+
+                // values from Team Spectrum 3847’s X-Ray robot from last year
+                // https://www.chiefdelphi.com/t/swerve-drive-pose-estimator-and-add-vision-measurement-using-limelight-is-very-jittery/453306/5
+                public static final Vector<N3> STATE_STDS = VecBuilder.fill(0.1, 0.1, 10);
+
+                /**
+                 * Standard deviations of the vision measurements. Increase these numbers to
+                 * trust global measurements from vision less. This matrix is in the form
+                 * [x, y, theta]ᵀ, with units in meters and radians.
+                 */
+
+                // values from Team Spectrum 3847’s X-Ray robot from last year
+                public static final Vector<N3> VISION_STDS = VecBuilder.fill(5, 5, 500);
+
+                // Cam mounted facing forward, half a meter forward of center, half a meter up
+                // from center.
+                public static final Transform3d robotToCam = new Transform3d(
+                                new Translation3d(Units.inchesToMeters(14.5), 0.0, Units.inchesToMeters(23)),
+                                new Rotation3d(0, 0, 0));
+
                 public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(24.5);
                 public static final double TARGET_HEIGHT_METERS = Units.inchesToMeters(20.5);
                 public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(0);
