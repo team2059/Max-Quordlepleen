@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -26,12 +27,16 @@ public class Shooter extends SubsystemBase {
 
   public PIDController tiltController;
   public PIDController elevatorController;
+  public PIDController shooterController;
 
   public DutyCycleEncoder shooterTiltThruBoreEncoder;
 
   public Shooter() {
     shooterUpperMotor = new CANSparkFlex(Constants.ShooterConstants.shooterUpperID, MotorType.kBrushless);
     shooterLowerMotor = new CANSparkFlex(Constants.ShooterConstants.shooterLowerID, MotorType.kBrushless);
+
+    shooterLowerMotor.follow(shooterUpperMotor);
+
     indexerMotor = new CANSparkMax(Constants.ShooterConstants.indexerID, MotorType.kBrushless);
     shooterTiltMotor = new CANSparkMax(Constants.ShooterConstants.shooterTiltID, MotorType.kBrushless);
     elevatorMotor = new CANSparkMax(Constants.ShooterConstants.elevatorID, MotorType.kBrushless);
@@ -40,6 +45,9 @@ public class Shooter extends SubsystemBase {
 
     tiltController = new PIDController(ShooterConstants.tiltkP, 0.00,
         ShooterConstants.tiltkD);
+
+    shooterController = new PIDController(ShooterConstants.shooterkP, 0,
+        ShooterConstants.shooterkD);
     // tiltController.enableContinuousInput(0, 1);
 
     /**
@@ -98,8 +106,13 @@ public class Shooter extends SubsystemBase {
     // SmartDashboard.putNumber("TILTVOLTAGE", tiltMotor.getBusVoltage());
     // SmartDashboard.putNumber("thru bore pos",
     // thruBoreEncoder.getAbsolutePosition());
-    SmartDashboard.putNumber("shooter thrubore", shooterTiltThruBoreEncoder.getAbsolutePosition());
+    // SmartDashboard.putNumber("shooter thrubore",
+    // shooterTiltThruBoreEncoder.getAbsolutePosition());
 
+  }
+
+  public PIDController getShooterController() {
+    return shooterController;
   }
 
 }

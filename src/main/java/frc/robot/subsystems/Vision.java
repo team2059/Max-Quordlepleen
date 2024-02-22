@@ -8,6 +8,8 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
@@ -22,6 +24,7 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.PhotonUtils;
 import org.photonvision.common.hardware.VisionLEDMode;
 
 public class Vision extends SubsystemBase {
@@ -29,6 +32,7 @@ public class Vision extends SubsystemBase {
   private PhotonCamera camera;
   AprilTagFieldLayout aprilTagFieldLayout;
   PhotonPoseEstimator photonPoseEstimator;
+  // Pose2d speakerPosition;
 
   public static Vision instance;
 
@@ -55,11 +59,36 @@ public class Vision extends SubsystemBase {
 
     photonPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
+    // aprilTagFieldLayout.getTagPose(4).ifPresent(pose -> speakerPosition =
+    // pose.toPose2d());
+    // Optional<Alliance> ally = DriverStation.getAlliance();
+    // ally.ifPresent((alliance) -> System.out.println(alliance.toString()));
+    // if (ally.isPresent()) {
+    // if (ally.get() == Alliance.Red) {
+    // aprilTagFieldLayout.getTagPose(4).ifPresent(pose -> speakerPosition =
+    // pose.toPose2d()); // Get pose2d of speaker
+    // // on red alliance
+    // } else if (ally.get() == Alliance.Blue) {
+    // aprilTagFieldLayout.getTagPose(7).ifPresent(pose -> speakerPosition =
+    // pose.toPose2d()); // Get pose2d of speaker
+    // // on blue alliance
+
+    // }
+    // }
+
   }
 
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
     return photonPoseEstimator.update();
   }
+
+  // public Pose2d getSpeakerPose() {
+  // return speakerPosition;
+  // }
+
+  // public double getDistancetoSpeaker(Pose2d robotPose) {
+  // return PhotonUtils.getDistanceToPose(robotPose, speakerPosition);
+  // }
 
   public PhotonCamera getCamera() {
     return camera;

@@ -21,11 +21,11 @@ public final class Constants {
 
                 public static final int shooterUpperID = 9; // TODO: CHANGE ALL OF THESE AS NEEDED
                 public static final int shooterLowerID = 10;
-                public static final int indexerID = 11;
+                public static final int indexerID = 21;
                 public static final int shooterTiltID = 12;
                 public static final int elevatorID = 13;
 
-                public static final int shooterTiltThruBoreEncoderDIO = 0;
+                public static final int shooterTiltThruBoreEncoderDIO = 9;
 
                 public static final double alignToCollectorPos = 0; // encoder value for getting note from collector
                 public static final double restPos = 0;
@@ -34,6 +34,23 @@ public final class Constants {
                 public static final double tiltkD = 0;
                 public static final double elevatorkP = 0;
                 public static final double elevatorkD = 0;
+
+                // To measure Ks
+                // manually, slowly increase the voltage to the mechanism until it starts to
+                // move. The value of
+                // is the largest voltage applied before the mechanism begins to move.
+
+                // To tune Kv, increase the velocity feedforward gain
+                // until the
+                // flywheel approaches
+                // the correct
+                // setpoint over
+                // time. If the
+                // flywheel overshoots, reduce Kv.
+
+                public static final SimpleMotorFeedforward shooterFF = new SimpleMotorFeedforward(0, 0, 0.0);
+                public static final double shooterkP = 0.0;
+                public static final double shooterkD = 0.0;
         }
 
         public static final class ClimberConstants {
@@ -44,18 +61,18 @@ public final class Constants {
         }
 
         public static final class CollectorConstants {
-                public static final int collectorRollerMotorID = 15;
                 public static final int elevatorMotorID = 16;
                 public static final int collectorRollerID = 15;
-                public static final int collectorTiltID = 16;
+                public static final int collectorTiltID = 11;
 
-                public static final int collectorTiltThruBoreDIO = 9;
+                public static final int collectorTiltThruBoreDIO = 0;
 
-                public static final double collectorTiltHomePos = 0; // encoder value for "retracted" collector
-                public static final double collectorTiltCollctPos = 0; // encoder value for collecting
+                public static final double collectorTiltAlignToShooterPos = 0.6; // encoder value for "retracted"
+                                                                                 // collector
+                public static final double collectorTiltCollectPos = 0.3; // encoder value for collecting
 
-                public static final double tiltkD = 0;
-                public static final double tiltkP = 0;
+                public static final double tiltkD = 0.1;
+                public static final double tiltkP = 1.5;
 
         }
 

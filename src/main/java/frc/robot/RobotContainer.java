@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.CollectorConstants;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 
@@ -156,6 +157,14 @@ public class RobotContainer {
     zeroGyro.onTrue(new InstantCommand(() -> swerveBase.getNavX().zeroYaw()));
 
     goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 4, 78));
+
+    // Y - intake up
+    new JoystickButton(controller, 4)
+        .onTrue(new MoveCollectorCmd(collector, CollectorConstants.collectorTiltAlignToShooterPos));
+
+    // A - intake down
+    new JoystickButton(controller, 1)
+        .onTrue(new MoveCollectorCmd(collector, CollectorConstants.collectorTiltCollectPos));
 
   }
 

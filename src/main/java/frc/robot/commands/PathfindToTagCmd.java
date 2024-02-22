@@ -36,9 +36,6 @@ public class PathfindToTagCmd extends SequentialCommandGroup {
         Vision vision;
         PhotonTrackedTarget targetToUse;
 
-        public static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo
-                        .loadAprilTagLayoutField();
-
         Transform3d TAG_TO_GOAL;
 
         private int ID_OF_TAG_TO_CHASE;
