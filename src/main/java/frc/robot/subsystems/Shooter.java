@@ -15,6 +15,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.ShooterRegressionConstants;
 import frc.robot.RobotContainer;
+import frc.robot.utils.ShooterState;
 
 public class Shooter extends SubsystemBase {
 
@@ -31,6 +32,12 @@ public class Shooter extends SubsystemBase {
   public PIDController shooterController;
 
   public DutyCycleEncoder shooterTiltThruBoreEncoder;
+
+  static SplineInterpolator interpolator = new SplineInterpolator();
+  static PolynomialSplineFunction velocityFunction = interpolator.interpolate(ShooterRegressionConstants.distances,
+      ShooterRegressionConstants.velocities);
+  static PolynomialSplineFunction angleFunction = interpolator.interpolate(ShooterRegressionConstants.distances,
+      ShooterRegressionConstants.angles);
 
   public Shooter() {
 
@@ -123,14 +130,15 @@ public class Shooter extends SubsystemBase {
 
   // Method to calculate desired velocity based on distance
   public static double calculateDesiredVelocity(double distance) {
-    SplineInterpolator interpolator = new SplineInterpolator();
-    PolynomialSplineFunction velocityFunction = interpolator.interpolate(ShooterRegressionConstants.distances,
-        ShooterRegressionConstants.velocities);
 
     // Ensure the distance is within the bounds of the original data
     if (distance >= ShooterRegressionConstants.distances[0]
         && distance <= ShooterRegressionConstants.distances[ShooterRegressionConstants.distances.length - 1]) {
-      return velocityFunction.value(distance);
+      double predictedVelocity = velocityFunction.value(distance);
+
+      // Print the predicted shooter velocity
+      System.out.println("Predicted shooter velocity at " + distance + " meters: " + predictedVelocity + " units");
+      return predictedVelocity;
     } else {
       // Handle the case where the distance is out of bounds
       System.out.println("Distance is out of the valid range.");
@@ -141,19 +149,48 @@ public class Shooter extends SubsystemBase {
 
   // Method to calculate desired shooter tilt angle based on distance
   public static double calculateDesiredAngle(double distance) {
-    SplineInterpolator interpolator = new SplineInterpolator();
-    PolynomialSplineFunction angleFunction = interpolator.interpolate(ShooterRegressionConstants.distances,
-        ShooterRegressionConstants.angles);
 
     // Ensure the distance is within the bounds of the original data
     if (distance >= ShooterRegressionConstants.distances[0]
         && distance <= ShooterRegressionConstants.distances[ShooterRegressionConstants.distances.length - 1]) {
-      return angleFunction.value(distance);
+      double predictedAngle = angleFunction.value(distance);
+
+      // Print the predicted shooter angle
+      System.out.println("Predicted shooter angle at " + distance + " meters: " + predictedAngle + " units");
+      return predictedAngle;
+
     } else {
       // Handle the case where the distance is out of bounds
       System.out.println("Distance is out of the valid range.");
       return 0;
     }
+
+  }
+
+  public static ShooterState calculateDesiredShooterState(double distance) {
+    double predictedVelocity = 0;
+    double predictedAngle = 0;
+
+    // Ensure the distance is within the bounds of the original data
+    if (distance >= ShooterRegressionConstants.distances[0]
+        && distance <= ShooterRegressionConstants.distances[ShooterRegressionConstants.distances.length - 1]) {
+      predictedVelocity = velocityFunction.value(distance);
+      predictedAngle = angleFunction.value(distance);
+
+    } else {
+      // Handle the case where the distance is out of bounds (will just return a
+      // shooter state that has 0 velocity and 0 angle)
+      System.out.println("Distance is out of the valid range.");
+
+    }
+    // Print the predicted shooter velocity
+    System.out
+        .println("Predicted shooter velocity at " + distance + " meters: " + predictedVelocity + " units");
+
+    // Print the predicted shooter angle
+    System.out.println("Predicted shooter angle at " + distance + " meters: " + predictedAngle + " units");
+
+    return new ShooterState(predictedVelocity, predictedAngle);
 
   }
 

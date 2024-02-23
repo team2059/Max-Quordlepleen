@@ -22,7 +22,7 @@ public final class Constants {
                 // Sample data points
                 public static double[] distances = new double[] { 1, 6, 7, 9, 12, 20 };
                 public static double[] velocities = new double[] { 2, 8, 6, 10, 14, 41 };
-                public static double[] angles = new double[] { 2, 8, 6, 10, 14, 41 };
+                public static double[] angles = new double[] { 3, 9, 7, 11, 15, 42 };
         }
 
         public static final class ShooterConstants {
