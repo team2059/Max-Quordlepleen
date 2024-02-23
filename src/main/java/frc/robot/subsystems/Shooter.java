@@ -1,18 +1,19 @@
 package frc.robot.subsystems;
 
+import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
+import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.ShooterRegressionConstants;
 import frc.robot.RobotContainer;
 
 public class Shooter extends SubsystemBase {
@@ -32,6 +33,10 @@ public class Shooter extends SubsystemBase {
   public DutyCycleEncoder shooterTiltThruBoreEncoder;
 
   public Shooter() {
+
+    // ShooterConstants.velocityMap.put(Units.inchesToMeters(0), 1.0);
+    // ShooterConstants.angleMap.put(Units.inchesToMeters(0), 1.0);
+
     shooterUpperMotor = new CANSparkFlex(Constants.ShooterConstants.shooterUpperID, MotorType.kBrushless);
     shooterLowerMotor = new CANSparkFlex(Constants.ShooterConstants.shooterLowerID, MotorType.kBrushless);
 
@@ -48,6 +53,7 @@ public class Shooter extends SubsystemBase {
 
     shooterController = new PIDController(ShooterConstants.shooterkP, 0,
         ShooterConstants.shooterkD);
+
     // tiltController.enableContinuousInput(0, 1);
 
     /**
@@ -113,6 +119,42 @@ public class Shooter extends SubsystemBase {
 
   public PIDController getShooterController() {
     return shooterController;
+  }
+
+  // Method to calculate desired velocity based on distance
+  public static double calculateDesiredVelocity(double distance) {
+    SplineInterpolator interpolator = new SplineInterpolator();
+    PolynomialSplineFunction velocityFunction = interpolator.interpolate(ShooterRegressionConstants.distances,
+        ShooterRegressionConstants.velocities);
+
+    // Ensure the distance is within the bounds of the original data
+    if (distance >= ShooterRegressionConstants.distances[0]
+        && distance <= ShooterRegressionConstants.distances[ShooterRegressionConstants.distances.length - 1]) {
+      return velocityFunction.value(distance);
+    } else {
+      // Handle the case where the distance is out of bounds
+      System.out.println("Distance is out of the valid range.");
+      return 0;
+    }
+
+  }
+
+  // Method to calculate desired shooter tilt angle based on distance
+  public static double calculateDesiredAngle(double distance) {
+    SplineInterpolator interpolator = new SplineInterpolator();
+    PolynomialSplineFunction angleFunction = interpolator.interpolate(ShooterRegressionConstants.distances,
+        ShooterRegressionConstants.angles);
+
+    // Ensure the distance is within the bounds of the original data
+    if (distance >= ShooterRegressionConstants.distances[0]
+        && distance <= ShooterRegressionConstants.distances[ShooterRegressionConstants.distances.length - 1]) {
+      return angleFunction.value(distance);
+    } else {
+      // Handle the case where the distance is out of bounds
+      System.out.println("Distance is out of the valid range.");
+      return 0;
+    }
+
   }
 
 }

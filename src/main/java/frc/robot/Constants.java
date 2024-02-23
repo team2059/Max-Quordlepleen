@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
@@ -15,6 +16,13 @@ public final class Constants {
 
         public static final class PowerDistribution {
                 public static final int pdpID = 15;
+        }
+
+        public static final class ShooterRegressionConstants {
+                // Sample data points
+                public static double[] distances = new double[] { 1, 6, 7, 9, 12, 20 };
+                public static double[] velocities = new double[] { 2, 8, 6, 10, 14, 41 };
+                public static double[] angles = new double[] { 2, 8, 6, 10, 14, 41 };
         }
 
         public static final class ShooterConstants {
@@ -103,16 +111,15 @@ public final class Constants {
                 public static final double rearRightAngleOffset = Units.rotationsToRadians(0);
 
                 /* Drivetrain Constants */
-                public static final double trackWidth = Units.inchesToMeters(18.75);
-                public static final double wheelBase = Units.inchesToMeters(24.5);
+                public static final double trackWidth = Units.inchesToMeters(23);
+                public static final double wheelBase = Units.inchesToMeters(25);
 
                 // Max module speed, in m/s
-                public static final double maxModuleSpeed = 4.5;
                 // Drive base radius in meters. Distance from robot center to furthest module.
-                public static final double driveBaseRadius = Units.inchesToMeters(11.811);
+                public static final double driveBaseRadius = Units.inchesToMeters(17.06);
 
                 // nominal (real) divided by fudge factor
-                public static final double wheelDiameter = Units.inchesToMeters(4.0 / 1.01085);
+                public static final double wheelDiameter = Units.inchesToMeters(4.0 / 1.0);
                 public static final double wheelCircumference = wheelDiameter * Math.PI;
 
                 public static final double driveGearRatio = (6.75 / 1.0); // 6.75:1
@@ -195,20 +202,7 @@ public final class Constants {
                 // from center.
                 public static final Transform3d robotToCam = new Transform3d(
                                 new Translation3d(Units.inchesToMeters(14.5), 0.0, Units.inchesToMeters(23)),
-                                new Rotation3d(0, 0, 0));
-
-                public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(24.5);
-                public static final double TARGET_HEIGHT_METERS = Units.inchesToMeters(20.5);
-                public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(0);
-                // x = x offset between robot center (center of the drivetrain) to camera
-                // y = y offset between robot center (center of the drivetrain) to camera
-                public static final double xCameraOffsetInches = 13.875;
-                public static final double yCameraOffsetInches = 0;
-                // public static final double originToFront = Units.inchesToMeters(18.75 +
-                // 14.625);
-                public static final double originToFrontInches = 25; // 27.5
-
-                public static final double cameraToFrontEdgeDistanceMeters = Units.inchesToMeters(7);
+                                new Rotation3d(0, Units.degreesToRadians(0), 0));
 
         }
 
