@@ -7,8 +7,6 @@ package frc.robot.commands;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.CollectorConstants;
 import frc.robot.subsystems.Collector;

@@ -7,7 +7,6 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
-import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.wpilibj.GenericHID;
@@ -41,14 +40,9 @@ public class RobotContainer {
   /* XBOX CONTROLLER */
   public static final XboxController controller = new XboxController(0);
 
-  /* BUTTON BOX ONE */
-  public final ButtonBox buttonBox = new ButtonBox(1);
-
-  /* BUTTON BOX TWO */
-  public final ButtonBox buttonBoxTwo = new ButtonBox(2);
-
   /* LOGITECH */
-  public final static Joystick logitech = new Joystick(3);
+  public final static Joystick logitech = new Joystick(1);
+
   private final int kLogitechTranslationAxis = 1;
   private final int kLogitechStrafeAxis = 0;
   private final int kLogitechRotationAxis = 2;
