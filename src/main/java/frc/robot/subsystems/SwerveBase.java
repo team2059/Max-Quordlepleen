@@ -93,8 +93,9 @@ public class SwerveBase extends SubsystemBase {
    * rotational motion
    * Takes in kinematics and robot angle for parameters
    */
-  private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(SwerveBaseConstants.kinematics, new Rotation2d(),
-      getModulePositions());
+  // private final SwerveDriveOdometry odometry = new
+  // SwerveDriveOdometry(SwerveBaseConstants.kinematics, new Rotation2d(),
+  // getModulePositions());
 
   Pose2d poseA = new Pose2d();
   Pose2d poseB = new Pose2d();
@@ -148,16 +149,16 @@ public class SwerveBase extends SubsystemBase {
   public void periodic() {
 
     // update the odometry every 20ms
-    odometry.update(getHeading(), getModulePositions());
+    // odometry.update(getHeading(), getModulePositions());
 
     // Add vision to pose estimator
-    // final Optional<EstimatedRobotPose> optionalEstimatedPose = vision
-    // .getEstimatedGlobalPose(poseEstimator.getEstimatedPosition());
-    // if (optionalEstimatedPose.isPresent()) {
-    // final EstimatedRobotPose estimatedPose = optionalEstimatedPose.get();
-    // poseEstimator.addVisionMeasurement(estimatedPose.estimatedPose.toPose2d(),
-    // estimatedPose.timestampSeconds);
-    // }
+    final Optional<EstimatedRobotPose> optionalEstimatedPose = vision
+        .getEstimatedGlobalPose(poseEstimator.getEstimatedPosition());
+    if (optionalEstimatedPose.isPresent()) {
+      final EstimatedRobotPose estimatedPose = optionalEstimatedPose.get();
+      poseEstimator.addVisionMeasurement(estimatedPose.estimatedPose.toPose2d(),
+          estimatedPose.timestampSeconds);
+    }
 
     // vision.getEstimatedGlobalPose(poseEstimator.getEstimatedPosition())
     // .ifPresent(pose ->
@@ -166,15 +167,15 @@ public class SwerveBase extends SubsystemBase {
 
     // Update the odometry of the swerve drive using the wheel encoders and gyro in
     // the periodic block every 20 ms
-    // poseEstimator.update(
-    // getHeading(), getModulePositions());
+    poseEstimator.update(
+        getHeading(), getModulePositions());
 
     // if (Math.abs(poseEstimator.getEstimatedPosition().getRotation().getDegrees())
     // >= 178) {
     // zeroHeading();
     // }
 
-    Logger.recordOutput("CurrentState", getStates());
+    Logger.recordOutput("Current Pose", getPose());
 
     SmartDashboard.putString("Robot pose",
         getPose().toString());
@@ -187,19 +188,19 @@ public class SwerveBase extends SubsystemBase {
     // SmartDashboard.putNumber("pitch",
     // navX.getPitch());
 
-    for (SwerveModule module : modules) {
-      SmartDashboard.putNumber(module.getModuleID() + "velocity setpoint",
-          module.velolictySetpoint);
-      SmartDashboard.putNumber(module.getModuleID() + "actual velocity",
-          module.currentDriveVelocity);
-      SmartDashboard.putNumber(module.getModuleID() + "angular setpoint",
-          module.angularSetpoint);
-      SmartDashboard.putNumber(module.getModuleID() + "actual angle",
-          module.actualAngle);
+    // for (SwerveModule module : modules) {
+    // SmartDashboard.putNumber(module.getModuleID() + "velocity setpoint",
+    // module.velolictySetpoint);
+    // SmartDashboard.putNumber(module.getModuleID() + "actual velocity",
+    // module.currentDriveVelocity);
+    // SmartDashboard.putNumber(module.getModuleID() + "angular setpoint",
+    // module.angularSetpoint);
+    // SmartDashboard.putNumber(module.getModuleID() + "actual angle",
+    // module.actualAngle);
 
-      SmartDashboard.putNumber(module.getModuleID() + "actual CAN angle",
-          module.getCanCoderAngle().getRotations());
-    }
+    // SmartDashboard.putNumber(module.getModuleID() + "actual CAN angle",
+    // module.getCanCoderAngle().getRotations());
+    // }
 
   }
 
@@ -210,7 +211,7 @@ public class SwerveBase extends SubsystemBase {
         this::getPose, // Robot pose supplier
         this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
         this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-        this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+        this::driveFieldRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
             new PIDConstants(SwerveBaseConstants.translationkP, 0.0, 0.0), // Translation PID constants
             new PIDConstants(SwerveBaseConstants.rotationkP, 0.0, 0.0), // Rotation PID constants
@@ -366,18 +367,18 @@ public class SwerveBase extends SubsystemBase {
    */
   public Pose2d getPose() {
 
-    return odometry.getPoseMeters();
+    // return odometry.getPoseMeters();
 
-    // return poseEstimator.getEstimatedPosition();
+    return poseEstimator.getEstimatedPosition();
 
   }
 
   // reset the current pose to a desired pose
   public void resetOdometry(Pose2d pose) {
 
-    odometry.resetPosition(getHeading(), getModulePositions(), pose);
+    // odometry.resetPosition(getHeading(), getModulePositions(), pose);
 
-    // poseEstimator.resetPosition(getHeading(), getModulePositions(), pose);
+    poseEstimator.resetPosition(getHeading(), getModulePositions(), pose);
 
   }
 
