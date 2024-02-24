@@ -5,7 +5,7 @@ from scipy.interpolate import interp1d, CubicSpline
 # distance from speaker relative to camera in meters
 x = np.array([1, 6, 7, 9, 12, 20])
 
-# shooter velocity in native units (RPMs)
+# shooter velocity in native units
 y = np.array([2, 8, 6, 10, 14, 41])
 
 # Original data points
@@ -45,8 +45,8 @@ print(f"Predicted shooter velocity at {x_value} meters: {y_predicted} units")
 
 
 # Labeling the x-axis and y-axis
-plt.xlabel("Distance from Speaker (meters)")
-plt.ylabel("Shooter Velocity (RPMs)")
+# plt.xlabel("Distance from Speaker (meters)")
+# plt.ylabel("Shooter Velocity (units)")
 
-plt.legend()
-plt.show()
+# plt.legend()
+# plt.show()

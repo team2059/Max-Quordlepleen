@@ -16,13 +16,13 @@ public class Regression {
     static PolynomialSplineFunction velocityFunction = interpolator.interpolate(distances, velocities);
     static PolynomialSplineFunction angleFunction = interpolator.interpolate(distances, angles);
 
-    public static double[] calculateDesiredShooterState(double distance) {
+    public static ShooterState calculateDesiredShooterState(double distance) {
         double predictedVelocity = 0;
         double predictedAngle = 0;
 
         // Ensure the distance is within the bounds of the original data
-        if (distance >= ShooterRegressionConstants.distances[0]
-                && distance <= ShooterRegressionConstants.distances[ShooterRegressionConstants.distances.length - 1]) {
+        if (distance >= distances[0]
+                && distance <= distances[distances.length - 1]) {
             predictedVelocity = velocityFunction.value(distance);
             predictedAngle = angleFunction.value(distance);
 
@@ -39,9 +39,7 @@ public class Regression {
         // Print the predicted shooter angle
         System.out.println("Predicted shooter angle at " + distance + " meters: " + predictedAngle + " units");
 
-        double[] desiredShooterStateArray = { predictedVelocity, predictedAngle };
-
-        return desiredShooterStateArray;
+        return new ShooterState(predictedVelocity, predictedAngle);
 
     }
 

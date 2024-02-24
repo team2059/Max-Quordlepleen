@@ -104,6 +104,11 @@ public final class Constants {
 
         public static final class SwerveBaseConstants {
 
+                public static final double frontLeftAngleOffset = Units.rotationsToRadians(0.29);
+                public static final double frontRightAngleOffset = Units.rotationsToRadians(0.117);
+                public static final double rearLeftAngleOffset = Units.rotationsToRadians(0.395);
+                public static final double rearRightAngleOffset = Units.rotationsToRadians(0);
+
                 /* Drivetrain Constants */
                 public static final double trackWidth = Units.inchesToMeters(23);
                 public static final double wheelBase = Units.inchesToMeters(25);
@@ -132,32 +137,22 @@ public final class Constants {
 
                 public static final double maxAngularVelocity = 11.5;
 
-                public static final int frontLeftRotationMotorId = 6;
-                public static final int frontLeftDriveMotorId = 5;
+                public static final int frontLeftRotationMotorId = 7;
+                public static final int frontLeftDriveMotorId = 8;
 
-                public static final int frontRightRotationMotorId = 8;
-                public static final int frontRightDriveMotorId = 7;
+                public static final int frontRightRotationMotorId = 5;
+                public static final int frontRightDriveMotorId = 6;
 
-                public static final int rearLeftRotationMotorId = 2;
-                public static final int rearLeftDriveMotorId = 1;
+                public static final int rearLeftRotationMotorId = 3;
+                public static final int rearLeftDriveMotorId = 4;
 
-                public static final int rearRightRotationMotorId = 4;
-                public static final int rearRightDriveMotorId = 3;
+                public static final int rearRightRotationMotorId = 1;
+                public static final int rearRightDriveMotorId = 2;
 
-                public static final int frontLeftRotationEncoderId = 20;
-                public static final int frontRightRotationEncoderId = 30;
-                public static final int rearRightRotationEncoderId = 40;
-                public static final int rearLeftRotationEncoderId = 50;
-
-                public static final double canCoder20 = Units.rotationsToRadians(0.992);
-                public static final double canCoder30 = Units.rotationsToRadians(0.143);
-                public static final double canCoder40 = Units.rotationsToRadians(0.917);
-                public static final double canCoder50 = Units.rotationsToRadians(0.661);
-
-                public static final double frontLeftAngleOffset = Units.rotationsToRadians(0.992);
-                public static final double frontRightAngleOffset = Units.rotationsToRadians(0.143);
-                public static final double rearLeftAngleOffset = Units.rotationsToRadians(0.661);
-                public static final double rearRightAngleOffset = Units.rotationsToRadians(0.917);
+                public static final int frontLeftRotationEncoderId = 12;
+                public static final int frontRightRotationEncoderId = 13;
+                public static final int rearLeftRotationEncoderId = 14;
+                public static final int rearRightRotationEncoderId = 11;
 
                 // used
                 public static final double translationkP = 3;
