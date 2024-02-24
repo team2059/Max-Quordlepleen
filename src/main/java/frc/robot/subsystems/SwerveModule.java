@@ -277,13 +277,14 @@ public class SwerveModule extends SubsystemBase {
 
     } else {
 
-      DrivePIDOutput = driveController.calculate(currentDriveVelocity,
-          velolictySetpoint);
+      // DrivePIDOutput = driveController.calculate(currentDriveVelocity,
+      // velolictySetpoint);
       feedForwardOutputVoltage = (SwerveModuleConstants.driveFF.calculate(velolictySetpoint));
-      driveOutput = (DrivePIDOutput + feedForwardOutputVoltage);
+      // driveOutput = (DrivePIDOutput + feedForwardOutputVoltage);
 
       rotationMotor.set(rotationController.calculate(actualAngle, angularSetpoint));
-      driveMotor.setVoltage(-driveOutput);
+      // driveMotor.setVoltage(-driveOutput);
+      driveMotor.setVoltage(feedForwardOutputVoltage);
 
     }
   }

@@ -3,6 +3,7 @@ package frc.robot.commands;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.SwerveBaseConstants;
@@ -125,7 +126,7 @@ public class TeleopSwerveCmd extends Command {
     drive.drive(
         fwdX,
         fwdY,
-        -rot,
+        MathUtil.applyDeadband(rot * 0.5, 0.25, 0.66),
         fieldOrientedFunction.get());
 
   }

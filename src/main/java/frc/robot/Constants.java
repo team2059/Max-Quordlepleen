@@ -97,16 +97,16 @@ public final class Constants {
                 public static final double driveEncoderPositionConversionFactor = 0.047286787200699704;
                 public static final double rotationEncoderPositionConversionFactor = 16.8 * 0.01745;
 
-                public static final SimpleMotorFeedforward driveFF = new SimpleMotorFeedforward(0.012, 2.7, 0.0);
-                public static final double drivekP = 0.1;
+                public static final SimpleMotorFeedforward driveFF = new SimpleMotorFeedforward(0.2, 2.5, 0.0);
+                public static final double drivekP = 0.0;
 
         }
 
         public static final class SwerveBaseConstants {
 
                 /* Drivetrain Constants */
-                public static final double trackWidth = Units.inchesToMeters(23);
-                public static final double wheelBase = Units.inchesToMeters(25);
+                public static final double trackWidth = Units.inchesToMeters(22.66);
+                public static final double wheelBase = Units.inchesToMeters(24.5);
 
                 // Max module speed, in m/s
                 // Drive base radius in meters. Distance from robot center to furthest module.

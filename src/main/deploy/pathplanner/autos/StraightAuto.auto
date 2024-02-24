@@ -1,6 +1,12 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 1.25,
+      "y": 5.5
+    },
+    "rotation": 0.0
+  },
   "command": {
     "type": "sequential",
     "data": {
@@ -9,12 +15,6 @@
           "type": "path",
           "data": {
             "pathName": "Center1Path"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "PathfindToTagCmd"
           }
         }
       ]

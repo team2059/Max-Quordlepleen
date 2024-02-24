@@ -122,9 +122,9 @@ public class SwerveBase extends SubsystemBase {
     rearLeft.resetDistance();
     rearRight.resetDistance();
 
-    rearRight.getDriveMotor().setInverted(true);
+    rearRight.getDriveMotor().setInverted(false);
     rearLeft.getDriveMotor().setInverted(true);
-    frontRight.getDriveMotor().setInverted(true);
+    frontRight.getDriveMotor().setInverted(false);
     frontLeft.getDriveMotor().setInverted(true);
 
     rearRight.getRotationMotor().setInverted(true);
@@ -174,7 +174,7 @@ public class SwerveBase extends SubsystemBase {
     // zeroHeading();
     // }
 
-    Logger.recordOutput("MyPose", getPose());
+    Logger.recordOutput("CurrentState", getStates());
 
     SmartDashboard.putString("Robot pose",
         getPose().toString());
@@ -188,17 +188,17 @@ public class SwerveBase extends SubsystemBase {
     // navX.getPitch());
 
     for (SwerveModule module : modules) {
-      // SmartDashboard.putNumber(modules[module.getModuleID()] + "velocity setpoint",
-      // modules[module.getModuleID()].velolictySetpoint);
-      // SmartDashboard.putNumber(module.getModuleID() + "actual velocity",
-      // modules[module.getModuleID()].currentDriveVelocity);
-      // SmartDashboard.putNumber(modules[module.getModuleID()] + "angular setpoint",
-      // modules[module.getModuleID()].angularSetpoint);
-      // SmartDashboard.putNumber(module.getModuleID() + "actual angle",
-      // modules[module.getModuleID()].actualAngle);
+      SmartDashboard.putNumber(module.getModuleID() + "velocity setpoint",
+          module.velolictySetpoint);
+      SmartDashboard.putNumber(module.getModuleID() + "actual velocity",
+          module.currentDriveVelocity);
+      SmartDashboard.putNumber(module.getModuleID() + "angular setpoint",
+          module.angularSetpoint);
+      SmartDashboard.putNumber(module.getModuleID() + "actual angle",
+          module.actualAngle);
 
       SmartDashboard.putNumber(module.getModuleID() + "actual CAN angle",
-          modules[module.getModuleID()].getCanCoderAngle().getRotations());
+          module.getCanCoderAngle().getRotations());
     }
 
   }
@@ -210,7 +210,7 @@ public class SwerveBase extends SubsystemBase {
         this::getPose, // Robot pose supplier
         this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
         this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-        this::driveFieldRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+        this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
             new PIDConstants(SwerveBaseConstants.translationkP, 0.0, 0.0), // Translation PID constants
             new PIDConstants(SwerveBaseConstants.rotationkP, 0.0, 0.0), // Rotation PID constants
@@ -366,14 +366,18 @@ public class SwerveBase extends SubsystemBase {
    */
   public Pose2d getPose() {
 
-    return poseEstimator.getEstimatedPosition();
+    return odometry.getPoseMeters();
+
+    // return poseEstimator.getEstimatedPosition();
 
   }
 
   // reset the current pose to a desired pose
   public void resetOdometry(Pose2d pose) {
 
-    poseEstimator.resetPosition(getHeading(), getModulePositions(), pose);
+    odometry.resetPosition(getHeading(), getModulePositions(), pose);
+
+    // poseEstimator.resetPosition(getHeading(), getModulePositions(), pose);
 
   }
 
