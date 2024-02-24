@@ -25,7 +25,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
@@ -88,6 +88,14 @@ public class SwerveBase extends SubsystemBase {
   private final SwerveDrivePoseEstimator poseEstimator;
   private Vision vision = Vision.getInstance();
 
+  /**
+   * odometry for the robot, measured in meters for linear motion and radians for
+   * rotational motion
+   * Takes in kinematics and robot angle for parameters
+   */
+  private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(SwerveBaseConstants.kinematics, new Rotation2d(),
+      getModulePositions());
+
   Pose2d poseA = new Pose2d();
   Pose2d poseB = new Pose2d();
 
@@ -139,13 +147,17 @@ public class SwerveBase extends SubsystemBase {
   @Override
   public void periodic() {
 
+    // update the odometry every 20ms
+    odometry.update(getHeading(), getModulePositions());
+
     // Add vision to pose estimator
-    final Optional<EstimatedRobotPose> optionalEstimatedPose = vision
-        .getEstimatedGlobalPose(poseEstimator.getEstimatedPosition());
-    if (optionalEstimatedPose.isPresent()) {
-      final EstimatedRobotPose estimatedPose = optionalEstimatedPose.get();
-      poseEstimator.addVisionMeasurement(estimatedPose.estimatedPose.toPose2d(), estimatedPose.timestampSeconds);
-    }
+    // final Optional<EstimatedRobotPose> optionalEstimatedPose = vision
+    // .getEstimatedGlobalPose(poseEstimator.getEstimatedPosition());
+    // if (optionalEstimatedPose.isPresent()) {
+    // final EstimatedRobotPose estimatedPose = optionalEstimatedPose.get();
+    // poseEstimator.addVisionMeasurement(estimatedPose.estimatedPose.toPose2d(),
+    // estimatedPose.timestampSeconds);
+    // }
 
     // vision.getEstimatedGlobalPose(poseEstimator.getEstimatedPosition())
     // .ifPresent(pose ->
@@ -154,8 +166,8 @@ public class SwerveBase extends SubsystemBase {
 
     // Update the odometry of the swerve drive using the wheel encoders and gyro in
     // the periodic block every 20 ms
-    poseEstimator.update(
-        getHeading(), getModulePositions());
+    // poseEstimator.update(
+    // getHeading(), getModulePositions());
 
     // if (Math.abs(poseEstimator.getEstimatedPosition().getRotation().getDegrees())
     // >= 178) {
@@ -175,16 +187,19 @@ public class SwerveBase extends SubsystemBase {
     // SmartDashboard.putNumber("pitch",
     // navX.getPitch());
 
-    // for (SwerveModule module : modules) {
-    // SmartDashboard.putNumber(modules[module.getModuleID()] + "velocity setpoint",
-    // modules[module.getModuleID()].velolictySetpoint);
-    // SmartDashboard.putNumber(modules[module.getModuleID()] + "actual velocity",
-    // modules[module.getModuleID()].currentDriveVelocity);
-    // SmartDashboard.putNumber(modules[module.getModuleID()] + "angular setpoint",
-    // modules[module.getModuleID()].angularSetpoint);
-    // SmartDashboard.putNumber(modules[module.getModuleID()] + "actual angle",
-    // modules[module.getModuleID()].actualAngle);
-    // }
+    for (SwerveModule module : modules) {
+      // SmartDashboard.putNumber(modules[module.getModuleID()] + "velocity setpoint",
+      // modules[module.getModuleID()].velolictySetpoint);
+      // SmartDashboard.putNumber(module.getModuleID() + "actual velocity",
+      // modules[module.getModuleID()].currentDriveVelocity);
+      // SmartDashboard.putNumber(modules[module.getModuleID()] + "angular setpoint",
+      // modules[module.getModuleID()].angularSetpoint);
+      // SmartDashboard.putNumber(module.getModuleID() + "actual angle",
+      // modules[module.getModuleID()].actualAngle);
+
+      SmartDashboard.putNumber(module.getModuleID() + "actual CAN angle",
+          modules[module.getModuleID()].getCanCoderAngle().getRotations());
+    }
 
   }
 

@@ -70,9 +70,9 @@ public class RobotContainer {
   /* Subsystems */
   private final SwerveBase swerveBase;
 
-  private final Collector collector;
+  // private final Collector collector;
 
-  private final Shooter shooter;
+  // private final Shooter shooter;
 
   private final Vision vision;
   // private final PowerDistributionPanel powerDistributionPanel = new
@@ -88,9 +88,9 @@ public class RobotContainer {
    */
   public RobotContainer() {
     swerveBase = new SwerveBase();
-    shooter = new Shooter();
+    // shooter = new Shooter();
     vision = new Vision();
-    collector = new Collector();
+    // collector = new Collector();
 
     var field = new Field2d();
     SmartDashboard.putData("Field", field);
@@ -113,8 +113,8 @@ public class RobotContainer {
       field.getObject("trajectory").setPoses(poses);
     });
 
-    NamedCommands.registerCommand("PathfindToTagCmd",
-        new PathfindToTagCmd(swerveBase, vision, 4, 78));
+    // NamedCommands.registerCommand("PathfindToTagCmd",
+    // new PathfindToTagCmd(swerveBase, vision, 4, 78));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -150,15 +150,17 @@ public class RobotContainer {
 
     zeroGyro.onTrue(new InstantCommand(() -> swerveBase.getNavX().zeroYaw()));
 
-    goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 4, 78));
+    // goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 4, 78));
 
     // Y - intake up
-    new JoystickButton(controller, 4)
-        .onTrue(new MoveCollectorCmd(collector, CollectorConstants.collectorTiltAlignToShooterPos));
+    // new JoystickButton(controller, 4)
+    // .onTrue(new MoveCollectorCmd(collector,
+    // CollectorConstants.collectorTiltAlignToShooterPos));
 
     // A - intake down
-    new JoystickButton(controller, 1)
-        .onTrue(new MoveCollectorCmd(collector, CollectorConstants.collectorTiltCollectPos));
+    // new JoystickButton(controller, 1)
+    // .onTrue(new MoveCollectorCmd(collector,
+    // CollectorConstants.collectorTiltCollectPos));
 
   }
 
@@ -176,12 +178,12 @@ public class RobotContainer {
     return swerveBase;
   }
 
-  public Shooter getShooter() {
-    return shooter;
-  }
+  // public Shooter getShooter() {
+  // return shooter;
+  // }
 
   public Vision getVision() {
-    return vision;
+  return vision;
   }
 
 }
