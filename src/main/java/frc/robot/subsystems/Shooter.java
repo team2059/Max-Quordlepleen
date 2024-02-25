@@ -40,10 +40,13 @@ public class Shooter extends SubsystemBase {
     public PIDController elevatorController;
     // public PIDController shooterController;
 
-    public SparkPIDController shooterController;
+    public SparkPIDController shooterUpperController;
+    public SparkPIDController shooterLowerController;
 
     double currentShooterUpperMotorRPMs;
-    double desiredShooterUpperMotorRPMs;
+    double currentShooterLowerMotorRPMs;
+
+    double desiredShooterMotorRPMs;
 
     static SplineInterpolator interpolator = new SplineInterpolator();
     static PolynomialSplineFunction velocityFunction = interpolator.interpolate(ShooterRegressionConstants.distances,
@@ -69,10 +72,11 @@ public class Shooter extends SubsystemBase {
         shooterUpperMotor.setInverted(true);
         shooterUpperEncoder = shooterUpperMotor.getEncoder();
 
-        shooterController = shooterUpperMotor.getPIDController();
+        shooterUpperController = shooterUpperMotor.getPIDController();
 
         shooterLowerMotor = new CANSparkFlex(Constants.ShooterConstants.shooterLowerID, MotorType.kBrushless);
         shooterLowerEncoder = shooterLowerMotor.getEncoder();
+        shooterLowerController = shooterLowerMotor.getPIDController();
 
         shooterTiltMotor = new CANSparkMax(Constants.ShooterConstants.shooterTiltID, MotorType.kBrushless);
 
@@ -84,10 +88,10 @@ public class Shooter extends SubsystemBase {
         tiltController = new PIDController(ShooterConstants.tiltkP, 0.00,
                 ShooterConstants.tiltkD);
 
-        shooterController.setP(0);
-        shooterController.setI(0);
-        shooterController.setD(0);
-        shooterController.setOutputRange(-1, 1);
+        shooterUpperController.setP(0);
+        shooterUpperController.setI(0);
+        shooterUpperController.setD(0);
+        shooterUpperController.setOutputRange(-1, 1);
 
         // tiltController.enableContinuousInput(0, 1);
 
@@ -105,16 +109,20 @@ public class Shooter extends SubsystemBase {
     @Override
     public void periodic() {
 
-        shooterController.setFF(0.00015);
+        shooterUpperController.setFF(0.00015);
+        shooterLowerController.setFF(0.00015);
 
-        desiredShooterUpperMotorRPMs = 4500; // max 6784 RPM
+        desiredShooterMotorRPMs = 4500; // max 6784 RPM
 
         currentShooterUpperMotorRPMs = shooterUpperEncoder.getVelocity();
 
-        Logger.recordOutput("currentUppershooterUpperMotorRPMs ", currentShooterUpperMotorRPMs);
-        Logger.recordOutput("desiredshooterUpperMotorRPMs ", desiredShooterUpperMotorRPMs);
+        Logger.recordOutput("UpperMotorRPMs", currentShooterUpperMotorRPMs);
+        Logger.recordOutput("LowerMotorRPMs ", currentShooterUpperMotorRPMs);
+        Logger.recordOutput("desiredRPMs ", desiredShooterMotorRPMs);
 
-        shooterController.setReference(desiredShooterUpperMotorRPMs,
+        shooterUpperController.setReference(desiredShooterMotorRPMs,
+                CANSparkMax.ControlType.kVelocity);
+        shooterLowerController.setReference(desiredShooterMotorRPMs,
                 CANSparkMax.ControlType.kVelocity);
 
         // Logger.recordOutput("shooter optical", isNotePresent());
@@ -187,8 +195,8 @@ public class Shooter extends SubsystemBase {
 
     }
 
-    public SparkPIDController getShooterController() {
-        return shooterController;
+    public SparkPIDController getShooterUpperController() {
+        return shooterUpperController;
     }
 
     public double getShooterTiltPos() {
