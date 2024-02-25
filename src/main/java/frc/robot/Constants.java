@@ -13,6 +13,13 @@ import edu.wpi.first.math.util.Units;
 
 public final class Constants {
 
+        public static final class DIOConstants {
+                public static final int collectorOpticalDIO = 0;
+                public static final int collectorTiltThruBoreDIO = 1;
+                public static final int shooterTiltThruBoreEncoderDIO = 2;
+                public static final int shooterOpticalDIO = 3;
+        }
+
         public static final class PowerDistribution {
                 public static final int pdpID = 15;
         }
@@ -30,9 +37,7 @@ public final class Constants {
                 public static final int shooterLowerID = 13;
                 public static final int indexerID = 16;
                 public static final int shooterTiltID = 15;
-                public static final int elevatorID = 17;
-
-                public static final int shooterTiltThruBoreEncoderDIO = 9;
+                public static final int elevatorID = 10;
 
                 public static final double alignToCollectorPos = 0; // encoder value for getting note from collector
                 public static final double restPos = 0;
@@ -61,7 +66,7 @@ public final class Constants {
         }
 
         public static final class ClimberConstants {
-                public static final int climberMotorID = 14; // TODO: change placeholder CAN IDs
+                public static final int climberWinchMotorID = 9; // TODO: change placeholder CAN IDs
 
                 public static final double climbkP = 0;
                 public static final double climbkD = 0;
@@ -71,9 +76,6 @@ public final class Constants {
 
                 public static final int collectorRollerID = 12;
                 public static final int collectorTiltID = 11;
-
-                public static final int collectorTiltThruBoreDIO = 1;
-                public static final int collectorOpticalDIO = 0;
 
                 public static final double collectorTiltAlignToShooterPos = 0.65; // encoder value for "retracted"
                                                                                   // collector

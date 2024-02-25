@@ -1,188 +1,228 @@
-// package frc.robot.subsystems;
+package frc.robot.subsystems;
 
-// import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
-// import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
-// import org.littletonrobotics.junction.Logger;
+import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
+import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
+import org.littletonrobotics.junction.Logger;
 
-// import com.revrobotics.CANSparkFlex;
-// import com.revrobotics.CANSparkMax;
-// import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkFlex;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
-// import edu.wpi.first.math.MathUtil;
-// import edu.wpi.first.math.controller.PIDController;
-// import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-// import edu.wpi.first.wpilibj.DutyCycleEncoder;
-// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-// import edu.wpi.first.wpilibj2.command.SubsystemBase;
-// import frc.robot.Constants;
-// import frc.robot.Constants.ShooterConstants;
-// import frc.robot.Constants.ShooterRegressionConstants;
-// import frc.robot.RobotContainer;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.Constants.DIOConstants;
+import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.ShooterRegressionConstants;
+import frc.robot.RobotContainer;
 
-// public class Shooter extends SubsystemBase {
+public class Shooter extends SubsystemBase {
 
-//   // upper & lower are vortex
-//   // upper, lower, indexer, shootertilt, elevator
-//   public CANSparkFlex shooterUpperMotor;
-//   public CANSparkFlex shooterLowerMotor;
-//   public CANSparkMax indexerMotor;
-//   public CANSparkMax shooterTiltMotor;
-//   public CANSparkMax elevatorMotor;
+    // upper & lower are vortex
+    // upper, lower, indexer, shootertilt, elevator
+    public CANSparkFlex shooterUpperMotor;
+    public CANSparkFlex shooterLowerMotor;
+    public CANSparkMax indexerMotor;
+    public CANSparkMax shooterTiltMotor;
+    public CANSparkMax elevatorMotor;
 
-//   public PIDController tiltController;
-//   public PIDController elevatorController;
-//   public PIDController shooterController;
+    public RelativeEncoder shooterUpperEncoder;
+    public RelativeEncoder shooterLowerEncoder;
 
-//   public DutyCycleEncoder shooterTiltThruBoreEncoder;
-//   double currentShooterUpperMotorRPMs;
-//   double desiredShooterUpperMotorRPMs;
+    public PIDController tiltController;
+    public PIDController elevatorController;
+    // public PIDController shooterController;
 
-//   static SplineInterpolator interpolator = new SplineInterpolator();
-//   static PolynomialSplineFunction velocityFunction = interpolator.interpolate(ShooterRegressionConstants.distances,
-//       ShooterRegressionConstants.velocities);
-//   static PolynomialSplineFunction angleFunction = interpolator.interpolate(ShooterRegressionConstants.distances,
-//       ShooterRegressionConstants.angles);
+    public SparkPIDController shooterController;
 
-//   public Shooter() {
+    double currentShooterUpperMotorRPMs;
+    double desiredShooterUpperMotorRPMs;
 
-//     shooterUpperMotor = new CANSparkFlex(Constants.ShooterConstants.shooterUpperID, MotorType.kBrushless);
+    static SplineInterpolator interpolator = new SplineInterpolator();
+    static PolynomialSplineFunction velocityFunction = interpolator.interpolate(ShooterRegressionConstants.distances,
+            ShooterRegressionConstants.velocities);
+    static PolynomialSplineFunction angleFunction = interpolator.interpolate(ShooterRegressionConstants.distances,
+            ShooterRegressionConstants.angles);
 
-//     shooterLowerMotor = new CANSparkFlex(Constants.ShooterConstants.shooterLowerID, MotorType.kBrushless);
-//     // shooterLowerMotor.follow(shooterUpperMotor, true);
+    public DigitalInput shooterNoteSensor = new DigitalInput(DIOConstants.shooterOpticalDIO);
+    public DutyCycleEncoder shooterTiltThruBoreEncoder = new DutyCycleEncoder(
+            DIOConstants.shooterTiltThruBoreEncoderDIO);
 
-//     shooterTiltMotor = new CANSparkMax(Constants.ShooterConstants.shooterTiltID, MotorType.kBrushless);
-//     shooterTiltThruBoreEncoder = new DutyCycleEncoder(ShooterConstants.shooterTiltThruBoreEncoderDIO);
+    public Shooter() {
 
-//     indexerMotor = new CANSparkMax(Constants.ShooterConstants.indexerID, MotorType.kBrushless);
+        shooterUpperMotor = new CANSparkFlex(Constants.ShooterConstants.shooterUpperID, MotorType.kBrushless);
+        /**
+         * The restoreFactoryDefaults method can be used to reset the configuration
+         * parameters
+         * in the SPARK MAX to their factory default state. If no argument is passed,
+         * these
+         * parameters will not persist between power cycles
+         */
+        // shooterUpperMotor.restoreFactoryDefaults();
+        shooterUpperMotor.setInverted(true);
+        shooterUpperEncoder = shooterUpperMotor.getEncoder();
 
-//     elevatorMotor = new CANSparkMax(Constants.ShooterConstants.elevatorID, MotorType.kBrushless);
+        shooterController = shooterUpperMotor.getPIDController();
 
-//     tiltController = new PIDController(ShooterConstants.tiltkP, 0.00,
-//         ShooterConstants.tiltkD);
+        shooterLowerMotor = new CANSparkFlex(Constants.ShooterConstants.shooterLowerID, MotorType.kBrushless);
+        shooterLowerEncoder = shooterLowerMotor.getEncoder();
+        shooterLowerMotor.follow(shooterUpperMotor, true);
 
-//     shooterController = new PIDController(ShooterConstants.shooterkP, 0,
-//         ShooterConstants.shooterkD);
+        shooterTiltMotor = new CANSparkMax(Constants.ShooterConstants.shooterTiltID, MotorType.kBrushless);
 
-//     // tiltController.enableContinuousInput(0, 1);
+        indexerMotor = new CANSparkMax(Constants.ShooterConstants.indexerID, MotorType.kBrushless);
 
-//     /**
-//      * The restoreFactoryDefaults method can be used to reset the configuration
-//      * parameters
-//      * in the SPARK MAX to their factory default state. If no argument is passed,
-//      * these
-//      * parameters will not persist between power cycles
-//      */
-//     // shooter1Motor.restoreFactoryDefaults();
-//     // shooter1Motor.setInverted(false);
+        // elevatorMotor = new CANSparkMax(Constants.ShooterConstants.elevatorID,
+        // MotorType.kBrushless);
 
-//     // shooter2Motor.restoreFactoryDefaults();
-//     // shooter2Motor.setInverted(true);
+        tiltController = new PIDController(ShooterConstants.tiltkP, 0.00,
+                ShooterConstants.tiltkD);
 
-//     // tiltMotor.configFactoryDefault();
-//     // tiltMotor.setInverted(true);
+        shooterController.setP(0);
+        shooterController.setI(0);
+        shooterController.setD(0);
+        shooterController.setOutputRange(-1, 1);
 
-//     // elevatorMotor.configFactoryDefault();
-//     // elevatorMotor.setInverted(true);
+        // tiltController.enableContinuousInput(0, 1);
 
-//   }
+        // shooterLowerMotor.restoreFactoryDefaults();
+        // shooterLowerMotor.setInverted(true);
 
-//   @Override
-//   public void periodic() {
+        // tiltMotor.configFactoryDefault();
+        // tiltMotor.setInverted(true);
 
-//     double sliderValue = MathUtil.clamp(RobotContainer.logitech.getRawAxis(3), 0, 0.5);
-//     // To measure Ks
-//     // manually, slowly increase the voltage to the mechanism until it starts to
-//     // move. The value of
-//     // is the largest voltage applied before the mechanism begins to move.
+        // elevatorMotor.configFactoryDefault();
+        // elevatorMotor.setInverted(true);
 
-//     // To tune Kv, increase the velocity feedforward gain
-//     // until the
-//     // flywheel approaches
-//     // the correct
-//     // setpoint over
-//     // time. If the
-//     // flywheel overshoots, reduce Kv.
-//     desiredShooterUpperMotorRPMs = 1000; // max 6784 RPM
-//     double outputVoltage = new SimpleMotorFeedforward(sliderValue, 0, 0)
-//         .calculate(desiredShooterUpperMotorRPMs);
+    }
 
-//     Logger.recordOutput("slider value", sliderValue);
+    @Override
+    public void periodic() {
 
-//     currentShooterUpperMotorRPMs = shooterUpperMotor.getEncoder().getVelocity();
+        Logger.recordOutput("shooter optical", isNotePresent());
+        Logger.recordOutput("shooter tilt", getShooterTiltPos());
 
-//     shooterUpperMotor.set(outputVoltage);
+        double sliderValue = RobotContainer.logitech.getRawAxis(3);
+        if (sliderValue > 0) {
+            sliderValue = 0;
+        }
 
-//     Logger.recordOutput("currentshooterUpperMotorRPMs ", currentShooterUpperMotorRPMs);
-//     Logger.recordOutput("desiredshooterUpperMotorRPMs ", desiredShooterUpperMotorRPMs);
+        sliderValue = MathUtil.clamp(Math.abs(sliderValue), 0, 0.001);
+        Logger.recordOutput("slider value", sliderValue);
 
-//     // double shooterValue = RobotContainer.logitech.getRawAxis(3); // slider
-//     // shooterValue = 0 + ((shooterValue - 1) / (2.0) * 0.75);
+        shooterController.setFF(0.00015);
 
-//     // double shooterValue = -0.95;
-//     // double tiltValue = RobotContainer.controller.getRawAxis(1);
-//     // value = 0 + ((Math.abs(value - 1)) / 2.0);
-//     // if (Math.abs(shooterValue) <= 0.1)
-//     // shooterValue = 0; // deadband
-//     // if (Math.abs(tiltValue) <= 0.1)
-//     // tiltValue = 0; // deadband
+        desiredShooterUpperMotorRPMs = 4500; // max 6784 RPM
 
-//     // SmartDashboard.putNumber("elevatorValue", shooterValue);
+        currentShooterUpperMotorRPMs = shooterUpperEncoder.getVelocity();
 
-//     // elevatorMotor.set(TalonSRXControlMode.PercentOutput, shooterValue);
+        Logger.recordOutput("currentUppershooterUpperMotorRPMs ", currentShooterUpperMotorRPMs);
+        Logger.recordOutput("desiredshooterUpperMotorRPMs ", desiredShooterUpperMotorRPMs);
 
-//     // SmartDashboard.putNumber("shooter", shooterValue);
-//     // SmartDashboard.putNumber("tilt", tiltValue);
+        shooterController.setReference(desiredShooterUpperMotorRPMs,
+                CANSparkMax.ControlType.kVelocity);
 
-//     // shooter1Motor.set(shooterValue);
-//     // shooter2Motor.set(shooterValue);
-//     // intakeMotor.set(shooterValue);
+        // To measure Ks
+        // manually, slowly increase the voltage to the mechanism until it starts to
+        // move. The value of
+        // is the largest voltage applied before the mechanism begins to move.
 
-//     // tilt12.set(VictorSPXControlMode.PercentOutput, -tiltValue * 0.4); // super
-//     // basic manual control
-//     // SmartDashboard.putNumber("relative tilt pos",
-//     // tiltMotor.getEncoder().getPosition());
+        // To tune Kv, increase the velocity feedforward gain
+        // until the
+        // flywheel approaches
+        // the correct
+        // setpoint over
+        // time. If the
+        // flywheel overshoots, reduce Kv.
+        // double outputVoltage = new SimpleMotorFeedforward(sliderValue, 0, 0)
+        // .calculate(desiredShooterUpperMotorRPMs);
 
-//     // SmartDashboard.putNumber("TILTPERCENT", tiltMotor.getAppliedOutput());
+        // shooterUpperMotor.set(outputVoltage);
 
-//     // SmartDashboard.putNumber("TILTVOLTAGE", tiltMotor.getBusVoltage());
-//     // SmartDashboard.putNumber("thru bore pos",
-//     // thruBoreEncoder.getAbsolutePosition());
-//     // SmartDashboard.putNumber("shooter thrubore",
-//     // shooterTiltThruBoreEncoder.getAbsolutePosition());
+        // double shooterValue = RobotContainer.logitech.getRawAxis(3); // slider
+        // shooterValue = 0 + ((shooterValue - 1) / (2.0) * 0.75);
 
-//   }
+        // double shooterValue = -0.95;
+        // double tiltValue = RobotContainer.controller.getRawAxis(1);
+        // value = 0 + ((Math.abs(value - 1)) / 2.0);
+        // if (Math.abs(shooterValue) <= 0.1)
+        // shooterValue = 0; // deadband
+        // if (Math.abs(tiltValue) <= 0.1)
+        // tiltValue = 0; // deadband
 
-//   public PIDController getShooterController() {
-//     return shooterController;
-//   }
+        // SmartDashboard.putNumber("elevatorValue", shooterValue);
 
-//   public double[] calculateDesiredShooterState(double distance) {
-//     double predictedVelocity = 0;
-//     double predictedAngle = 0;
+        // elevatorMotor.set(TalonSRXControlMode.PercentOutput, shooterValue);
 
-//     // Ensure the distance is within the bounds of the original data
-//     if (distance >= ShooterRegressionConstants.distances[0]
-//         && distance <= ShooterRegressionConstants.distances[ShooterRegressionConstants.distances.length - 1]) {
-//       predictedVelocity = velocityFunction.value(distance);
-//       predictedAngle = angleFunction.value(distance);
+        // SmartDashboard.putNumber("shooter", shooterValue);
+        // SmartDashboard.putNumber("tilt", tiltValue);
 
-//     } else {
-//       // Handle the case where the distance is out of bounds (will just return a
-//       // shooter state that has 0 velocity and 0 angle)
-//       System.out.println("Distance is out of the valid range.");
+        // shooter1Motor.set(shooterValue);
+        // shooter2Motor.set(shooterValue);
+        // intakeMotor.set(shooterValue);
 
-//     }
-//     // Print the predicted shooter velocity
-//     System.out
-//         .println("Predicted shooter velocity at " + distance + " meters: " + predictedVelocity + " units");
+        // tilt12.set(VictorSPXControlMode.PercentOutput, -tiltValue * 0.4); // super
+        // basic manual control
+        // SmartDashboard.putNumber("relative tilt pos",
+        // tiltMotor.getEncoder().getPosition());
 
-//     // Print the predicted shooter angle
-//     System.out.println("Predicted shooter angle at " + distance + " meters: " + predictedAngle + " units");
+        // SmartDashboard.putNumber("TILTPERCENT", tiltMotor.getAppliedOutput());
 
-//     double[] desiredShooterStateArray = { predictedVelocity, predictedAngle };
+        // SmartDashboard.putNumber("TILTVOLTAGE", tiltMotor.getBusVoltage());
+        // SmartDashboard.putNumber("thru bore pos",
+        // thruBoreEncoder.getAbsolutePosition());
+        // SmartDashboard.putNumber("shooter thrubore",
+        // shooterTiltThruBoreEncoder.getAbsolutePosition());
 
-//     return desiredShooterStateArray;
+    }
 
-//   }
+    public boolean isNotePresent() {
+        return !shooterNoteSensor.get();
 
-// }
+    }
+
+    public SparkPIDController getShooterController() {
+        return shooterController;
+    }
+
+    public double getShooterTiltPos() {
+        return shooterTiltThruBoreEncoder.getAbsolutePosition();
+    }
+
+    public double[] calculateDesiredShooterState(double distance) {
+        double predictedVelocity = 0;
+        double predictedAngle = 0;
+
+        // Ensure the distance is within the bounds of the original data
+        if (distance >= ShooterRegressionConstants.distances[0]
+                && distance <= ShooterRegressionConstants.distances[ShooterRegressionConstants.distances.length - 1]) {
+            predictedVelocity = velocityFunction.value(distance);
+            predictedAngle = angleFunction.value(distance);
+
+        } else {
+            // Handle the case where the distance is out of bounds (will just return a
+            // shooter state that has 0 velocity and 0 angle)
+            System.out.println("Distance is out of the valid range.");
+
+        }
+        // Print the predicted shooter velocity
+        System.out
+                .println("Predicted shooter velocity at " + distance + " meters: " + predictedVelocity + " units");
+
+        // Print the predicted shooter angle
+        System.out.println("Predicted shooter angle at " + distance + " meters: " + predictedAngle + " units");
+
+        double[] desiredShooterStateArray = { predictedVelocity, predictedAngle };
+
+        return desiredShooterStateArray;
+
+    }
+
+}

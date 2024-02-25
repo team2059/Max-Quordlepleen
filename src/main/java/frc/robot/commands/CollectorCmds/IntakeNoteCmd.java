@@ -12,12 +12,10 @@ import frc.robot.subsystems.Collector;
 public class IntakeNoteCmd extends Command {
 
   Collector collector;
-  double speed;
 
   /** Creates a new CollectCmd. */
   public IntakeNoteCmd(Collector collector) {
     this.collector = collector;
-    this.speed = speed;
     addRequirements(collector);
 
     // Use addRequirements() here to declare subsystem dependencies.

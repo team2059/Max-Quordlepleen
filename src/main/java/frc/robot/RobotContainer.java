@@ -75,7 +75,7 @@ public class RobotContainer {
 
   private static final Collector collector = new Collector();
 
-  // private final Shooter shooter;
+  private final Shooter shooter = new Shooter();
 
   private static final Vision vision = new Vision();
   // private final PowerDistributionPanel powerDistributionPanel = new
@@ -160,10 +160,6 @@ public class RobotContainer {
         .onTrue(new PickupNoteCmd(collector));
 
     // X - intake roller
-    // new JoystickButton(controller, 3).whileTrue(new InstantCommand(() ->
-    // collector.setRollerMotor(0.33)))
-    // .whileFalse(new InstantCommand(() -> collector.setRollerMotor(0)));
-
     new JoystickButton(controller, 3).whileTrue(new IntakeNoteCmd(collector));
 
     // B - outake roller

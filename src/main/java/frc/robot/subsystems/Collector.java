@@ -23,7 +23,7 @@ public class Collector extends SubsystemBase {
 
     public DutyCycleEncoder tiltThruBore;
 
-    public DigitalInput noteSensor = new DigitalInput(CollectorConstants.collectorOpticalDIO);
+    public DigitalInput collectorNoteSensor = new DigitalInput(CollectorConstants.collectorOpticalDIO);
 
     /** Creates a new Collector. */
     public Collector() {
@@ -79,7 +79,7 @@ public class Collector extends SubsystemBase {
     }
 
     public boolean isNotePresent() {
-        return !noteSensor.get();
+        return !collectorNoteSensor.get();
 
     }
 }
