@@ -69,13 +69,14 @@ public class Shooter extends SubsystemBase {
          * parameters will not persist between power cycles
          */
         // shooterUpperMotor.restoreFactoryDefaults();
-        shooterUpperMotor.setInverted(true);
+        shooterUpperMotor.setInverted(false);
         shooterUpperEncoder = shooterUpperMotor.getEncoder();
 
         shooterUpperController = shooterUpperMotor.getPIDController();
 
         shooterLowerMotor = new CANSparkFlex(Constants.ShooterConstants.shooterLowerID, MotorType.kBrushless);
         shooterLowerEncoder = shooterLowerMotor.getEncoder();
+        shooterLowerMotor.setInverted(true);
         shooterLowerController = shooterLowerMotor.getPIDController();
 
         shooterTiltMotor = new CANSparkMax(Constants.ShooterConstants.shooterTiltID, MotorType.kBrushless);
