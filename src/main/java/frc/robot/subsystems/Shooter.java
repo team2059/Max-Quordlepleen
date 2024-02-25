@@ -73,7 +73,6 @@ public class Shooter extends SubsystemBase {
 
         shooterLowerMotor = new CANSparkFlex(Constants.ShooterConstants.shooterLowerID, MotorType.kBrushless);
         shooterLowerEncoder = shooterLowerMotor.getEncoder();
-        shooterLowerMotor.follow(shooterUpperMotor, true);
 
         shooterTiltMotor = new CANSparkMax(Constants.ShooterConstants.shooterTiltID, MotorType.kBrushless);
 
@@ -106,17 +105,6 @@ public class Shooter extends SubsystemBase {
     @Override
     public void periodic() {
 
-        Logger.recordOutput("shooter optical", isNotePresent());
-        Logger.recordOutput("shooter tilt", getShooterTiltPos());
-
-        double sliderValue = RobotContainer.logitech.getRawAxis(3);
-        if (sliderValue > 0) {
-            sliderValue = 0;
-        }
-
-        sliderValue = MathUtil.clamp(Math.abs(sliderValue), 0, 0.001);
-        Logger.recordOutput("slider value", sliderValue);
-
         shooterController.setFF(0.00015);
 
         desiredShooterUpperMotorRPMs = 4500; // max 6784 RPM
@@ -128,6 +116,17 @@ public class Shooter extends SubsystemBase {
 
         shooterController.setReference(desiredShooterUpperMotorRPMs,
                 CANSparkMax.ControlType.kVelocity);
+
+        // Logger.recordOutput("shooter optical", isNotePresent());
+        // Logger.recordOutput("shooter tilt", getShooterTiltPos());
+
+        // double sliderValue = RobotContainer.logitech.getRawAxis(3);
+        // if (sliderValue > 0) {
+        // sliderValue = 0;
+        // }
+
+        // sliderValue = MathUtil.clamp(Math.abs(sliderValue), 0, 0.001);
+        // Logger.recordOutput("slider value", sliderValue);
 
         // To measure Ks
         // manually, slowly increase the voltage to the mechanism until it starts to
