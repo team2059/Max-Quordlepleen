@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.CollectorConstants;
 import frc.robot.commands.ShooterCmds.MoveShooterToCollectorCmd;
@@ -43,8 +44,9 @@ public class IntakeNoteCmd extends Command {
       CommandScheduler.getInstance()
           .schedule(new SequentialCommandGroup(new FeedNoteToShooterCmd(collector),
               new MoveShooterToCollectorCmd(shooter),
-              new ParallelCommandGroup(new InstantCommand(() -> shooter.setIndexMotorSpeed(-0.33)),
-                  new InstantCommand(() -> collector.rollerMotor.set(-0.33))).until(() -> shooter.isNotePresent())));
+              new ParallelCommandGroup(
+                  new InstantCommand(() -> shooter.setIndexMotorSpeed(-0.33)),
+                  new InstantCommand(() -> collector.rollerMotor.set(-0.33)))));
     } else {
       collector.setRollerMotor(0.33);
     }

@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.Constants.DIOConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.ShooterRegressionConstants;
@@ -115,6 +116,10 @@ public class Shooter extends SubsystemBase {
     @Override
     public void periodic() {
 
+        if (isNotePresent()) {
+            indexerMotor.set(0);
+            RobotContainer.getCollector().rollerMotor.set(0);
+        }
         // double tiltSetpoint = ShooterConstants.alignToCollectorPos;
 
         // double tiltOutput = tiltController.calculate(currentTiltPos, tiltSetpoint);
@@ -131,7 +136,7 @@ public class Shooter extends SubsystemBase {
         Logger.recordOutput("UpperMotorRPMs", currentShooterUpperMotorRPMs);
         Logger.recordOutput("LowerMotorRPMs ", currentShooterUpperMotorRPMs);
 
-        // Logger.recordOutput("shooter optical", isNotePresent());
+        Logger.recordOutput("shooter optical", isNotePresent());
 
     }
 
@@ -179,7 +184,15 @@ public class Shooter extends SubsystemBase {
 
     public void setIndexMotorSpeed(double speed) {
         indexerMotor.set(speed);
+    }
 
+    public void setIndexMotorSpeedWithNoteSensorCondition(double speed) {
+        if (isNotePresent()) {
+            indexerMotor.set(speed);
+        } else {
+            indexerMotor.set(0);
+            return;
+        }
     }
 
 }

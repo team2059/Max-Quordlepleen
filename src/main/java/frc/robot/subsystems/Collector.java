@@ -43,7 +43,7 @@ public class Collector extends SubsystemBase {
     @Override
     public void periodic() {
 
-        Logger.recordOutput("note sensor", isNotePresent());
+        Logger.recordOutput("collecter note sensor", isNotePresent());
 
         SmartDashboard.putBoolean("note sensor", isNotePresent());
 
