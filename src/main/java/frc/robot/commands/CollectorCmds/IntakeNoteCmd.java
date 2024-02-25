@@ -6,17 +6,25 @@ package frc.robot.commands.CollectorCmds;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.CollectorConstants;
+import frc.robot.commands.ShooterCmds.MoveShooterToCollectorCmd;
+import frc.robot.commands.ShooterCmds.MoveShooterToSetpointCmd;
 import frc.robot.subsystems.Collector;
+import frc.robot.subsystems.Shooter;
 
 public class IntakeNoteCmd extends Command {
 
   Collector collector;
+  Shooter shooter;
 
   /** Creates a new CollectCmd. */
-  public IntakeNoteCmd(Collector collector) {
+  public IntakeNoteCmd(Collector collector, Shooter shooter) {
     this.collector = collector;
-    addRequirements(collector);
+    this.shooter = shooter;
+    addRequirements(collector, shooter);
 
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -33,7 +41,10 @@ public class IntakeNoteCmd extends Command {
     if (collector.isNotePresent()) {
       collector.rollerMotor.set(0);
       CommandScheduler.getInstance()
-          .schedule(new FeedNoteToShooterCmd(collector));
+          .schedule(new SequentialCommandGroup(new FeedNoteToShooterCmd(collector),
+              new MoveShooterToCollectorCmd(shooter),
+              new ParallelCommandGroup(new InstantCommand(() -> shooter.setIndexMotorSpeed(-0.33)),
+                  new InstantCommand(() -> collector.rollerMotor.set(-0.33))).until(() -> shooter.isNotePresent())));
     } else {
       collector.setRollerMotor(0.33);
     }

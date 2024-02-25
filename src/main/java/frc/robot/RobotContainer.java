@@ -21,9 +21,10 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.CollectorConstants;
 import frc.robot.commands.*;
-import frc.robot.commands.CollectorCmds.FeedNoteToShooterCmd;
 import frc.robot.commands.CollectorCmds.PickupNoteCmd;
+import frc.robot.commands.ShooterCmds.MoveShooterToCollectorCmd;
 import frc.robot.commands.ShooterCmds.ShootAtRPMsCmd;
+import frc.robot.commands.CollectorCmds.FeedNoteToShooterCmd;
 import frc.robot.commands.CollectorCmds.IntakeNoteCmd;
 import frc.robot.subsystems.*;
 
@@ -161,7 +162,7 @@ public class RobotContainer {
         .onTrue(new PickupNoteCmd(collector));
 
     // X - intake roller
-    new JoystickButton(controller, 3).whileTrue(new IntakeNoteCmd(collector));
+    new JoystickButton(controller, 3).whileTrue(new IntakeNoteCmd(collector, shooter));
 
     // B - outake roller
     new JoystickButton(controller, 2)

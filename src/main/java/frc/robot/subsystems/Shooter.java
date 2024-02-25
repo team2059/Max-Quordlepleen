@@ -80,14 +80,12 @@ public class Shooter extends SubsystemBase {
         shooterLowerController = shooterLowerMotor.getPIDController();
 
         shooterTiltMotor = new CANSparkMax(Constants.ShooterConstants.shooterTiltID, MotorType.kBrushless);
+        shooterTiltMotor.setInverted(true);
 
         indexerMotor = new CANSparkMax(Constants.ShooterConstants.indexerID, MotorType.kBrushless);
 
         // elevatorMotor = new CANSparkMax(Constants.ShooterConstants.elevatorID,
         // MotorType.kBrushless);
-
-        tiltController = new PIDController(ShooterConstants.tiltkP, 0.00,
-                ShooterConstants.tiltkD);
 
         shooterUpperController.setP(0);
         shooterUpperController.setI(0);
@@ -110,10 +108,22 @@ public class Shooter extends SubsystemBase {
         // elevatorMotor.configFactoryDefault();
         // elevatorMotor.setInverted(true);
 
+        tiltController = new PIDController(2, 0.00, 0);
+
     }
 
     @Override
     public void periodic() {
+
+        // double tiltSetpoint = ShooterConstants.alignToCollectorPos;
+
+        // double tiltOutput = tiltController.calculate(currentTiltPos, tiltSetpoint);
+
+        // shooterTiltMotor.set(tiltOutput);
+
+        Logger.recordOutput("shooter tilt current pos", getShooterTiltPos());
+        // Logger.recordOutput("shooter tilt setpoint", tiltSetpoint);
+        // Logger.recordOutput("tiltoutput", tiltOutput);
 
         currentShooterUpperMotorRPMs = shooterUpperEncoder.getVelocity();
         currentShooterLowerMotorRPMs = shooterLowerEncoder.getVelocity();
@@ -122,7 +132,6 @@ public class Shooter extends SubsystemBase {
         Logger.recordOutput("LowerMotorRPMs ", currentShooterUpperMotorRPMs);
 
         // Logger.recordOutput("shooter optical", isNotePresent());
-        // Logger.recordOutput("shooter tilt", getShooterTiltPos());
 
     }
 

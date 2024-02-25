@@ -39,8 +39,8 @@ public final class Constants {
                 public static final int shooterTiltID = 15;
                 public static final int elevatorID = 10;
 
-                public static final double alignToCollectorPos = 0; // encoder value for getting note from collector
-                public static final double restPos = 0;
+                public static final double alignToCollectorPos = 0.78; // encoder value for getting note from collector
+                public static final double restPos = 0.91;
 
                 public static final double tiltkP = 0;
                 public static final double tiltkD = 0;
@@ -82,7 +82,7 @@ public final class Constants {
                 public static final double collectorTiltCollectPos = 0.3; // encoder value for collecting
 
                 public static final double tiltkD = 0.05;
-                public static final double tiltkP = 1;
+                public static final double tiltkP = 1.25;
 
         }
 
