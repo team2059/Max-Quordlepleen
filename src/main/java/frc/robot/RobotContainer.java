@@ -23,6 +23,7 @@ import frc.robot.Constants.CollectorConstants;
 import frc.robot.commands.*;
 import frc.robot.commands.CollectorCmds.FeedNoteToShooterCmd;
 import frc.robot.commands.CollectorCmds.PickupNoteCmd;
+import frc.robot.commands.ShooterCmds.ShootAtRPMsCmd;
 import frc.robot.commands.CollectorCmds.IntakeNoteCmd;
 import frc.robot.subsystems.*;
 
@@ -166,6 +167,13 @@ public class RobotContainer {
     new JoystickButton(controller, 2)
         .whileTrue(new InstantCommand(() -> collector.setRollerMotor(-0.33)))
         .whileFalse(new InstantCommand(() -> collector.setRollerMotor(0)));
+
+    // left bumper - run shooter indexer
+    new JoystickButton(controller, 5).whileTrue(new InstantCommand(() -> shooter.setIndexMotorSpeed(-0.66)))
+        .whileFalse(new InstantCommand(() -> shooter.setIndexMotorSpeed(0)));
+
+    // right bumper - rev up shooter
+    new JoystickButton(controller, 6).whileTrue(new ShootAtRPMsCmd(shooter, 4500));
 
   }
 

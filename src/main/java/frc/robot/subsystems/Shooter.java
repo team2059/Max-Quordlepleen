@@ -43,8 +43,8 @@ public class Shooter extends SubsystemBase {
     public SparkPIDController shooterUpperController;
     public SparkPIDController shooterLowerController;
 
-    double currentShooterUpperMotorRPMs;
-    double currentShooterLowerMotorRPMs;
+    public double currentShooterUpperMotorRPMs;
+    public double currentShooterLowerMotorRPMs;
 
     double desiredShooterMotorRPMs;
 
@@ -92,9 +92,14 @@ public class Shooter extends SubsystemBase {
         shooterUpperController.setP(0);
         shooterUpperController.setI(0);
         shooterUpperController.setD(0);
+        shooterUpperController.setFF(0.00015);
         shooterUpperController.setOutputRange(-1, 1);
 
-        // tiltController.enableContinuousInput(0, 1);
+        shooterLowerController.setP(0);
+        shooterLowerController.setI(0);
+        shooterLowerController.setD(0);
+        shooterLowerController.setFF(0.00015);
+        shooterLowerController.setOutputRange(-1, 1);
 
         // shooterLowerMotor.restoreFactoryDefaults();
         // shooterLowerMotor.setInverted(true);
@@ -110,84 +115,14 @@ public class Shooter extends SubsystemBase {
     @Override
     public void periodic() {
 
-        shooterUpperController.setFF(0.00015);
-        shooterLowerController.setFF(0.00015);
-
-        desiredShooterMotorRPMs = 4500; // max 6784 RPM
-
         currentShooterUpperMotorRPMs = shooterUpperEncoder.getVelocity();
+        currentShooterLowerMotorRPMs = shooterLowerEncoder.getVelocity();
 
         Logger.recordOutput("UpperMotorRPMs", currentShooterUpperMotorRPMs);
         Logger.recordOutput("LowerMotorRPMs ", currentShooterUpperMotorRPMs);
-        Logger.recordOutput("desiredRPMs ", desiredShooterMotorRPMs);
-
-        shooterUpperController.setReference(desiredShooterMotorRPMs,
-                CANSparkMax.ControlType.kVelocity);
-        shooterLowerController.setReference(desiredShooterMotorRPMs,
-                CANSparkMax.ControlType.kVelocity);
 
         // Logger.recordOutput("shooter optical", isNotePresent());
         // Logger.recordOutput("shooter tilt", getShooterTiltPos());
-
-        // double sliderValue = RobotContainer.logitech.getRawAxis(3);
-        // if (sliderValue > 0) {
-        // sliderValue = 0;
-        // }
-
-        // sliderValue = MathUtil.clamp(Math.abs(sliderValue), 0, 0.001);
-        // Logger.recordOutput("slider value", sliderValue);
-
-        // To measure Ks
-        // manually, slowly increase the voltage to the mechanism until it starts to
-        // move. The value of
-        // is the largest voltage applied before the mechanism begins to move.
-
-        // To tune Kv, increase the velocity feedforward gain
-        // until the
-        // flywheel approaches
-        // the correct
-        // setpoint over
-        // time. If the
-        // flywheel overshoots, reduce Kv.
-        // double outputVoltage = new SimpleMotorFeedforward(sliderValue, 0, 0)
-        // .calculate(desiredShooterUpperMotorRPMs);
-
-        // shooterUpperMotor.set(outputVoltage);
-
-        // double shooterValue = RobotContainer.logitech.getRawAxis(3); // slider
-        // shooterValue = 0 + ((shooterValue - 1) / (2.0) * 0.75);
-
-        // double shooterValue = -0.95;
-        // double tiltValue = RobotContainer.controller.getRawAxis(1);
-        // value = 0 + ((Math.abs(value - 1)) / 2.0);
-        // if (Math.abs(shooterValue) <= 0.1)
-        // shooterValue = 0; // deadband
-        // if (Math.abs(tiltValue) <= 0.1)
-        // tiltValue = 0; // deadband
-
-        // SmartDashboard.putNumber("elevatorValue", shooterValue);
-
-        // elevatorMotor.set(TalonSRXControlMode.PercentOutput, shooterValue);
-
-        // SmartDashboard.putNumber("shooter", shooterValue);
-        // SmartDashboard.putNumber("tilt", tiltValue);
-
-        // shooter1Motor.set(shooterValue);
-        // shooter2Motor.set(shooterValue);
-        // intakeMotor.set(shooterValue);
-
-        // tilt12.set(VictorSPXControlMode.PercentOutput, -tiltValue * 0.4); // super
-        // basic manual control
-        // SmartDashboard.putNumber("relative tilt pos",
-        // tiltMotor.getEncoder().getPosition());
-
-        // SmartDashboard.putNumber("TILTPERCENT", tiltMotor.getAppliedOutput());
-
-        // SmartDashboard.putNumber("TILTVOLTAGE", tiltMotor.getBusVoltage());
-        // SmartDashboard.putNumber("thru bore pos",
-        // thruBoreEncoder.getAbsolutePosition());
-        // SmartDashboard.putNumber("shooter thrubore",
-        // shooterTiltThruBoreEncoder.getAbsolutePosition());
 
     }
 
@@ -230,6 +165,11 @@ public class Shooter extends SubsystemBase {
         double[] desiredShooterStateArray = { predictedVelocity, predictedAngle };
 
         return desiredShooterStateArray;
+
+    }
+
+    public void setIndexMotorSpeed(double speed) {
+        indexerMotor.set(speed);
 
     }
 
