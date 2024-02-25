@@ -22,6 +22,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -158,6 +159,12 @@ public class SwerveBase extends SubsystemBase {
       final EstimatedRobotPose estimatedPose = optionalEstimatedPose.get();
       poseEstimator.addVisionMeasurement(estimatedPose.estimatedPose.toPose2d(),
           estimatedPose.timestampSeconds);
+
+      // poseEstimator.addVisionMeasurement(estimatedPose.estimatedPose,
+      // estimatedPose.timestampSeconds,
+      // poseEstimator.getDefaultVisionMeasurementStdDevs().times(new
+      // Translation2d().getNorm()));
+
     }
 
     // vision.getEstimatedGlobalPose(poseEstimator.getEstimatedPosition())

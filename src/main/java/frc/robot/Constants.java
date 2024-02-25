@@ -26,11 +26,11 @@ public final class Constants {
 
         public static final class ShooterConstants {
 
-                public static final int shooterUpperID = 9; // TODO: CHANGE ALL OF THESE AS NEEDED
-                public static final int shooterLowerID = 10;
-                public static final int indexerID = 21;
-                public static final int shooterTiltID = 12;
-                public static final int elevatorID = 13;
+                public static final int shooterUpperID = 14;
+                public static final int shooterLowerID = 13;
+                public static final int indexerID = 16;
+                public static final int shooterTiltID = 15;
+                public static final int elevatorID = 17;
 
                 public static final int shooterTiltThruBoreEncoderDIO = 9;
 
@@ -68,18 +68,19 @@ public final class Constants {
         }
 
         public static final class CollectorConstants {
-                public static final int elevatorMotorID = 16;
-                public static final int collectorRollerID = 15;
+
+                public static final int collectorRollerID = 12;
                 public static final int collectorTiltID = 11;
 
-                public static final int collectorTiltThruBoreDIO = 0;
+                public static final int collectorTiltThruBoreDIO = 1;
+                public static final int collectorOpticalDIO = 0;
 
-                public static final double collectorTiltAlignToShooterPos = 0.6; // encoder value for "retracted"
-                                                                                 // collector
+                public static final double collectorTiltAlignToShooterPos = 0.65; // encoder value for "retracted"
+                                                                                  // collector
                 public static final double collectorTiltCollectPos = 0.3; // encoder value for collecting
 
-                public static final double tiltkD = 0.1;
-                public static final double tiltkP = 1.5;
+                public static final double tiltkD = 0.05;
+                public static final double tiltkP = 1;
 
         }
 
@@ -149,15 +150,10 @@ public final class Constants {
                 public static final int rearRightRotationEncoderId = 40;
                 public static final int rearLeftRotationEncoderId = 50;
 
-                public static final double canCoder20 = Units.rotationsToRadians(0.992);
-                public static final double canCoder30 = Units.rotationsToRadians(0.143);
-                public static final double canCoder40 = Units.rotationsToRadians(0.917);
-                public static final double canCoder50 = Units.rotationsToRadians(0.661);
-
-                public static final double frontLeftAngleOffset = Units.rotationsToRadians(0.992);
-                public static final double frontRightAngleOffset = Units.rotationsToRadians(0.143);
-                public static final double rearLeftAngleOffset = Units.rotationsToRadians(0.661);
-                public static final double rearRightAngleOffset = Units.rotationsToRadians(0.917);
+                public static final double frontLeftAngleOffset = Units.rotationsToRadians(0.992); // 20
+                public static final double frontRightAngleOffset = Units.rotationsToRadians(0.143); // 30
+                public static final double rearRightAngleOffset = Units.rotationsToRadians(0.917); // 40
+                public static final double rearLeftAngleOffset = Units.rotationsToRadians(0.661); // 50
 
                 // used
                 public static final double translationkP = 3;

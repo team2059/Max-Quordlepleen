@@ -54,7 +54,7 @@ public class Robot extends LoggedRobot {
 
     if (isReal()) {
       Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
-      new PowerDistribution(15, ModuleType.kRev); // Enables power distribution logging
+      new PowerDistribution(55, ModuleType.kRev); // Enables power distribution logging
     } else {
       setUseTiming(false); // Run as fast as possible
       String logPath = LogFileUtil.findReplayLog(); // Pull the replay log from AdvantageScope (or prompt the user)
@@ -102,6 +102,7 @@ public class Robot extends LoggedRobot {
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+
     // SmartDashboard.putData("cmd", CommandScheduler.getInstance());
 
   }

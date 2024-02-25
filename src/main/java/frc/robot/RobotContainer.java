@@ -16,11 +16,14 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.CollectorConstants;
 import frc.robot.commands.*;
+import frc.robot.commands.CollectorCmds.FeedNoteToShooterCmd;
+import frc.robot.commands.CollectorCmds.PickupNoteCmd;
+import frc.robot.commands.CollectorCmds.IntakeNoteCmd;
 import frc.robot.subsystems.*;
 
 // import com.pathplanner.lib.*;
@@ -68,13 +71,13 @@ public class RobotContainer {
   // XboxController.Button.kX.value);
 
   /* Subsystems */
-  private final SwerveBase swerveBase;
+  private static final SwerveBase swerveBase = new SwerveBase();
 
-  // private final Collector collector;
+  private static final Collector collector = new Collector();
 
   // private final Shooter shooter;
 
-  private final Vision vision;
+  private static final Vision vision = new Vision();
   // private final PowerDistributionPanel powerDistributionPanel = new
   // PowerDistributionPanel();
 
@@ -87,10 +90,6 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    swerveBase = new SwerveBase();
-    // shooter = new Shooter();
-    vision = new Vision();
-    // collector = new Collector();
 
     var field = new Field2d();
     SmartDashboard.putData("Field", field);
@@ -153,14 +152,24 @@ public class RobotContainer {
     // goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 4, 78));
 
     // Y - intake up
-    // new JoystickButton(controller, 4)
-    // .onTrue(new MoveCollectorCmd(collector,
-    // CollectorConstants.collectorTiltAlignToShooterPos));
+    new JoystickButton(controller, 4)
+        .onTrue(new FeedNoteToShooterCmd(collector));
 
     // A - intake down
-    // new JoystickButton(controller, 1)
-    // .onTrue(new MoveCollectorCmd(collector,
-    // CollectorConstants.collectorTiltCollectPos));
+    new JoystickButton(controller, 1)
+        .onTrue(new PickupNoteCmd(collector));
+
+    // X - intake roller
+    // new JoystickButton(controller, 3).whileTrue(new InstantCommand(() ->
+    // collector.setRollerMotor(0.33)))
+    // .whileFalse(new InstantCommand(() -> collector.setRollerMotor(0)));
+
+    new JoystickButton(controller, 3).whileTrue(new IntakeNoteCmd(collector));
+
+    // B - outake roller
+    new JoystickButton(controller, 2)
+        .whileTrue(new InstantCommand(() -> collector.setRollerMotor(-0.33)))
+        .whileFalse(new InstantCommand(() -> collector.setRollerMotor(0)));
 
   }
 
@@ -183,7 +192,11 @@ public class RobotContainer {
   // }
 
   public Vision getVision() {
-  return vision;
+    return vision;
+  }
+
+  public static Collector getCollector() {
+    return collector;
   }
 
 }
