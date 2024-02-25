@@ -174,7 +174,7 @@ public class RobotContainer {
         .whileFalse(new InstantCommand(() -> shooter.setIndexMotorSpeed(0)));
 
     // right bumper - rev up shooter
-    new JoystickButton(controller, 6).whileTrue(new ShootAtRPMsCmd(shooter, 4500));
+    new JoystickButton(controller, 6).whileTrue(new ShootAtRPMsCmd(shooter, 1000));
 
   }
 

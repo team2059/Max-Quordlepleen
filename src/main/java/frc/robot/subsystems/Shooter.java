@@ -16,6 +16,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -184,6 +185,10 @@ public class Shooter extends SubsystemBase {
 
     public void setIndexMotorSpeed(double speed) {
         indexerMotor.set(speed);
+    }
+
+    public double getVelocity() {
+        return shooterLowerEncoder.getVelocity();
     }
 
     public void setIndexMotorSpeedWithNoteSensorCondition(double speed) {

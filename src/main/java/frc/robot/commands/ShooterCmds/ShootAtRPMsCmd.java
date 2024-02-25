@@ -27,6 +27,7 @@ public class ShootAtRPMsCmd extends Command {
   @Override
   public void initialize() {
     Logger.recordOutput("desiredRPMs ", desiredRPMs);
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -37,11 +38,17 @@ public class ShootAtRPMsCmd extends Command {
         CANSparkMax.ControlType.kVelocity);
     shooter.shooterLowerController.setReference(desiredRPMs,
         CANSparkMax.ControlType.kVelocity);
+
+    if (shooter.getVelocity() >= desiredRPMs - 50) {
+      shooter.indexerMotor.set(-0.33);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+
+    shooter.indexerMotor.set(0);
     shooter.shooterUpperMotor.set(0);
     shooter.shooterLowerMotor.set(0);
 
@@ -50,6 +57,8 @@ public class ShootAtRPMsCmd extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+
     return false;
+
   }
 }
