@@ -39,6 +39,10 @@ public final class Constants {
                 public static final int shooterTiltID = 15;
                 public static final int elevatorID = 10;
 
+                public static final int topElevatorHallEffectDIO = 9;
+                public static final double TOP_LIMIT = 63;
+
+                public static final double scoreAmpPos = 0.365;
                 public static final double alignToCollectorPos = 0.78; // encoder value for getting note from collector
                 public static final double restPos = 0.91;
 
@@ -67,6 +71,7 @@ public final class Constants {
 
         public static final class ClimberConstants {
                 public static final int climberWinchMotorID = 9; // TODO: change placeholder CAN IDs
+                public static final int climberHallEffectDIO = 8;
 
                 public static final double climbkP = 0;
                 public static final double climbkD = 0;
@@ -77,8 +82,8 @@ public final class Constants {
                 public static final int collectorRollerID = 12;
                 public static final int collectorTiltID = 11;
 
-                public static final double collectorTiltAlignToShooterPos = 0.65; // encoder value for "retracted"
-                                                                                  // collector
+                public static final double collectorTiltAlignToShooterPos = 0.7; // encoder value for "retracted"
+                                                                                 // collector
                 public static final double collectorTiltCollectPos = 0.3; // encoder value for collecting
 
                 public static final double tiltkD = 0.05;

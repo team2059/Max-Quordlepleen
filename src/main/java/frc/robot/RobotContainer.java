@@ -22,8 +22,11 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.CollectorConstants;
 import frc.robot.commands.*;
 import frc.robot.commands.CollectorCmds.PickupNoteCmd;
+import frc.robot.commands.ShooterCmds.ElevateShooterToTrapCmd;
+import frc.robot.commands.ShooterCmds.MoveShooterElevatorToSetpointCmd;
 import frc.robot.commands.ShooterCmds.MoveShooterToCollectorCmd;
 import frc.robot.commands.ShooterCmds.ShootAtRPMsCmd;
+import frc.robot.commands.ShooterCmds.TiltShooterToSetpointCmd;
 import frc.robot.commands.CollectorCmds.FeedNoteToShooterCmd;
 import frc.robot.commands.CollectorCmds.IntakeNoteCmd;
 import frc.robot.subsystems.*;
@@ -86,6 +89,10 @@ public class RobotContainer {
   SendableChooser<Command> autoChooser;
 
   boolean isbeinginverted = false;
+
+  ShootAtRPMsCmd shootAt1000RPMsCmd = new ShootAtRPMsCmd(shooter, 4500);
+  TiltShooterToSetpointCmd tiltShooterToSetpointCmd = new TiltShooterToSetpointCmd(shooter, 0.82);
+
   /* Commands */
 
   /**
@@ -162,19 +169,21 @@ public class RobotContainer {
         .onTrue(new PickupNoteCmd(collector));
 
     // X - intake roller
-    new JoystickButton(controller, 3).whileTrue(new IntakeNoteCmd(collector, shooter));
+    new JoystickButton(controller, 2).whileTrue(new IntakeNoteCmd(collector,
+    shooter));
+    new JoystickButton(controller, 3).whileTrue(tiltShooterToSetpointCmd);
 
     // B - outake roller
-    new JoystickButton(controller, 2)
-        .whileTrue(new InstantCommand(() -> collector.setRollerMotor(-0.33)))
-        .whileFalse(new InstantCommand(() -> collector.setRollerMotor(0)));
+    // new JoystickButton(controller, 2)
+    //     .whileTrue(new InstantCommand(() -> collector.setRollerMotor(-0.33)))
+    //     .whileFalse(new InstantCommand(() -> collector.setRollerMotor(0)));
 
-    // left bumper - run shooter indexer
-    new JoystickButton(controller, 5).whileTrue(new InstantCommand(() -> shooter.setIndexMotorSpeed(-0.66)))
+    // right bumper - run indexer
+    new JoystickButton(controller, 6).whileTrue(new InstantCommand(() -> shootAt1000RPMsCmd.activateIndexer()))
         .whileFalse(new InstantCommand(() -> shooter.setIndexMotorSpeed(0)));
 
-    // right bumper - rev up shooter
-    new JoystickButton(controller, 6).whileTrue(new ShootAtRPMsCmd(shooter, 1000));
+    // left bumper - rev up shooter
+    new JoystickButton(controller, 5).whileTrue(shootAt1000RPMsCmd);
 
   }
 

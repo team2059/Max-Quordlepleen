@@ -6,17 +6,26 @@ package frc.robot.commands.ShooterCmds;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 
-public class MoveShooterToSetpointCmd extends Command {
+public class TiltShooterToSetpointCmd extends Command {
     Shooter shooter;
     double setpoint;
-    PIDController tiltController = new PIDController(1.0, 0, 0);
+    PIDController tiltController = new PIDController(2, 0, 0.05);
+
+    // ProfiledPIDController profiledPIDController = new ProfiledPIDController(0.1,
+    // 0, 0,
+    // new TrapezoidProfile.Constraints(0.5, 0.25));
+
+    ArmFeedforward armFeedforward = new ArmFeedforward(0, 0, 0.1);
 
     /** Creates a new MoveCollectorCmd. */
-    public MoveShooterToSetpointCmd(Shooter shooter, double setpoint) {
+    public TiltShooterToSetpointCmd(Shooter shooter, double setpoint) {
         this.shooter = shooter;
         this.setpoint = setpoint;
 
@@ -28,7 +37,9 @@ public class MoveShooterToSetpointCmd extends Command {
     @Override
     public void initialize() {
 
-        tiltController.setTolerance(0.03);
+        tiltController.setTolerance(0.025);
+
+        // profiledPIDController.setGoal(setpoint);
 
     }
 
@@ -41,7 +52,8 @@ public class MoveShooterToSetpointCmd extends Command {
 
         shooter.shooterTiltMotor.set(pidOutout);
 
-        Logger.recordOutput("pid output", pidOutout);
+        Logger.recordOutput("voltage output", pidOutout);
+        Logger.recordOutput("current tilt pos shooter", shooter.getShooterTiltPos());
         Logger.recordOutput("setpoint", setpoint);
 
     }

@@ -14,6 +14,7 @@ import frc.robot.subsystems.Shooter;
 public class ShootAtRPMsCmd extends Command {
   Shooter shooter;
   double desiredRPMs;
+  double shooterVelocity;
 
   /** Creates a new ShootAtRPMsCmd. */
   public ShootAtRPMsCmd(Shooter shooter, double desiredRPMs) {
@@ -34,14 +35,16 @@ public class ShootAtRPMsCmd extends Command {
   @Override
   public void execute() {
 
+    shooterVelocity = shooter.getVelocity();
+
+    Logger.recordOutput("currentVelocity", shooter.getVelocity());
+    Logger.recordOutput("desiredRPMs", desiredRPMs);
+
     shooter.shooterUpperController.setReference(desiredRPMs,
         CANSparkMax.ControlType.kVelocity);
     shooter.shooterLowerController.setReference(desiredRPMs,
         CANSparkMax.ControlType.kVelocity);
 
-    if (shooter.getVelocity() >= desiredRPMs - 50) {
-      shooter.indexerMotor.set(-0.33);
-    }
   }
 
   // Called once the command ends or is interrupted.
@@ -52,6 +55,12 @@ public class ShootAtRPMsCmd extends Command {
     shooter.shooterUpperMotor.set(0);
     shooter.shooterLowerMotor.set(0);
 
+  }
+
+  public void activateIndexer() {
+    if (shooterVelocity >= desiredRPMs - 25) {
+      shooter.indexerMotor.set(-0.33);
+    }
   }
 
   // Returns true when the command should end.

@@ -5,22 +5,20 @@
 package frc.robot.commands.ShooterCmds;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants.CollectorConstants;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.commands.CollectorCmds.MoveCollectorToSetpointCmd;
-import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Shooter;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class MoveShooterToCollectorCmd extends SequentialCommandGroup {
+public class ElevateShooterToTrapCmd extends SequentialCommandGroup {
   Shooter shooter;
 
-  /** Creates a new AlignCollectorToShooterCmd. */
-  public MoveShooterToCollectorCmd(Shooter shooter) {
+  /** Creates a new ElevateAmp. */
+  public ElevateShooterToTrapCmd(Shooter shooter) {
+    this.shooter = shooter;
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new TiltShooterToSetpointCmd(shooter, ShooterConstants.alignToCollectorPos));
+    addCommands(new MoveShooterElevatorToSetpointCmd(shooter, ShooterConstants.TOP_LIMIT));
   }
 }

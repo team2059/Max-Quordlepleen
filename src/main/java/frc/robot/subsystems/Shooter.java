@@ -60,6 +60,8 @@ public class Shooter extends SubsystemBase {
     public DutyCycleEncoder shooterTiltThruBoreEncoder = new DutyCycleEncoder(
             DIOConstants.shooterTiltThruBoreEncoderDIO);
 
+    public DigitalInput topElevatorHallEffect = new DigitalInput(ShooterConstants.topElevatorHallEffectDIO);
+
     public Shooter() {
 
         shooterUpperMotor = new CANSparkFlex(Constants.ShooterConstants.shooterUpperID, MotorType.kBrushless);
@@ -86,19 +88,21 @@ public class Shooter extends SubsystemBase {
 
         indexerMotor = new CANSparkMax(Constants.ShooterConstants.indexerID, MotorType.kBrushless);
 
-        // elevatorMotor = new CANSparkMax(Constants.ShooterConstants.elevatorID,
-        // MotorType.kBrushless);
+        elevatorMotor = new CANSparkMax(Constants.ShooterConstants.elevatorID,
+                MotorType.kBrushless);
 
-        shooterUpperController.setP(0);
+        elevatorMotor.setInverted(false);
+
+        shooterUpperController.setP(0.001);
         shooterUpperController.setI(0);
         shooterUpperController.setD(0);
-        shooterUpperController.setFF(0.00015);
+        shooterUpperController.setFF(0.000156);
         shooterUpperController.setOutputRange(-1, 1);
 
-        shooterLowerController.setP(0);
+        shooterLowerController.setP(0.001);
         shooterLowerController.setI(0);
         shooterLowerController.setD(0);
-        shooterLowerController.setFF(0.00015);
+        shooterLowerController.setFF(0.000156);
         shooterLowerController.setOutputRange(-1, 1);
 
         // shooterLowerMotor.restoreFactoryDefaults();
@@ -116,6 +120,8 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
+
+        SmartDashboard.putBoolean("isTopLimitReached", isTopLimitReached());
 
         if (isNotePresent()) {
             indexerMotor.set(0);
@@ -139,6 +145,10 @@ public class Shooter extends SubsystemBase {
 
         Logger.recordOutput("shooter optical", isNotePresent());
 
+    }
+
+    public boolean isTopLimitReached() {
+        return !topElevatorHallEffect.get();
     }
 
     public boolean isNotePresent() {

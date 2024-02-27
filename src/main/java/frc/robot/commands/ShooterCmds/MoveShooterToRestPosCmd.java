@@ -14,13 +14,13 @@ import frc.robot.subsystems.Shooter;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class MoveShooterToCollectorCmd extends SequentialCommandGroup {
+public class MoveShooterToRestPosCmd extends SequentialCommandGroup {
   Shooter shooter;
 
   /** Creates a new AlignCollectorToShooterCmd. */
-  public MoveShooterToCollectorCmd(Shooter shooter) {
+  public MoveShooterToRestPosCmd(Shooter shooter) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new TiltShooterToSetpointCmd(shooter, ShooterConstants.alignToCollectorPos));
+    addCommands(new TiltShooterToSetpointCmd(shooter, ShooterConstants.restPos));
   }
 }
