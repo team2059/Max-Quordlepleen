@@ -123,6 +123,10 @@ public class Shooter extends SubsystemBase {
 
         isNotePresent = !shooterNoteSensor.get();
 
+        if (isNotePresent) {
+            indexerMotor.set(0);
+        }
+
         SmartDashboard.putBoolean("isTopLimitReached", isTopLimitReached());
 
         // double tiltSetpoint = ShooterConstants.alignToCollectorPos;

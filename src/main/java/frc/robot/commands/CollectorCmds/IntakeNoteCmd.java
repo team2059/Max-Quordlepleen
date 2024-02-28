@@ -21,6 +21,8 @@ public class IntakeNoteCmd extends Command {
 
   Collector collector;
   Shooter shooter;
+
+  boolean isReady;
   // boolean isFinished = false;
 
   /** Creates a new CollectCmd. */
@@ -42,7 +44,18 @@ public class IntakeNoteCmd extends Command {
   public void execute() {
 
     if (collector.isNotePresent()) {
-      collector.rollerMotor.set(0);
+      // isReady = true;
+      // if (isReady) {
+      // collector.rollerMotor.set(0);
+      // }
+
+      CommandScheduler.getInstance()
+          .schedule(new SequentialCommandGroup(new ParallelCommandGroup(new TiltShooterToCollectorCmd(shooter),
+              new ManualFeedNoteToShooterCmd(collector)), new IndexerCmd(collector, shooter)));
+
+      // isReady = false;
+
+      // runIndexers();
       // isFinished = true;
       // CommandScheduler.getInstance()
       // .schedule(new SequentialCommandGroup(new ParallelCommandGroup(new

@@ -50,17 +50,15 @@ public class AutoFeedNoteToShooterCmd extends SequentialCommandGroup {
     // .onlyIf(() -> !shooter.isNotePresent && collector.isNotePresent()),
     // () -> shooter.isNotePresent));
 
-    addCommands(new SequentialCommandGroup(new ParallelCommandGroup(new TiltShooterToCollectorCmd(shooter),
-        new MoveCollectorToSetpointCmd(collector,
-            CollectorConstants.collectorTiltAlignToShooterPos))
-        .onlyIf(() -> collector.isNotePresent())),
-        new ConditionalCommand(
-            new InstantCommand(() -> shooter.setIndexMotorSpeed(0))
-                .alongWith(new InstantCommand(() -> collector.setRollerMotor(0))),
-            new InstantCommand(() -> shooter.setIndexMotorSpeed(-0.33))
-                .alongWith(new InstantCommand(() -> collector.setRollerMotor(-0.33)))
-                .onlyIf(() -> !shooter.isNotePresent && collector.isNotePresent()),
-            () -> shooter.isNotePresent));
+    // addCommands(new SequentialCommandGroup(new ParallelCommandGroup(new TiltShooterToCollectorCmd(shooter),
+    //     ),
+    //     new ConditionalCommand(
+    //         new InstantCommand(() -> shooter.setIndexMotorSpeed(0))
+    //             .alongWith(new InstantCommand(() -> collector.setRollerMotor(0))),
+    //         new InstantCommand(() -> shooter.setIndexMotorSpeed(-0.33))
+    //             .alongWith(new InstantCommand(() -> collector.setRollerMotor(-0.33)))
+    //             .onlyIf(() -> !shooter.isNotePresent && collector.isNotePresent()),
+    //         () -> shooter.isNotePresent));
 
     // addCommands(new ParallelCommandGroup(new TiltShooterToCollectorCmd(shooter),
     // new MoveCollectorToSetpointCmd(collector,
