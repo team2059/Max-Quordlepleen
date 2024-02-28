@@ -130,9 +130,8 @@ public class Shooter extends SubsystemBase {
     public void periodic() {
         currentShooterTiltPosition = getShooterTiltPosDegrees();
 
-        // shooterTiltMotor.set(MathUtil.clamp(MathUtil.applyDeadband(new
-        // Joystick(2).getRawAxis(3), 0.05),
-        // -0.1, 0.1));
+        shooterTiltMotor.set(MathUtil.clamp(-MathUtil.applyDeadband(new Joystick(2).getRawAxis(3), 0.33),
+                -0.05, 0.05));
 
         // if (isNotePresent) {
         // indexerMotor.set(0);

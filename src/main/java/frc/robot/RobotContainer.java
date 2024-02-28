@@ -7,6 +7,7 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -27,8 +28,10 @@ import frc.robot.commands.CollectorCmds.IntakeNoteCmd;
 import frc.robot.commands.CollectorCmds.TiltCollectorToShooterCmd;
 import frc.robot.commands.CollectorCmds.MoveCollectorToSetpointCmd;
 import frc.robot.commands.CollectorCmds.PickupNoteCmd;
+import frc.robot.commands.ShooterCmds.ElevateShooterToTrapCmd;
 import frc.robot.commands.ShooterCmds.RunIndexerCmd;
 import frc.robot.commands.ShooterCmds.ShootAtRPMsCmd;
+import frc.robot.commands.ShooterCmds.ShootAtRPMsSupplierCmd;
 import frc.robot.commands.ShooterCmds.TiltShooterToSetpointCmd;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Shooter;
@@ -53,7 +56,7 @@ public class RobotContainer {
   public static final XboxController controller = new XboxController(0);
 
   /* LOGITECH */
-  public final static Joystick logitech = new Joystick(2);
+  public final static Joystick logitech = new Joystick(1);
 
   private final int kLogitechTranslationAxis = 1;
   private final int kLogitechStrafeAxis = 0;
@@ -175,6 +178,8 @@ public class RobotContainer {
     /* Y - intake up */
     new JoystickButton(controller, 4)
         .onTrue(new TiltCollectorToShooterCmd(collector));
+    // new JoystickButton(controller, 4)
+    // .whileTrue(new ElevateShooterToTrapCmd(shooter));
 
     /* A - intake down */
     new JoystickButton(controller, 1)
@@ -190,9 +195,22 @@ public class RobotContainer {
         .whileFalse(new InstantCommand(() -> collector.setRollerMotor(0)));
 
     /* left bumper - rev up shooter */
+    // new JoystickButton(controller, 5)
+    // .whileTrue(
+    // // new TiltShooterToSetpointCmd(shooter,
+    // ScoringPresets.SPEAKER_SUBWOOFER_SHOOTER_TILT)
+    // // .andThen(
+    // new ShootAtRPMsSupplierCmd(shooter, ()->
+    // MathUtil.clamp(-MathUtil.applyDeadband(logitech.getRawAxis(3)*3000, 0.33),
+    // 0, 3000)))
+    // //)
+    // ;
+
     new JoystickButton(controller, 5)
-        .whileTrue(new TiltShooterToSetpointCmd(shooter, ScoringPresets.AMP_SHOOTER_TILT)
-            .andThen(new ShootAtRPMsCmd(shooter, ScoringPresets.AMP_SHOOTER_VELOCITY)));
+        .whileTrue(
+            new TiltShooterToSetpointCmd(shooter, ScoringPresets.SPEAKER_SUBWOOFER_SHOOTER_TILT)
+                .andThen(
+                    new ShootAtRPMsCmd(shooter, ScoringPresets.SPEAKER_SUBWOOFER_SHOOTER_VELOCITY)));
 
     /* right bumper - run indexer */
     // new JoystickButton(controller, 6)

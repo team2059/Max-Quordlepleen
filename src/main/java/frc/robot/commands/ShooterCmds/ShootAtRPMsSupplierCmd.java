@@ -4,6 +4,8 @@
 
 package frc.robot.commands.ShooterCmds;
 
+import java.util.function.DoubleSupplier;
+
 import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.CANSparkMax;
@@ -12,13 +14,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Shooter;
 
-public class ShootAtRPMsCmd extends Command {
+public class ShootAtRPMsSupplierCmd extends Command {
   Shooter shooter;
-  public static double desiredRPMs;
+  public static DoubleSupplier desiredRPMs;
   public static double shooterVelocity;
 
   /** Creates a new ShootAtRPMsCmd. */
-  public ShootAtRPMsCmd(Shooter shooter, double desiredRPMs) {
+  public ShootAtRPMsSupplierCmd(Shooter shooter, DoubleSupplier desiredRPMs) {
     this.shooter = shooter;
     this.desiredRPMs = desiredRPMs;
     addRequirements(shooter);
@@ -28,7 +30,7 @@ public class ShootAtRPMsCmd extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    Logger.recordOutput("desiredRPMs ", desiredRPMs);
+    Logger.recordOutput("desiredRPMs ", desiredRPMs.getAsDouble());
 
   }
 
@@ -39,16 +41,16 @@ public class ShootAtRPMsCmd extends Command {
     shooterVelocity = shooter.getVelocity();
 
     Logger.recordOutput("currentVelocity", shooter.getVelocity());
-    Logger.recordOutput("desiredRPMs", desiredRPMs);
+    Logger.recordOutput("desiredRPMs", desiredRPMs.getAsDouble());
 
     // if (shooter.getVelocity() >= desiredRPMs - 50 &&
     // RobotContainer.logitech.getRawButton(6)) {
     // shooter.indexerMotor.set(-0.33);
     // }
 
-    shooter.shooterUpperController.setReference(desiredRPMs,
+    shooter.shooterUpperController.setReference(desiredRPMs.getAsDouble(),
         CANSparkMax.ControlType.kVelocity);
-    shooter.shooterLowerController.setReference(desiredRPMs,
+    shooter.shooterLowerController.setReference(desiredRPMs.getAsDouble(),
         CANSparkMax.ControlType.kVelocity);
 
   }

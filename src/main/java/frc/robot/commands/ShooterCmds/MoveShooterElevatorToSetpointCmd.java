@@ -51,6 +51,7 @@ public class MoveShooterElevatorToSetpointCmd extends Command {
   @Override
   public void initialize() {
 
+    profiledPIDController.setTolerance(1);
     profiledPIDController.reset(shooter.elevatorMotor.getEncoder().getPosition());
 
   }
@@ -74,8 +75,7 @@ public class MoveShooterElevatorToSetpointCmd extends Command {
 
     // m_motor.set(MathUtil.clamp(-new Joystick(0).getRawAxis(1), -0.25, 0.25));
 
-    if (shooter.isTopLimitReached() && currentPosition >= ShooterConstants.TOP_LIMIT
-        && setPoint == ShooterConstants.TOP_LIMIT) {
+    if (shooter.isTopLimitReached() || currentPosition >= ShooterConstants.TOP_LIMIT - 1) {
       System.out.println("stopped!!!!!");
       shooter.elevatorMotor.set(0);
     } else {
@@ -91,6 +91,6 @@ public class MoveShooterElevatorToSetpointCmd extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return profiledPIDController.atSetpoint();
+    return profiledPIDController.atGoal();
   }
 }
