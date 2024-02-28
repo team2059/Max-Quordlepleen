@@ -103,7 +103,12 @@ public class Robot extends LoggedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
 
-    SmartDashboard.putData("cmd", CommandScheduler.getInstance());
+    // if (RobotContainer.getShooter().isNotePresent()) {
+    // RobotContainer.getShooter().indexerMotor.set(0);
+    // RobotContainer.getCollector().rollerMotor.set(0);
+    // }
+
+    SmartDashboard.putData("cmdScheduler", CommandScheduler.getInstance());
 
   }
 

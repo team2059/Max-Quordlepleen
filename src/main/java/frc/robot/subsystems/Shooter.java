@@ -29,6 +29,8 @@ public class Shooter extends SubsystemBase {
 
     // upper & lower are vortex
     // upper, lower, indexer, shootertilt, elevator
+
+    public boolean isNotePresent;
     public CANSparkFlex shooterUpperMotor;
     public CANSparkFlex shooterLowerMotor;
     public CANSparkMax indexerMotor;
@@ -38,17 +40,11 @@ public class Shooter extends SubsystemBase {
     public RelativeEncoder shooterUpperEncoder;
     public RelativeEncoder shooterLowerEncoder;
 
-    public PIDController tiltController;
-    public PIDController elevatorController;
-    // public PIDController shooterController;
-
     public SparkPIDController shooterUpperController;
     public SparkPIDController shooterLowerController;
 
     public double currentShooterUpperMotorRPMs;
     public double currentShooterLowerMotorRPMs;
-
-    double desiredShooterMotorRPMs;
 
     static SplineInterpolator interpolator = new SplineInterpolator();
     static PolynomialSplineFunction velocityFunction = interpolator.interpolate(ShooterRegressionConstants.distances,
@@ -57,6 +53,7 @@ public class Shooter extends SubsystemBase {
             ShooterRegressionConstants.angles);
 
     public DigitalInput shooterNoteSensor = new DigitalInput(DIOConstants.shooterOpticalDIO);
+
     public DutyCycleEncoder shooterTiltThruBoreEncoder = new DutyCycleEncoder(
             DIOConstants.shooterTiltThruBoreEncoderDIO);
 
@@ -99,6 +96,8 @@ public class Shooter extends SubsystemBase {
         shooterUpperController.setFF(0.000156);
         shooterUpperController.setOutputRange(-1, 1);
 
+        // elevatorMotor.enableVoltageCompensation(12);
+
         shooterLowerController.setP(0.001);
         shooterLowerController.setI(0);
         shooterLowerController.setD(0);
@@ -114,19 +113,18 @@ public class Shooter extends SubsystemBase {
         // elevatorMotor.configFactoryDefault();
         // elevatorMotor.setInverted(true);
 
-        tiltController = new PIDController(2, 0.00, 0);
+        // shooterTiltThruBoreEncoder.setDistancePerRotation(2 * Math.PI);
+        // shooterTiltThruBoreEncoder.setPositionOffset(0);
 
     }
 
     @Override
     public void periodic() {
 
+        isNotePresent = !shooterNoteSensor.get();
+
         SmartDashboard.putBoolean("isTopLimitReached", isTopLimitReached());
 
-        if (isNotePresent()) {
-            indexerMotor.set(0);
-            RobotContainer.getCollector().rollerMotor.set(0);
-        }
         // double tiltSetpoint = ShooterConstants.alignToCollectorPos;
 
         // double tiltOutput = tiltController.calculate(currentTiltPos, tiltSetpoint);
@@ -152,16 +150,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean isNotePresent() {
-        return !shooterNoteSensor.get();
-
-    }
-
-    public SparkPIDController getShooterUpperController() {
-        return shooterUpperController;
-    }
-
-    public double getShooterTiltPos() {
-        return shooterTiltThruBoreEncoder.getAbsolutePosition();
+        return isNotePresent;
     }
 
     public double[] calculateDesiredShooterState(double distance) {
@@ -198,16 +187,15 @@ public class Shooter extends SubsystemBase {
     }
 
     public double getVelocity() {
-        return shooterLowerEncoder.getVelocity();
+        return (shooterLowerEncoder.getVelocity() + shooterUpperEncoder.getVelocity()) / 2.0;
     }
 
-    public void setIndexMotorSpeedWithNoteSensorCondition(double speed) {
-        if (isNotePresent()) {
-            indexerMotor.set(speed);
-        } else {
-            indexerMotor.set(0);
-            return;
-        }
+    public SparkPIDController getShooterUpperController() {
+        return shooterUpperController;
+    }
+
+    public double getShooterTiltPos() {
+        return shooterTiltThruBoreEncoder.getAbsolutePosition();
     }
 
 }

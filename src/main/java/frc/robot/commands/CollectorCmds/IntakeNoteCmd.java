@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.CollectorConstants;
-import frc.robot.commands.ShooterCmds.MoveShooterToCollectorCmd;
+import frc.robot.commands.ShooterCmds.TiltShooterToCollectorCmd;
 import frc.robot.commands.ShooterCmds.MoveShooterToRestPosCmd;
 import frc.robot.commands.ShooterCmds.TiltShooterToSetpointCmd;
 import frc.robot.subsystems.Collector;
@@ -21,6 +21,7 @@ public class IntakeNoteCmd extends Command {
 
   Collector collector;
   Shooter shooter;
+  // boolean isFinished = false;
 
   /** Creates a new CollectCmd. */
   public IntakeNoteCmd(Collector collector, Shooter shooter) {
@@ -42,12 +43,31 @@ public class IntakeNoteCmd extends Command {
 
     if (collector.isNotePresent()) {
       collector.rollerMotor.set(0);
-      CommandScheduler.getInstance()
-          .schedule(new SequentialCommandGroup(new ParallelCommandGroup(new FeedNoteToShooterCmd(collector),
-              new MoveShooterToCollectorCmd(shooter)),
-              new ParallelCommandGroup(
-                  new InstantCommand(() -> shooter.setIndexMotorSpeed(-0.33)),
-                  new InstantCommand(() -> collector.rollerMotor.set(-0.25)))));
+      // isFinished = true;
+      // CommandScheduler.getInstance()
+      // .schedule(new SequentialCommandGroup(new ParallelCommandGroup(new
+      // FeedNoteToShooterCmd(collector),
+      // new TiltShooterToCollectorCmd(shooter)),
+      // new ParallelCommandGroup(
+      // new InstantCommand(() -> shooter.setIndexMotorSpeed(-0.33)),
+      // new InstantCommand(() -> collector.rollerMotor.set(-0.25)))
+      // .onlyWhile(() -> !shooter.isNotePresent()),
+      // new InstantCommand(() -> shooter.setIndexMotorSpeed(0)),
+      // new InstantCommand(() -> collector.rollerMotor.set(0))));
+
+      // CommandScheduler.getInstance()
+      // .schedule(new SequentialCommandGroup(new ParallelCommandGroup(new
+      // FeedNoteToShooterCmd(collector),
+      // new TiltShooterToCollectorCmd(shooter)),
+      // new ParallelCommandGroup(
+      // new InstantCommand(() -> shooter.setIndexMotorSpeed(-0.33)),
+      // new InstantCommand(() -> collector.rollerMotor.set(-0.25))))
+      // .until(() -> shooter.isNotePresent()));
+      // if (shooter.isNotePresent()) {
+      // shooter.setIndexMotorSpeed(0);
+      // collector.rollerMotor.set(0);
+      // }
+
     } else {
       collector.setRollerMotor(0.33);
     }
@@ -64,6 +84,8 @@ public class IntakeNoteCmd extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+
+    // System.out.println(isFinished);
 
     return false;
 

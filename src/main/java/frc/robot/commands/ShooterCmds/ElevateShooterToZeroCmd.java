@@ -19,6 +19,6 @@ public class ElevateShooterToZeroCmd extends SequentialCommandGroup {
     this.shooter = shooter;
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new MoveShooterToCollectorCmd(shooter), new MoveShooterElevatorToSetpointCmd(shooter, 0));
+    addCommands(new TiltShooterToCollectorCmd(shooter), new MoveShooterElevatorToSetpointCmd(shooter, 0));
   }
 }

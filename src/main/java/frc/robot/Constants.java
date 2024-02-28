@@ -43,7 +43,7 @@ public final class Constants {
                 public static final double TOP_LIMIT = 63;
 
                 public static final double scoreAmpPos = 0.365;
-                public static final double alignToCollectorPos = 0.78; // encoder value for getting note from collector
+                public static final double alignToCollectorPos = 0.76; // encoder value for getting note from collector
                 public static final double restPos = 0.91;
 
                 public static final double tiltkP = 0;

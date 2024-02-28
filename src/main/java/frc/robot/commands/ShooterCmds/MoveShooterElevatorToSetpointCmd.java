@@ -19,6 +19,7 @@ public class MoveShooterElevatorToSetpointCmd extends Command {
   double kP, kD, kV, maxVel, maxAcc;
   ProfiledPIDController profiledPIDController;
   ElevatorFeedforward elevatorFeedforward;
+  double currentPosition;
 
   /** Creates a new ElevateToAmpCmd. */
   public MoveShooterElevatorToSetpointCmd(Shooter shooter, double setPoint) {
@@ -49,13 +50,16 @@ public class MoveShooterElevatorToSetpointCmd extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+
+    profiledPIDController.reset(shooter.elevatorMotor.getEncoder().getPosition());
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
-    double currentPosition = shooter.elevatorMotor.getEncoder().getPosition();
+    currentPosition = shooter.elevatorMotor.getEncoder().getPosition();
 
     // goal = final target of mechanism
     double pidOutput = profiledPIDController.calculate(currentPosition,
@@ -65,13 +69,13 @@ public class MoveShooterElevatorToSetpointCmd extends Command {
     // SmartDashboard.putNumber("desiredVelocity", pidVelocitySetpoint);
 
     double ffOutput = elevatorFeedforward.calculate(pidVelocitySetpoint);
+
     // SmartDashboard.putNumber("ffOutput", ffOutput);
 
     // m_motor.set(MathUtil.clamp(-new Joystick(0).getRawAxis(1), -0.25, 0.25));
 
-    if (!shooter.isTopLimitReached() && currentPosition >= ShooterConstants.TOP_LIMIT
-        && (pidOutput +
-            ffOutput) > 0) {
+    if (shooter.isTopLimitReached() && currentPosition >= ShooterConstants.TOP_LIMIT
+        && setPoint == ShooterConstants.TOP_LIMIT) {
       System.out.println("stopped!!!!!");
       shooter.elevatorMotor.set(0);
     } else {

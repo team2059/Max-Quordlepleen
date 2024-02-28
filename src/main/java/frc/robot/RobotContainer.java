@@ -5,8 +5,6 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
-
 import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.wpilibj.GenericHID;
@@ -16,20 +14,20 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.Constants.CollectorConstants;
-import frc.robot.commands.*;
+import frc.robot.commands.TeleopSwerveCmd;
+import frc.robot.commands.CollectorCmds.AutoFeedNoteToShooterCmd;
+import frc.robot.commands.CollectorCmds.IntakeNoteCmd;
+import frc.robot.commands.CollectorCmds.ManualFeedNoteToShooterCmd;
 import frc.robot.commands.CollectorCmds.PickupNoteCmd;
-import frc.robot.commands.ShooterCmds.ElevateShooterToTrapCmd;
-import frc.robot.commands.ShooterCmds.MoveShooterElevatorToSetpointCmd;
-import frc.robot.commands.ShooterCmds.MoveShooterToCollectorCmd;
 import frc.robot.commands.ShooterCmds.ShootAtRPMsCmd;
 import frc.robot.commands.ShooterCmds.TiltShooterToSetpointCmd;
-import frc.robot.commands.CollectorCmds.FeedNoteToShooterCmd;
-import frc.robot.commands.CollectorCmds.IntakeNoteCmd;
-import frc.robot.subsystems.*;
+import frc.robot.subsystems.Collector;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.SwerveBase;
+import frc.robot.subsystems.Vision;
 
 // import com.pathplanner.lib.*;
 // import com.pathplanner.lib.commands.PPSwerveControllerCommand;
@@ -80,7 +78,7 @@ public class RobotContainer {
 
   private static final Collector collector = new Collector();
 
-  private final Shooter shooter = new Shooter();
+  private final static Shooter shooter = new Shooter();
 
   private static final Vision vision = new Vision();
   // private final PowerDistributionPanel powerDistributionPanel = new
@@ -90,7 +88,7 @@ public class RobotContainer {
 
   boolean isbeinginverted = false;
 
-  ShootAtRPMsCmd shootAt1000RPMsCmd = new ShootAtRPMsCmd(shooter, 4500);
+  public static ShootAtRPMsCmd shootAtRPMsCmd = new ShootAtRPMsCmd(shooter, 4500);
   TiltShooterToSetpointCmd tiltShooterToSetpointCmd = new TiltShooterToSetpointCmd(shooter, 0.82);
 
   /* Commands */
@@ -143,6 +141,13 @@ public class RobotContainer {
         () -> logitech.getRawButton(kInverted), () -> logitech.getRawButton(kStrafeOnly),
         () -> logitech.getRawButton(kSlowEverything)));
 
+    collector.setDefaultCommand(new AutoFeedNoteToShooterCmd(collector, shooter, () -> shooter.isNotePresent));
+
+    // shooter.setDefaultCommand(new InstantCommand(() ->
+    // shooter.indexerMotor.set(0)));
+    // collector.setDefaultCommand(new InstantCommand(() ->
+    // collector.rollerMotor.set(0)));
+
   }
 
   /**
@@ -160,30 +165,31 @@ public class RobotContainer {
 
     // goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 4, 78));
 
-    // Y - intake up
+    /* Y - intake up */
     new JoystickButton(controller, 4)
-        .onTrue(new FeedNoteToShooterCmd(collector));
+        .onTrue(new ManualFeedNoteToShooterCmd(collector));
 
-    // A - intake down
+    /* A - intake down */
     new JoystickButton(controller, 1)
         .onTrue(new PickupNoteCmd(collector));
 
-    // X - intake roller
-    new JoystickButton(controller, 2).whileTrue(new IntakeNoteCmd(collector,
-    shooter));
-    new JoystickButton(controller, 3).whileTrue(tiltShooterToSetpointCmd);
+    /* X - intake roller */
+    new JoystickButton(controller, 3).whileTrue(new SequentialCommandGroup(new IntakeNoteCmd(collector,
+        shooter)));
 
-    // B - outake roller
-    // new JoystickButton(controller, 2)
-    //     .whileTrue(new InstantCommand(() -> collector.setRollerMotor(-0.33)))
-    //     .whileFalse(new InstantCommand(() -> collector.setRollerMotor(0)));
+    /* B - outake roller */
+    new JoystickButton(controller, 2)
+        .whileTrue(new InstantCommand(() -> collector.setRollerMotor(-0.33)))
+        .whileFalse(new InstantCommand(() -> collector.setRollerMotor(0)));
 
-    // right bumper - run indexer
-    new JoystickButton(controller, 6).whileTrue(new InstantCommand(() -> shootAt1000RPMsCmd.activateIndexer()))
+    /* left bumper - rev up shooter */
+    new JoystickButton(controller, 5).whileTrue(shootAtRPMsCmd);
+
+    /* right bumper - run indexer */
+    new JoystickButton(controller, 6)
+        .whileTrue(
+            new InstantCommand(() -> shooter.setIndexMotorSpeed(-0.33)))
         .whileFalse(new InstantCommand(() -> shooter.setIndexMotorSpeed(0)));
-
-    // left bumper - rev up shooter
-    new JoystickButton(controller, 5).whileTrue(shootAt1000RPMsCmd);
 
   }
 
@@ -201,9 +207,9 @@ public class RobotContainer {
     return swerveBase;
   }
 
-  // public Shooter getShooter() {
-  // return shooter;
-  // }
+  public static Shooter getShooter() {
+    return shooter;
+  }
 
   public Vision getVision() {
     return vision;

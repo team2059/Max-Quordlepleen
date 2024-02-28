@@ -11,9 +11,11 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CollectorConstants;
 import frc.robot.Constants.DIOConstants;
+import frc.robot.commands.CollectorCmds.AutoFeedNoteToShooterCmd;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 

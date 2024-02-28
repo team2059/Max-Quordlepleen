@@ -29,7 +29,7 @@ public class MoveCollectorToSetpointCmd extends Command {
     @Override
     public void initialize() {
 
-        tiltController.setTolerance(0.01);
+        tiltController.setTolerance(0.02);
 
     }
 
