@@ -206,11 +206,11 @@ public class RobotContainer {
     // //)
     // ;
 
-    new JoystickButton(controller, 5)
-        .whileTrue(
-            new TiltShooterToSetpointCmd(shooter, ScoringPresets.SPEAKER_SUBWOOFER_SHOOTER_TILT)
-                .andThen(
-                    new ShootAtRPMsCmd(shooter, ScoringPresets.SPEAKER_SUBWOOFER_SHOOTER_VELOCITY)));
+    // new JoystickButton(controller, 5)
+    //     .whileTrue(
+    //         new TiltShooterToSetpointCmd(shooter, ScoringPresets.SPEAKER_SUBWOOFER_SHOOTER_TILT)
+    //             .andThen(
+    //                 new ShootAtRPMsCmd(shooter, ScoringPresets.SPEAKER_SUBWOOFER_SHOOTER_VELOCITY)));
 
     /* right bumper - run indexer */
     // new JoystickButton(controller, 6)

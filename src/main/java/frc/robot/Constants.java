@@ -96,8 +96,8 @@ public final class Constants {
                 public static final double AMP_SHOOTER_TILT = -60;// 0.83;
                 public static final double AMP_SHOOTER_VELOCITY = 900;
 
-                public static final double SPEAKER_SUBWOOFER_SHOOTER_TILT = -60; // distance of 
-                public static final double SPEAKER_SUBWOOFER_SHOOTER_VELOCITY = 2000; // distance of 
+                public static final double SPEAKER_SUBWOOFER_SHOOTER_TILT = -60; // distance of 36 inches from the front of the bumper
+                public static final double SPEAKER_SUBWOOFER_SHOOTER_VELOCITY = 2000; // distance of 36 inches from the front of the bumper
 
         }
 
