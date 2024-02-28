@@ -49,7 +49,7 @@ public class RobotContainer {
   public static final XboxController controller = new XboxController(0);
 
   /* LOGITECH */
-  public final static Joystick logitech = new Joystick(1);
+  public final static Joystick logitech = new Joystick(2);
 
   private final int kLogitechTranslationAxis = 1;
   private final int kLogitechStrafeAxis = 0;
@@ -186,7 +186,8 @@ public class RobotContainer {
         .whileFalse(new InstantCommand(() -> collector.setRollerMotor(0)));
 
     /* left bumper - rev up shooter */
-    new JoystickButton(controller, 5).whileTrue(new ShootAtRPMsCmd(shooter, 4500));
+    new JoystickButton(controller, 5)
+        .whileTrue(new TiltShooterToSetpointCmd(shooter, 0.83).andThen(new ShootAtRPMsCmd(shooter, 900)));
 
     /* right bumper - run indexer */
     // new JoystickButton(controller, 6)

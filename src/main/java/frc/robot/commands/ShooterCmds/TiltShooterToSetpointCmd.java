@@ -37,7 +37,7 @@ public class TiltShooterToSetpointCmd extends Command {
     @Override
     public void initialize() {
 
-        tiltController.setTolerance(0.025);
+        tiltController.setTolerance(0.02);
 
         // profiledPIDController.setGoal(setpoint);
 

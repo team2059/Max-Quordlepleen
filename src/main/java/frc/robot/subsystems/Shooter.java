@@ -14,7 +14,9 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -90,18 +92,18 @@ public class Shooter extends SubsystemBase {
 
         elevatorMotor.setInverted(false);
 
-        shooterUpperController.setP(0.001);
+        shooterUpperController.setP(0.00015);
         shooterUpperController.setI(0);
         shooterUpperController.setD(0);
-        shooterUpperController.setFF(0.000156);
+        shooterUpperController.setFF(0.000155);
         shooterUpperController.setOutputRange(-1, 1);
 
         // elevatorMotor.enableVoltageCompensation(12);
 
-        shooterLowerController.setP(0.001);
+        shooterLowerController.setP(0.00015);
         shooterLowerController.setI(0);
         shooterLowerController.setD(0);
-        shooterLowerController.setFF(0.000156);
+        shooterLowerController.setFF(0.000155);
         shooterLowerController.setOutputRange(-1, 1);
 
         // shooterLowerMotor.restoreFactoryDefaults();
@@ -120,6 +122,9 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
+
+        shooterTiltMotor.set(MathUtil.clamp(MathUtil.applyDeadband(new Joystick(2).getRawAxis(3), 0.03),
+                -0.05, 0.05));
 
         isNotePresent = !shooterNoteSensor.get();
 

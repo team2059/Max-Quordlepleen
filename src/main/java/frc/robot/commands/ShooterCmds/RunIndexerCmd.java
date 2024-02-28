@@ -13,7 +13,7 @@ public class RunIndexerCmd extends Command {
   /** Creates a new RunIndexerCmd. */
   public RunIndexerCmd(Shooter shooter) {
     this.shooter = shooter;
-    addRequirements(shooter);
+    //addRequirements(shooter);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -25,10 +25,10 @@ public class RunIndexerCmd extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //maybe add some check to see if it's at the desired RPM before firing too
-    if (shooter.isNotePresent) {
-      shooter.setIndexMotorSpeed(-0.33);
-    }
+    // maybe add some check to see if it's at the desired RPM before firing too
+
+    shooter.setIndexMotorSpeed(-0.5);
+
   }
 
   // Called once the command ends or is interrupted.
