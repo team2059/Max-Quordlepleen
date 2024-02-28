@@ -19,11 +19,11 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.CollectorConstants;
 import frc.robot.commands.TeleopSwerveCmd;
-import frc.robot.commands.CollectorCmds.AutoFeedNoteToShooterCmd;
 import frc.robot.commands.CollectorCmds.IntakeNoteCmd;
-import frc.robot.commands.CollectorCmds.ManualFeedNoteToShooterCmd;
+import frc.robot.commands.CollectorCmds.TiltCollectorToShooterCmd;
 import frc.robot.commands.CollectorCmds.MoveCollectorToSetpointCmd;
 import frc.robot.commands.CollectorCmds.PickupNoteCmd;
+import frc.robot.commands.ShooterCmds.RunIndexerCmd;
 import frc.robot.commands.ShooterCmds.ShootAtRPMsCmd;
 import frc.robot.commands.ShooterCmds.TiltShooterToSetpointCmd;
 import frc.robot.subsystems.Collector;
@@ -170,15 +170,15 @@ public class RobotContainer {
 
     /* Y - intake up */
     new JoystickButton(controller, 4)
-        .onTrue(new ManualFeedNoteToShooterCmd(collector));
+        .onTrue(new TiltCollectorToShooterCmd(collector));
 
     /* A - intake down */
     new JoystickButton(controller, 1)
         .onTrue(new PickupNoteCmd(collector));
 
     /* X - intake roller */
-    new JoystickButton(controller, 3).whileTrue(new SequentialCommandGroup(new IntakeNoteCmd(collector,
-        shooter)));
+    new JoystickButton(controller, 3).whileTrue(new IntakeNoteCmd(collector,
+        shooter));
 
     /* B - outake roller */
     new JoystickButton(controller, 2)
@@ -189,10 +189,13 @@ public class RobotContainer {
     new JoystickButton(controller, 5).whileTrue(new ShootAtRPMsCmd(shooter, 4500));
 
     /* right bumper - run indexer */
+    // new JoystickButton(controller, 6)
+    // .whileTrue(
+    // new InstantCommand(() -> shooter.setIndexMotorSpeed(-0.33)))
+    // .whileFalse(new InstantCommand(() -> shooter.setIndexMotorSpeed(0)));
     new JoystickButton(controller, 6)
         .whileTrue(
-            new InstantCommand(() -> shooter.setIndexMotorSpeed(-0.33), shooter))
-        .whileFalse(new InstantCommand(() -> shooter.setIndexMotorSpeed(0), shooter));
+            new RunIndexerCmd(shooter));
 
   }
 

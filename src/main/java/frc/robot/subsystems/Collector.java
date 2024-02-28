@@ -15,8 +15,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CollectorConstants;
 import frc.robot.Constants.DIOConstants;
-import frc.robot.commands.CollectorCmds.AutoFeedNoteToShooterCmd;
-
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 public class Collector extends SubsystemBase {

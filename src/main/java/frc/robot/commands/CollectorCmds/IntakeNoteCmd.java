@@ -12,7 +12,8 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.CollectorConstants;
 import frc.robot.commands.ShooterCmds.TiltShooterToCollectorCmd;
-import frc.robot.commands.ShooterCmds.MoveShooterToRestPosCmd;
+import frc.robot.commands.ShooterAndCollectorIndexerCmd;
+import frc.robot.commands.ShooterCmds.TiltShooterToRestPosCmd;
 import frc.robot.commands.ShooterCmds.TiltShooterToSetpointCmd;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Shooter;
@@ -51,7 +52,7 @@ public class IntakeNoteCmd extends Command {
 
       CommandScheduler.getInstance()
           .schedule(new SequentialCommandGroup(new ParallelCommandGroup(new TiltShooterToCollectorCmd(shooter),
-              new ManualFeedNoteToShooterCmd(collector)), new IndexerCmd(collector, shooter)));
+              new TiltCollectorToShooterCmd(collector)), new ShooterAndCollectorIndexerCmd(collector, shooter)));
 
       // isReady = false;
 
