@@ -12,7 +12,9 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -32,12 +34,12 @@ public class Shooter extends SubsystemBase {
     // upper & lower are vortex
     // upper, lower, indexer, shootertilt, elevator
 
-    public boolean isNotePresent;
     public CANSparkFlex shooterUpperMotor;
     public CANSparkFlex shooterLowerMotor;
     public CANSparkMax indexerMotor;
     public CANSparkMax shooterTiltMotor;
     public CANSparkMax elevatorMotor;
+    public double currentShooterTiltPosition;
 
     public RelativeEncoder shooterUpperEncoder;
     public RelativeEncoder shooterLowerEncoder;
@@ -92,6 +94,8 @@ public class Shooter extends SubsystemBase {
 
         elevatorMotor.setInverted(false);
 
+        shooterTiltMotor.setInverted(false);
+
         shooterUpperController.setP(0.00015);
         shooterUpperController.setI(0);
         shooterUpperController.setD(0);
@@ -117,20 +121,22 @@ public class Shooter extends SubsystemBase {
 
         // shooterTiltThruBoreEncoder.setDistancePerRotation(2 * Math.PI);
         // shooterTiltThruBoreEncoder.setPositionOffset(0);
+        shooterTiltThruBoreEncoder.setPositionOffset(0.659);
+        shooterTiltThruBoreEncoder.setDistancePerRotation(-360);
 
     }
 
     @Override
     public void periodic() {
+        currentShooterTiltPosition = getShooterTiltPosDegrees();
 
-        shooterTiltMotor.set(MathUtil.clamp(MathUtil.applyDeadband(new Joystick(2).getRawAxis(3), 0.03),
-                -0.05, 0.05));
+        // shooterTiltMotor.set(MathUtil.clamp(MathUtil.applyDeadband(new
+        // Joystick(2).getRawAxis(3), 0.05),
+        // -0.1, 0.1));
 
-        isNotePresent = !shooterNoteSensor.get();
-
-        if (isNotePresent) {
-            indexerMotor.set(0);
-        }
+        // if (isNotePresent) {
+        // indexerMotor.set(0);
+        // }
 
         SmartDashboard.putBoolean("isTopLimitReached", isTopLimitReached());
 
@@ -140,7 +146,9 @@ public class Shooter extends SubsystemBase {
 
         // shooterTiltMotor.set(tiltOutput);
 
-        Logger.recordOutput("shooter tilt current pos", getShooterTiltPos());
+        Logger.recordOutput("shooter tilt current absolute pos", getAbsoluteShooterTiltPos());
+        Logger.recordOutput("shooter tilt current pos degrees", getShooterTiltPosDegrees());
+
         // Logger.recordOutput("shooter tilt setpoint", tiltSetpoint);
         // Logger.recordOutput("tiltoutput", tiltOutput);
 
@@ -159,7 +167,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean isNotePresent() {
-        return isNotePresent;
+        return !shooterNoteSensor.get();
     }
 
     public double[] calculateDesiredShooterState(double distance) {
@@ -203,7 +211,11 @@ public class Shooter extends SubsystemBase {
         return shooterUpperController;
     }
 
-    public double getShooterTiltPos() {
+    public double getShooterTiltPosDegrees() {
+        return MathUtil.inputModulus(shooterTiltThruBoreEncoder.getDistance(), -90, 90);
+    }
+
+    public double getAbsoluteShooterTiltPos() {
         return shooterTiltThruBoreEncoder.getAbsolutePosition();
     }
 

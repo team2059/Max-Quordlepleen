@@ -4,6 +4,7 @@
 
 package frc.robot.commands.ShooterCmds;
 
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.CollectorConstants;
 import frc.robot.Constants.ShooterConstants;

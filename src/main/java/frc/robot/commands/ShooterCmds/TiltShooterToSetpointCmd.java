@@ -4,27 +4,30 @@
 
 package frc.robot.commands.ShooterCmds;
 
+import org.apache.commons.math3.util.MathUtils;
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 
 public class TiltShooterToSetpointCmd extends Command {
     Shooter shooter;
     double setpoint;
-    PIDController tiltController = new PIDController(2, 0, 0.05);
+    // PIDController tiltController = new PIDController(2, 0, 0.05);
 
-    // ProfiledPIDController profiledPIDController = new ProfiledPIDController(0.1,
-    // 0, 0,
-    // new TrapezoidProfile.Constraints(0.5, 0.25));
-
-    ArmFeedforward armFeedforward = new ArmFeedforward(0, 0, 0.1);
+    ProfiledPIDController tiltController = new ProfiledPIDController(0.02,
+            0, 0,
+            new TrapezoidProfile.Constraints(180, 135));
 
     /** Creates a new MoveCollectorCmd. */
+
     public TiltShooterToSetpointCmd(Shooter shooter, double setpoint) {
         this.shooter = shooter;
         this.setpoint = setpoint;
@@ -37,9 +40,8 @@ public class TiltShooterToSetpointCmd extends Command {
     @Override
     public void initialize() {
 
-        tiltController.setTolerance(0.02);
-
-        // profiledPIDController.setGoal(setpoint);
+        tiltController.setTolerance(2.5);
+        tiltController.reset(shooter.getShooterTiltPosDegrees());
 
     }
 
@@ -47,14 +49,17 @@ public class TiltShooterToSetpointCmd extends Command {
     @Override
     public void execute() {
 
-        double pidOutout = tiltController.calculate(shooter.getShooterTiltPos(),
-                setpoint);
+        // double pidOutout = tiltController.calculate(shooter.getShooterTiltPos(),
+        // setpoint);
+
+        double pidOutout = tiltController.calculate(shooter.getShooterTiltPosDegrees(),
+                new State(setpoint, 0));
 
         shooter.shooterTiltMotor.set(pidOutout);
 
-        Logger.recordOutput("voltage output", pidOutout);
-        Logger.recordOutput("current tilt pos shooter", shooter.getShooterTiltPos());
-        Logger.recordOutput("setpoint", setpoint);
+        Logger.recordOutput("tilt cmd current pos degrees", shooter.getShooterTiltPosDegrees());
+        Logger.recordOutput("tilt pidOutout", pidOutout);
+        Logger.recordOutput("tilt setpoint", setpoint);
 
     }
 
@@ -69,6 +74,6 @@ public class TiltShooterToSetpointCmd extends Command {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return tiltController.atSetpoint();
+        return tiltController.atGoal();
     }
 }

@@ -42,9 +42,9 @@ public final class Constants {
                 public static final int topElevatorHallEffectDIO = 9;
                 public static final double TOP_LIMIT = 63;
 
-                public static final double scoreAmpPos = 0.365;
-                public static final double alignToCollectorPos = 0.78; // encoder value for getting note from collector
-                public static final double restPos = 0.91;
+                public static final double alignToCollectorPos = -45; // 0.78; // encoder value for getting note from
+                                                                      // collector
+                public static final double restPos = -90;// 0.91;
 
                 public static final double tiltkP = 0;
                 public static final double tiltkD = 0;
@@ -93,10 +93,8 @@ public final class Constants {
 
         public static final class ScoringPresets {
 
-                public static final double AMP_SHOOTER_TILT = 0.83;
+                public static final double AMP_SHOOTER_TILT = -60;//0.83;
                 public static final double AMP_SHOOTER_VELOCITY = 900;
-
-
 
         }
 

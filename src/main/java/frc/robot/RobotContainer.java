@@ -15,9 +15,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ProxyCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.CollectorConstants;
+import frc.robot.Constants.ScoringPresets;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.TeleopSwerveCmd;
 import frc.robot.commands.CollectorCmds.IntakeNoteCmd;
 import frc.robot.commands.CollectorCmds.TiltCollectorToShooterCmd;
@@ -187,7 +191,8 @@ public class RobotContainer {
 
     /* left bumper - rev up shooter */
     new JoystickButton(controller, 5)
-        .whileTrue(new TiltShooterToSetpointCmd(shooter, 0.83).andThen(new ShootAtRPMsCmd(shooter, 900)));
+        .whileTrue(new TiltShooterToSetpointCmd(shooter, ScoringPresets.AMP_SHOOTER_TILT)
+            .andThen(new ShootAtRPMsCmd(shooter, ScoringPresets.AMP_SHOOTER_VELOCITY)));
 
     /* right bumper - run indexer */
     // new JoystickButton(controller, 6)

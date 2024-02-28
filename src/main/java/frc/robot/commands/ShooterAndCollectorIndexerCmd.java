@@ -28,7 +28,7 @@ public class ShooterAndCollectorIndexerCmd extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!shooter.isNotePresent) {
+    if (!shooter.isNotePresent()) {
       shooter.setIndexMotorSpeed(-0.33);
       collector.setRollerMotor(-0.33);
     }
@@ -37,13 +37,13 @@ public class ShooterAndCollectorIndexerCmd extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    // shooter.setIndexMotorSpeed(0);
+    shooter.setIndexMotorSpeed(0);
     collector.setRollerMotor(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return shooter.isNotePresent;
+    return shooter.isNotePresent();
   }
 }
