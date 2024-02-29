@@ -130,7 +130,7 @@ public class Shooter extends SubsystemBase {
     public void periodic() {
         currentShooterTiltPosition = getShooterTiltPosDegrees();
 
-        shooterTiltMotor.set(MathUtil.clamp(-MathUtil.applyDeadband(new Joystick(2).getRawAxis(3), 0.33),
+        shooterTiltMotor.set(MathUtil.clamp(-MathUtil.applyDeadband(new Joystick(2).getRawAxis(3), 0.25),
                 -0.05, 0.05));
 
         // if (isNotePresent) {
@@ -156,7 +156,6 @@ public class Shooter extends SubsystemBase {
 
         Logger.recordOutput("UpperMotorRPMs", currentShooterUpperMotorRPMs);
         Logger.recordOutput("LowerMotorRPMs ", currentShooterUpperMotorRPMs);
-
         Logger.recordOutput("shooter optical", isNotePresent());
 
     }

@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -32,7 +33,7 @@ public class Vision extends SubsystemBase {
   private PhotonCamera camera;
   AprilTagFieldLayout aprilTagFieldLayout;
   PhotonPoseEstimator photonPoseEstimator;
-  Pose2d speakerPosition;
+  public Pose2d speakerPosition = new Pose2d(-0.04, 5.55, new Rotation2d());
 
   public static Vision instance;
 
@@ -59,18 +60,20 @@ public class Vision extends SubsystemBase {
 
     photonPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
-    Optional<Alliance> ally = DriverStation.getAlliance();
-    ally.ifPresent((alliance) -> System.out.println(alliance.toString()));
-    if (ally.isPresent()) {
-      if (ally.get() == Alliance.Red) {
-        aprilTagFieldLayout.getTagPose(4).ifPresent(pose -> speakerPosition = pose.toPose2d()); // Get pose2d of speaker
-        // on red alliance
-      } else if (ally.get() == Alliance.Blue) {
-        aprilTagFieldLayout.getTagPose(7).ifPresent(pose -> speakerPosition = pose.toPose2d()); // Get pose2d of speaker
-        // on blue alliance
+    // Optional<Alliance> ally = DriverStation.getAlliance();
+    // ally.ifPresent((alliance) -> System.out.println(alliance.toString()));
+    // if (ally.isPresent()) {
+    // if (ally.get() == Alliance.Red) {
+    // aprilTagFieldLayout.getTagPose(4).ifPresent(pose -> speakerPosition =
+    // pose.toPose2d()); // Get pose2d of speaker
+    // // on red alliance
+    // } else if (ally.get() == Alliance.Blue) {
+    // aprilTagFieldLayout.getTagPose(7).ifPresent(pose -> speakerPosition =
+    // pose.toPose2d()); // Get pose2d of speaker
+    // // on blue alliance
 
-      }
-    }
+    // }
+    // }
 
   }
 

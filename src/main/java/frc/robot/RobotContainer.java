@@ -197,26 +197,20 @@ public class RobotContainer {
     /* left bumper - rev up shooter */
     // new JoystickButton(controller, 5)
     // .whileTrue(
-    // // new TiltShooterToSetpointCmd(shooter,
-    // ScoringPresets.SPEAKER_SUBWOOFER_SHOOTER_TILT)
-    // // .andThen(
-    // new ShootAtRPMsSupplierCmd(shooter, ()->
-    // MathUtil.clamp(-MathUtil.applyDeadband(logitech.getRawAxis(3)*3000, 0.33),
-    // 0, 3000)))
-    // //)
-    // ;
+    // new ShootAtRPMsSupplierCmd(shooter,
+    // () -> MathUtil.clamp(-MathUtil.applyDeadband(logitech.getRawAxis(3) * 5000,
+    // 0.25),
+    // 0, 5000)));
 
-    // new JoystickButton(controller, 5)
-    //     .whileTrue(
-    //         new TiltShooterToSetpointCmd(shooter, ScoringPresets.SPEAKER_SUBWOOFER_SHOOTER_TILT)
-    //             .andThen(
-    //                 new ShootAtRPMsCmd(shooter, ScoringPresets.SPEAKER_SUBWOOFER_SHOOTER_VELOCITY)));
+    new JoystickButton(controller, 5)
+        .whileTrue(
+            new TiltShooterToSetpointCmd(shooter,
+                -25)
+                .andThen(
+                    new ShootAtRPMsCmd(shooter,
+                        5000)));
 
     /* right bumper - run indexer */
-    // new JoystickButton(controller, 6)
-    // .whileTrue(
-    // new InstantCommand(() -> shooter.setIndexMotorSpeed(-0.33)))
-    // .whileFalse(new InstantCommand(() -> shooter.setIndexMotorSpeed(0)));
     new JoystickButton(controller, 6)
         .whileTrue(
             new RunIndexerCmd(shooter));

@@ -23,7 +23,7 @@ public class TiltShooterToSetpointCmd extends Command {
     // PIDController tiltController = new PIDController(2, 0, 0.05);
 
     ProfiledPIDController tiltController = new ProfiledPIDController(0.02,
-            0, 0,
+            0, 0.0,
             new TrapezoidProfile.Constraints(180, 135));
 
     /** Creates a new MoveCollectorCmd. */
@@ -40,7 +40,7 @@ public class TiltShooterToSetpointCmd extends Command {
     @Override
     public void initialize() {
 
-        tiltController.setTolerance(2.5);
+        tiltController.setTolerance(2);
         tiltController.reset(shooter.getShooterTiltPosDegrees());
 
     }

@@ -3,10 +3,11 @@ import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d, CubicSpline
 
 # distance from speaker relative to camera in meters
-x = np.array([1, 6, 7, 9, 12, 20])
+x = np.array([36, 56, 76, 96, 116, 136])
 
 # shooter velocity in native units (RPMs)
-y = np.array([2, 8, 6, 10, 14, 41])
+#y = np.array([-60, -50, -40, -35, -31, -28])
+y = np.array([2000, 2250, 3000, 3250, 3500, 4000])
 
 # Original data points
 plt.plot(x, y, "o", label="Data Points")

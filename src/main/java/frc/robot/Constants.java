@@ -96,8 +96,10 @@ public final class Constants {
                 public static final double AMP_SHOOTER_TILT = -60;// 0.83;
                 public static final double AMP_SHOOTER_VELOCITY = 900;
 
-                public static final double SPEAKER_SUBWOOFER_SHOOTER_TILT = -60; // distance of 36 inches from the front of the bumper
-                public static final double SPEAKER_SUBWOOFER_SHOOTER_VELOCITY = 2000; // distance of 36 inches from the front of the bumper
+                public static final double SPEAKER_SUBWOOFER_SHOOTER_TILT = -60; // distance of 36 inches from the front
+                                                                                 // of the bumper
+                public static final double SPEAKER_SUBWOOFER_SHOOTER_VELOCITY = 2000; // distance of 36 inches from the
+                                                                                      // front of the bumper
 
         }
 
@@ -212,8 +214,11 @@ public final class Constants {
                 // Cam mounted facing forward, half a meter forward of center, half a meter up
                 // from center.
                 public static final Transform3d robotToCam = new Transform3d(
-                                new Translation3d(Units.inchesToMeters(-15), 0.0, Units.inchesToMeters(12.66)),
-                                new Rotation3d(0, Units.degreesToRadians(0), 0));
+                                new Translation3d(Units.inchesToMeters(-30), 0.0, Units.inchesToMeters(12.66)),
+                                new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(180)));
+                // public static final Transform3d robotToCam = new Transform3d(
+                // new Translation3d(Units.inchesToMeters(0), 0.0, Units.inchesToMeters(0)),
+                // new Rotation3d(0, Units.degreesToRadians(0), 0));
 
         }
 
