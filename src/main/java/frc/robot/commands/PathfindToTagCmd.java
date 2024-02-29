@@ -45,7 +45,7 @@ public class PathfindToTagCmd extends SequentialCommandGroup {
                 this.swerveBase = swerveBase;
                 this.ID_OF_TAG_TO_CHASE = ID_OF_TAG_TO_CHASE;
                 this.TAG_TO_GOAL = new Transform3d(new Translation3d(Units.inchesToMeters(frontOffsetInches), 0, 0),
-                                new Rotation3d(0, 0, Math.PI));
+                                new Rotation3d(0, 0, 0));
 
                 addRequirements(vision, swerveBase);
                 addCommands(new DeferredCommand(() -> getCommand(), Set.of(swerveBase, vision)),
@@ -92,8 +92,10 @@ public class PathfindToTagCmd extends SequentialCommandGroup {
                                 // Transform the tag's pose to set our goal
                                 var goalPose = targetPose.transformBy(TAG_TO_GOAL).toPose2d();
 
+                                System.out.println(goalPose.toString());
+
                                 return AutoBuilder.pathfindToPose(goalPose, new PathConstraints(
-                                                3.0, 2,
+                                                1.5, 1,
                                                 Units.degreesToRadians(540), Units.degreesToRadians(720)), 0);
 
                         } catch (NullPointerException ex) {

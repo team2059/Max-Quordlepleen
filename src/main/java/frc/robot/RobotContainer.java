@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.CollectorConstants;
 import frc.robot.Constants.ScoringPresets;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.commands.PathfindToTagCmd;
 import frc.robot.commands.TeleopSwerveCmd;
 import frc.robot.commands.CollectorCmds.IntakeNoteCmd;
 import frc.robot.commands.CollectorCmds.TiltCollectorToShooterCmd;
@@ -173,7 +174,7 @@ public class RobotContainer {
 
     zeroGyro.onTrue(new InstantCommand(() -> swerveBase.getNavX().zeroYaw()));
 
-    // goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 4, 78));
+    goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 7, 36));
 
     /* Y - intake up */
     new JoystickButton(controller, 4)

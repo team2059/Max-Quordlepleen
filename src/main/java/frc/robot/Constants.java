@@ -213,12 +213,19 @@ public final class Constants {
 
                 // Cam mounted facing forward, half a meter forward of center, half a meter up
                 // from center.
-                public static final Transform3d robotToCam = new Transform3d(
-                                new Translation3d(Units.inchesToMeters(-30), 0.0, Units.inchesToMeters(12.66)),
-                                new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(180)));
+
+                // you could always just instantiate it as a Transform3d() with no args or skip
+                // it, and then the robot's origin and reference frame is centered on the camera
+
                 // public static final Transform3d robotToCam = new Transform3d(
-                // new Translation3d(Units.inchesToMeters(0), 0.0, Units.inchesToMeters(0)),
-                // new Rotation3d(0, Units.degreesToRadians(0), 0));
+                // new Translation3d(Units.inchesToMeters(-15), 0.0,
+                // Units.inchesToMeters(12.66)),
+                // new Rotation3d(0, Units.degreesToRadians(-45), Units.degreesToRadians(180)));
+
+                public static final Transform3d robotToCam = new Transform3d(
+                                new Translation3d(Units.inchesToMeters(-SwerveBaseConstants.wheelBase / 2.0), 0.0,
+                                                Units.inchesToMeters(12.66)),
+                                new Rotation3d(0, Units.degreesToRadians(-30), Units.degreesToRadians(180)));
 
         }
 

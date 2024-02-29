@@ -264,29 +264,15 @@ public class SwerveModule extends SubsystemBase {
 
     currentDriveVelocity = getCurrentVelocityMetersPerSecond();
 
-    if (RobotState.isAutonomous()) {
-      // DrivePIDOutput = driveController.calculate(currentDriveVelocity,
-      // velolictySetpoint);
-      feedForwardOutputVoltage = (SwerveModuleConstants.driveFF.calculate(velolictySetpoint));
-      // driveOutput = (DrivePIDOutput + feedForwardOutputVoltage);
+    // DrivePIDOutput = driveController.calculate(currentDriveVelocity,
+    // velolictySetpoint);
+    feedForwardOutputVoltage = (SwerveModuleConstants.driveFF.calculate(velolictySetpoint));
+    // driveOutput = (DrivePIDOutput + feedForwardOutputVoltage);
 
-      driveOutput = (feedForwardOutputVoltage);
+    rotationMotor.set(rotationController.calculate(actualAngle, angularSetpoint));
+    // driveMotor.setVoltage(-driveOutput);
+    driveMotor.setVoltage(-feedForwardOutputVoltage);
 
-      rotationMotor.set(rotationController.calculate(actualAngle, angularSetpoint));
-      driveMotor.setVoltage(-driveOutput);
-
-    } else {
-
-      // DrivePIDOutput = driveController.calculate(currentDriveVelocity,
-      // velolictySetpoint);
-      feedForwardOutputVoltage = (SwerveModuleConstants.driveFF.calculate(velolictySetpoint));
-      // driveOutput = (DrivePIDOutput + feedForwardOutputVoltage);
-
-      rotationMotor.set(rotationController.calculate(actualAngle, angularSetpoint));
-      // driveMotor.setVoltage(-driveOutput);
-      driveMotor.setVoltage(feedForwardOutputVoltage);
-
-    }
   }
 
   public void resetEncoders() {

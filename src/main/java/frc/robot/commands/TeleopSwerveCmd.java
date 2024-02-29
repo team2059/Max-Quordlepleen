@@ -124,9 +124,9 @@ public class TeleopSwerveCmd extends Command {
     }
 
     drive.drive(
-        fwdX,
-        fwdY,
-        MathUtil.applyDeadband(rot * 0.5, 0.25, 0.66),
+        -fwdX,
+        -fwdY,
+        -MathUtil.applyDeadband(rot * 0.5, 0.25, 0.66),
         fieldOrientedFunction.get());
 
   }

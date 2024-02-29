@@ -4,7 +4,6 @@
 
 package frc.robot.commands.ShooterCmds;
 
-import org.apache.commons.math3.util.MathUtils;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
