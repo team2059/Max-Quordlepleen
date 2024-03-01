@@ -7,7 +7,7 @@ package frc.robot.commands.ShooterCmds;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.CollectorConstants;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.commands.CollectorCmds.MoveCollectorToSetpointCmd;
+import frc.robot.commands.CollectorCmds.TiltCollectorToSetpointCmd;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Shooter;
 

@@ -20,7 +20,7 @@ public class TiltCollectorToShooterCmd extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
 
-    addCommands(new MoveCollectorToSetpointCmd(collector, CollectorConstants.collectorTiltAlignToShooterPos));
+    addCommands(new TiltCollectorToSetpointCmd(collector, CollectorConstants.collectorTiltAlignToShooterPos));
 
     addRequirements(collector);
   }

@@ -26,9 +26,9 @@ public final class Constants {
 
         public static final class ShooterRegressionConstants {
                 // Sample data points
-                public static double[] distances = new double[] { 36, 56, 76, 96, 116, 136, 156 };
-                public static double[] velocities = new double[] { 2000, 2250, 3000, 3250, 3500, 4000, 5000 };
-                public static double[] angles = new double[] { -60, -50, -40, -35, -31, -28, -25 };
+                public static double[] distances = new double[] { 36, 56, 76, 96, 116, 136, 156 }; // inches
+                public static double[] velocities = new double[] { 2000, 2250, 3000, 3250, 3500, 4000, 5000 };// RPMs
+                public static double[] angles = new double[] { -60, -50, -40, -35, -31, -28, -25 }; // degrees
         }
 
         public static final class ShooterConstants {
@@ -77,6 +77,9 @@ public final class Constants {
 
                 public static final double climbkP = 0;
                 public static final double climbkD = 0;
+
+                public static final double COLLECTOR_POS_BEFORE_CLIMBING = 0.57;
+                public static final double SHOOTER_TILT_TRAP_POS = 130;
         }
 
         public static final class CollectorConstants {

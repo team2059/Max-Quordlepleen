@@ -75,7 +75,7 @@ public class MoveShooterElevatorToSetpointCmd extends Command {
 
     // m_motor.set(MathUtil.clamp(-new Joystick(0).getRawAxis(1), -0.25, 0.25));
 
-    if (shooter.isTopLimitReached() || currentPosition >= ShooterConstants.TOP_LIMIT - 1) {
+    if (shooter.isTopLimitReached() || currentPosition >= ShooterConstants.TOP_LIMIT - 0.66) {
       System.out.println("stopped!!!!!");
       shooter.elevatorMotor.set(0);
     } else {

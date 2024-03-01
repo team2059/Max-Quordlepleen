@@ -11,13 +11,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.CollectorConstants;
 import frc.robot.subsystems.Collector;
 
-public class MoveCollectorToSetpointCmd extends Command {
+public class TiltCollectorToSetpointCmd extends Command {
     Collector collector;
     double setpoint;
     PIDController tiltController = new PIDController(CollectorConstants.tiltkP, 0, CollectorConstants.tiltkD);
 
     /** Creates a new MoveCollectorCmd. */
-    public MoveCollectorToSetpointCmd(Collector collector, double setpoint) {
+    public TiltCollectorToSetpointCmd(Collector collector, double setpoint) {
         this.collector = collector;
         this.setpoint = setpoint;
 

@@ -19,7 +19,7 @@ public class PickupNoteCmd extends SequentialCommandGroup {
     this.collector = collector;
     // Add your commands in thxe addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new MoveCollectorToSetpointCmd(collector, CollectorConstants.collectorTiltCollectPos));
+    addCommands(new TiltCollectorToSetpointCmd(collector, CollectorConstants.collectorTiltCollectPos));
 
   }
 }

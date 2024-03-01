@@ -98,9 +98,6 @@ public class SwerveBase extends SubsystemBase {
   // SwerveDriveOdometry(SwerveBaseConstants.kinematics, new Rotation2d(),
   // getModulePositions());
 
-  Pose2d poseA = new Pose2d();
-  Pose2d poseB = new Pose2d();
-
   public SwerveBase() {
 
     navX = new AHRS(SPI.Port.kMXP);

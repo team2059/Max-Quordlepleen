@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import org.littletonrobotics.junction.Logger;
@@ -14,7 +16,9 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -39,7 +43,6 @@ public class Shooter extends SubsystemBase {
     public CANSparkMax indexerMotor;
     public CANSparkMax shooterTiltMotor;
     public CANSparkMax elevatorMotor;
-    public double currentShooterTiltPosition;
 
     public RelativeEncoder shooterUpperEncoder;
     public RelativeEncoder shooterLowerEncoder;
@@ -128,10 +131,10 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
-        currentShooterTiltPosition = getShooterTiltPosDegrees();
 
-        // shooterTiltMotor.set(MathUtil.clamp(-MathUtil.applyDeadband(new Joystick(2).getRawAxis(3), 0.25),
-        //         -0.05, 0.05));
+        // shooterTiltMotor.set(MathUtil.clamp(-MathUtil.applyDeadband(new
+        // Joystick(1).getRawAxis(3), 0.25),
+        // -0.1, 0.1));
 
         // if (isNotePresent) {
         // indexerMotor.set(0);
@@ -145,8 +148,8 @@ public class Shooter extends SubsystemBase {
 
         // shooterTiltMotor.set(tiltOutput);
 
-        Logger.recordOutput("shooter tilt current absolute pos", getAbsoluteShooterTiltPos());
-        Logger.recordOutput("shooter tilt current pos degrees", getShooterTiltPosDegrees());
+        Logger.recordOutput("Absolute Shooter Tilt Pos Degrees", getAbsoluteShooterTiltPosDegrees());
+        Logger.recordOutput("Absolute Shooter Tilt Pos Raw", getAbsoluteShooterTiltPosRaw());
 
         // Logger.recordOutput("shooter tilt setpoint", tiltSetpoint);
         // Logger.recordOutput("tiltoutput", tiltOutput);
@@ -209,12 +212,22 @@ public class Shooter extends SubsystemBase {
         return shooterUpperController;
     }
 
-    public double getShooterTiltPosDegrees() {
-        return MathUtil.inputModulus(shooterTiltThruBoreEncoder.getDistance(), -90, 90);
+    // public double getShooterTiltPosDegrees() {
+    // return MathUtil.inputModulus(shooterTiltThruBoreEncoder.getDistance(), -90,
+    // 90);
+    // }
+
+    // public double getAbsoluteShooterTiltPos() {
+    // return (shooterTiltThruBoreEncoder.getAbsolutePosition() -
+    // ShooterConstants.TILT_OFFSET) * 360;
+    // }
+
+    public double getAbsoluteShooterTiltPosRaw() {
+        return shooterTiltThruBoreEncoder.getAbsolutePosition();
     }
 
-    public double getAbsoluteShooterTiltPos() {
-        return shooterTiltThruBoreEncoder.getAbsolutePosition();
+    public double getAbsoluteShooterTiltPosDegrees() {
+        return -Units.rotationsToDegrees(getAbsoluteShooterTiltPosRaw() - ShooterConstants.TILT_OFFSET);
     }
 
 }
