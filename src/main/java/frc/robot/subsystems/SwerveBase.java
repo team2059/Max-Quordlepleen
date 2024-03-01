@@ -209,7 +209,8 @@ public class SwerveBase extends SubsystemBase {
     // module.getCanCoderAngle().getRotations());
     // }
 
-    SmartDashboard.putNumber("distance to speaker", vision.getDistancetoSpeaker(poseEstimator.getEstimatedPosition()));
+    // SmartDashboard.putNumber("distance to speaker",
+    // vision.getDistancetoSpeaker(poseEstimator.getEstimatedPosition()));
 
   }
 

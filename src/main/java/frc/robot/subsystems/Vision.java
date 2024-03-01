@@ -9,6 +9,8 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -34,6 +36,8 @@ public class Vision extends SubsystemBase {
   AprilTagFieldLayout aprilTagFieldLayout;
   PhotonPoseEstimator photonPoseEstimator;
   public Pose2d speakerPosition = new Pose2d(-0.04, 5.55, new Rotation2d());
+  public double distanceToSpeakerFieldToCamera = 0;
+  public Transform3d fieldToCamera = new Transform3d();
 
   public static Vision instance;
 
@@ -81,12 +85,25 @@ public class Vision extends SubsystemBase {
     return photonPoseEstimator.update();
   }
 
-  public Pose2d getSpeakerPose() {
-    return speakerPosition;
-  }
+  // public Pose2d getSpeakerPose() {
+  // if (speakerPosition == null) {
+  // return new Pose2d();
+  // }
+  // return speakerPosition;
+  // }
 
-  public double getDistancetoSpeaker(Pose2d robotPose) {
-    return PhotonUtils.getDistanceToPose(robotPose, speakerPosition);
+  // public double getDistancetoSpeaker(Pose2d robotPose) {
+  // if (speakerPosition == null) {
+  // return 0;
+  // }
+  // return PhotonUtils.getDistanceToPose(robotPose, speakerPosition);
+  // }
+
+  public double getDistanceToSpeakerFieldToCameraInches(Transform3d fieldToCamera) {
+    double x = fieldToCamera.getX();
+    double y = fieldToCamera.getY();
+    Rotation2d theta = fieldToCamera.getRotation().toRotation2d();
+    return Units.metersToInches(PhotonUtils.getDistanceToPose(new Pose2d(x, y, theta), speakerPosition));
   }
 
   public PhotonCamera getCamera() {
@@ -125,8 +142,18 @@ public class Vision extends SubsystemBase {
 
   @Override
   public void periodic() {
+    Logger.recordOutput("speaker pos", speakerPosition.toString());
+
     // Query the latest result from PhotonVision
     var result = camera.getLatestResult(); // returns a PhotoPipeLine Container
+
+    if (result.getMultiTagResult().estimatedPose.isPresent) {
+      fieldToCamera = result.getMultiTagResult().estimatedPose.best;
+      SmartDashboard.putNumber("distanceToSpeakerFieldToCameraInches",
+          getDistanceToSpeakerFieldToCameraInches(fieldToCamera));
+
+      distanceToSpeakerFieldToCamera = getDistanceToSpeakerFieldToCameraInches(fieldToCamera);
+    }
 
     // Check if the latest result has any targets.
     boolean hasTargets = result.hasTargets();

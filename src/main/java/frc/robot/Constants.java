@@ -26,9 +26,9 @@ public final class Constants {
 
         public static final class ShooterRegressionConstants {
                 // Sample data points
-                public static double[] distances = new double[] { 1, 6, 7, 9, 12, 20 };
-                public static double[] velocities = new double[] { 2, 8, 6, 10, 14, 41 };
-                public static double[] angles = new double[] { 3, 9, 7, 11, 15, 42 };
+                public static double[] distances = new double[] { 36, 56, 76, 96, 116, 136, 156 };
+                public static double[] velocities = new double[] { 2000, 2250, 3000, 3250, 3500, 4000, 5000 };
+                public static double[] angles = new double[] { -60, -50, -40, -35, -31, -28, -25 };
         }
 
         public static final class ShooterConstants {
@@ -225,7 +225,7 @@ public final class Constants {
                 public static final Transform3d robotToCam = new Transform3d(
                                 new Translation3d(Units.inchesToMeters(-SwerveBaseConstants.wheelBase / 2.0), 0.0,
                                                 Units.inchesToMeters(12.66)),
-                                new Rotation3d(0, Units.degreesToRadians(-30), Units.degreesToRadians(180)));
+                                new Rotation3d(0, Units.degreesToRadians(-35), Units.degreesToRadians(180)));
 
         }
 

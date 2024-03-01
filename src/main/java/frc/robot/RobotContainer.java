@@ -27,6 +27,7 @@ import frc.robot.commands.PathfindToTagCmd;
 import frc.robot.commands.TeleopSwerveCmd;
 import frc.robot.commands.CollectorCmds.IntakeNoteCmd;
 import frc.robot.commands.CollectorCmds.TiltCollectorToShooterCmd;
+import frc.robot.commands.ScoringCmds.VisionShootCmd;
 import frc.robot.commands.CollectorCmds.MoveCollectorToSetpointCmd;
 import frc.robot.commands.CollectorCmds.PickupNoteCmd;
 import frc.robot.commands.ShooterCmds.ElevateShooterToTrapCmd;
@@ -174,7 +175,7 @@ public class RobotContainer {
 
     zeroGyro.onTrue(new InstantCommand(() -> swerveBase.getNavX().zeroYaw()));
 
-    goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 7, 36));
+    goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 7, 39));
 
     /* Y - intake up */
     new JoystickButton(controller, 4)
@@ -196,6 +197,10 @@ public class RobotContainer {
         .whileFalse(new InstantCommand(() -> collector.setRollerMotor(0)));
 
     /* left bumper - rev up shooter */
+
+    new JoystickButton(controller, 5)
+        .whileTrue(new VisionShootCmd(shooter, vision));
+
     // new JoystickButton(controller, 5)
     // .whileTrue(
     // new ShootAtRPMsSupplierCmd(shooter,
@@ -203,13 +208,13 @@ public class RobotContainer {
     // 0.25),
     // 0, 5000)));
 
-    new JoystickButton(controller, 5)
-        .whileTrue(
-            new TiltShooterToSetpointCmd(shooter,
-                -25)
-                .andThen(
-                    new ShootAtRPMsCmd(shooter,
-                        5000)));
+    // new JoystickButton(controller, 5)
+    // .whileTrue(
+    // new TiltShooterToSetpointCmd(shooter,
+    // -25)
+    // .andThen(
+    // new ShootAtRPMsCmd(shooter,
+    // 5000)));
 
     /* right bumper - run indexer */
     new JoystickButton(controller, 6)
