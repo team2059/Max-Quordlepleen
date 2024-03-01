@@ -6,9 +6,28 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Center1Path"
+            "name": "PickupNoteCmd"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "LeftSide"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeNoteCmd"
+                }
+              }
+            ]
           }
         }
       ]

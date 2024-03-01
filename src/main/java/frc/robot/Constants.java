@@ -33,6 +33,8 @@ public final class Constants {
 
         public static final class ShooterConstants {
 
+                public static final double TILT_OFFSET = 0.659;
+
                 public static final int shooterUpperID = 14;
                 public static final int shooterLowerID = 13;
                 public static final int indexerID = 16;
