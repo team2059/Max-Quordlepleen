@@ -40,7 +40,7 @@ public class TiltShooterToSetpointCmd extends Command {
     @Override
     public void initialize() {
 
-        tiltController.setTolerance(2.5);
+        tiltController.setTolerance(1.5);
         tiltController.reset(shooter.getAbsoluteShooterTiltPosDegrees());
         // tiltController.enableContinuousInput(-90, 90);
 

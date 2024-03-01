@@ -35,7 +35,7 @@ public class Vision extends SubsystemBase {
   private PhotonCamera camera;
   AprilTagFieldLayout aprilTagFieldLayout;
   PhotonPoseEstimator photonPoseEstimator;
-  public Pose2d speakerPosition = new Pose2d(-0.04, 5.55, new Rotation2d());
+  public Pose2d speakerPosition = new Pose2d(-0.0381, 5.547868, new Rotation2d());
   public double distanceToSpeakerFieldToCamera = 0;
   public Transform3d fieldToCamera = new Transform3d();
 
@@ -53,7 +53,19 @@ public class Vision extends SubsystemBase {
     camera = new PhotonCamera("hhCam");
 
     try {
+
       aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+      // var alliance = DriverStation.getAlliance();
+      // if (alliance.isPresent()) {
+      // if (alliance.get() == DriverStation.Alliance.Red) {
+      // speakerPose = new Pose2d(16.579342, 5.547868, new Rotation2d(Math.PI));
+      // } else {
+      // speakerPose = new Pose2d(-0.0381, 5.547868, new Rotation2d());
+      // }
+      // speakerPosition = speakerPose;
+
+      // }
+
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -103,7 +115,9 @@ public class Vision extends SubsystemBase {
     double x = fieldToCamera.getX();
     double y = fieldToCamera.getY();
     Rotation2d theta = fieldToCamera.getRotation().toRotation2d();
-    return Units.metersToInches(PhotonUtils.getDistanceToPose(new Pose2d(x, y, theta), speakerPosition));
+    distanceToSpeakerFieldToCamera = Units
+        .metersToInches(PhotonUtils.getDistanceToPose(new Pose2d(x, y, theta), speakerPosition));
+    return distanceToSpeakerFieldToCamera;
   }
 
   public PhotonCamera getCamera() {
@@ -142,7 +156,7 @@ public class Vision extends SubsystemBase {
 
   @Override
   public void periodic() {
-    Logger.recordOutput("speaker pos", speakerPosition.toString());
+    // Logger.recordOutput("speaker pos", speakerPosition.toString());
 
     // Query the latest result from PhotonVision
     var result = camera.getLatestResult(); // returns a PhotoPipeLine Container
@@ -151,8 +165,6 @@ public class Vision extends SubsystemBase {
       fieldToCamera = result.getMultiTagResult().estimatedPose.best;
       SmartDashboard.putNumber("distanceToSpeakerFieldToCameraInches",
           getDistanceToSpeakerFieldToCameraInches(fieldToCamera));
-
-      distanceToSpeakerFieldToCamera = getDistanceToSpeakerFieldToCameraInches(fieldToCamera);
     }
 
     // Check if the latest result has any targets.

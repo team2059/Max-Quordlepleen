@@ -27,8 +27,8 @@ public final class Constants {
         public static final class ShooterRegressionConstants {
                 // Sample data points
                 public static double[] distances = new double[] { 36, 56, 76, 96, 116, 136, 156 }; // inches
-                public static double[] velocities = new double[] { 2000, 2250, 3000, 3250, 3500, 4000, 5000 };// RPMs
-                public static double[] angles = new double[] { -60, -50, -40, -35, -31, -28, -25 }; // degrees
+                public static double[] velocities = new double[] { 2000, 2500, 3000, 3250, 3500, 4000, 5000 };// RPMs
+                public static double[] angles = new double[] { -62.5, -50, -40, -35, -31, -28, -25 }; // degrees
         }
 
         public static final class ShooterConstants {

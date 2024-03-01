@@ -8,6 +8,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.ShooterCmds.ShootAtRPMsCmd;
@@ -46,11 +47,13 @@ public class VisionShootCmd extends Command {
         double desiredShooterVelocity = desiredShooterState[0];
         double desiredShooterAngle = desiredShooterState[1];
 
-        CommandScheduler.getInstance().schedule(new SequentialCommandGroup(new TiltShooterToSetpointCmd(shooter,
-                desiredShooterAngle)
-                .andThen(
-                        new ShootAtRPMsCmd(shooter,
-                                desiredShooterVelocity))));
+        CommandScheduler.getInstance()
+                .schedule(new SequentialCommandGroup(new TiltShooterToSetpointCmd(shooter,
+                        desiredShooterAngle)
+                        
+                        .andThen(
+                                new ShootAtRPMsCmd(shooter,
+                                        desiredShooterVelocity))));
     }
 
     // Called once the command ends or is interrupted.
