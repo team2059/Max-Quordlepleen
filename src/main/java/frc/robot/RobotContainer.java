@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -28,12 +30,15 @@ import frc.robot.Constants.ScoringPresets;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.PathfindToTagCmd;
 import frc.robot.commands.TeleopSwerveCmd;
-import frc.robot.commands.CollectorCmds.IntakeNoteCmd;
+import frc.robot.commands.AutoCmds.AutoIntakeNoteCmd;
+import frc.robot.commands.AutoCmds.AutoShootCmd;
+import frc.robot.commands.AutoCmds.AutoTiltShooterToSetpointCmd;
+import frc.robot.commands.AutoCmds.AutoVisionShootCmd;
 import frc.robot.commands.CollectorCmds.TiltCollectorToShooterCmd;
 import frc.robot.commands.ScoringCmds.VisionShootCmd;
-import frc.robot.commands.ScoringCmds.VisionShootSequentialCmd;
 import frc.robot.commands.CollectorCmds.TiltCollectorToSetpointCmd;
-import frc.robot.commands.CollectorCmds.PickupNoteCmd;
+import frc.robot.commands.CollectorCmds.IntakeNoteCmd;
+import frc.robot.commands.CollectorCmds.TiltCollectorToCollectPosCmd;
 import frc.robot.commands.ShooterCmds.ElevateShooterToTrapCmd;
 import frc.robot.commands.ShooterCmds.RunIndexerCmd;
 import frc.robot.commands.ShooterCmds.ShootAtRPMsCmd;
@@ -109,8 +114,6 @@ public class RobotContainer {
 
   boolean isbeinginverted = false;
 
-  TiltShooterToSetpointCmd tiltShooterToSetpointCmd = new TiltShooterToSetpointCmd(shooter, 0.82);
-
   /* Commands */
 
   /**
@@ -142,11 +145,15 @@ public class RobotContainer {
     // NamedCommands.registerCommand("PathfindToTagCmd",
     // new PathfindToTagCmd(swerveBase, vision, 4, 78));
 
-    NamedCommands.registerCommand("IntakeNoteCmd",
-        new IntakeNoteCmd(collector,
+    NamedCommands.registerCommand("AutoIntakeNoteCmd",
+        new AutoIntakeNoteCmd(collector,
             shooter));
 
-    NamedCommands.registerCommand("PickupNoteCmd", new PickupNoteCmd(collector));
+    NamedCommands.registerCommand("TiltCollectorToCollectPosCmd", new TiltCollectorToCollectPosCmd(collector));
+    NamedCommands.registerCommand("AutoTiltShooterToSetpointCmd", new AutoTiltShooterToSetpointCmd(shooter, -45));
+    NamedCommands.registerCommand("AutoVisionShootCmd", new AutoVisionShootCmd(shooter, vision));
+    NamedCommands.registerCommand("AutoShootCmd", new AutoShootCmd(shooter, 500, -45));
+    NamedCommands.registerCommand("RunIndexerCmd", new RunIndexerCmd(shooter));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -228,7 +235,7 @@ public class RobotContainer {
 
     /* Y - INTAKE COLLECT */
     new JoystickButton(controller, 4)
-        .onTrue(new PickupNoteCmd(collector));
+        .onTrue(new TiltCollectorToCollectPosCmd(collector));
 
     /* X - INTAKE ROLLER */
     new JoystickButton(controller, 3).whileTrue(new IntakeNoteCmd(collector,
@@ -241,7 +248,7 @@ public class RobotContainer {
 
     /* LEFT BUMPER - REV UP SHOOTER */
     new JoystickButton(controller, 5)
-        .whileTrue(new VisionShootSequentialCmd(shooter, vision));
+        .whileTrue(new VisionShootCmd(shooter, vision));
 
     // new JoystickButton(controller, 5)
     // .whileTrue(

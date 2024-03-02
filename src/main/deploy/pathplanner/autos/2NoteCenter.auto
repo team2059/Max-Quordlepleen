@@ -1,6 +1,12 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 1.29,
+      "y": 5.59
+    },
+    "rotation": 0
+  },
   "command": {
     "type": "sequential",
     "data": {
@@ -8,7 +14,13 @@
         {
           "type": "named",
           "data": {
-            "name": "PickupNoteCmd"
+            "name": "TiltCollectorToCollectPosCmd"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoShootCmd"
           }
         },
         {
@@ -18,16 +30,22 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "LeftSide"
+                  "pathName": "CenterPath"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "IntakeNoteCmd"
+                  "name": "AutoIntakeNoteCmd"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoShootCmd"
           }
         }
       ]

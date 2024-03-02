@@ -230,7 +230,7 @@ public final class Constants {
                 public static final Transform3d robotToCam = new Transform3d(
                                 new Translation3d(Units.inchesToMeters(-SwerveBaseConstants.wheelBase / 2.0), 0.0,
                                                 Units.inchesToMeters(12.66)),
-                                new Rotation3d(0, Units.degreesToRadians(-35), Units.degreesToRadians(180)));
+                                new Rotation3d(0, Units.degreesToRadians(-36), Units.degreesToRadians(180)));
 
         }
 

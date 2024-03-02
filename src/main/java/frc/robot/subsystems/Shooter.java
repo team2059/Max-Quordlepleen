@@ -230,4 +230,28 @@ public class Shooter extends SubsystemBase {
         return -Units.rotationsToDegrees(getAbsoluteShooterTiltPosRaw() - ShooterConstants.TILT_OFFSET);
     }
 
+    public void stopShooterVelocityMotors() {
+        shooterUpperMotor.stopMotor();
+        shooterLowerMotor.stopMotor();
+    }
+
+    public void stopShooterTiltMotor() {
+        shooterTiltMotor.stopMotor();
+    }
+
+    public void stopShooterIndexerMotor() {
+        indexerMotor.stopMotor();
+    }
+
+    public void stopALLShooterMotors() {
+        stopShooterVelocityMotors();
+        stopShooterTiltMotor();
+        stopShooterIndexerMotor();
+
+        // shooterLowerMotor.set(0);
+        // shooterUpperMotor.set(0);
+        // indexerMotor.set(0);
+
+    }
+
 }

@@ -11,11 +11,11 @@ import frc.robot.subsystems.Collector;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class PickupNoteCmd extends SequentialCommandGroup {
+public class TiltCollectorToCollectPosCmd extends SequentialCommandGroup {
   Collector collector;
 
   /** Creates a new AlignCollectorToPickupNoteCmd. */
-  public PickupNoteCmd(Collector collector) {
+  public TiltCollectorToCollectPosCmd(Collector collector) {
     this.collector = collector;
     // Add your commands in thxe addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
