@@ -1,6 +1,12 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 0.72,
+      "y": 4.44
+    },
+    "rotation": -58.75
+  },
   "command": {
     "type": "sequential",
     "data": {
@@ -18,16 +24,9 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "RightSide"
-                }
-              }
-            ]
+            "pathName": "RightSide"
           }
         }
       ]

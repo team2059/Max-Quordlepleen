@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.photonvision.PhotonUtils;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
@@ -48,6 +49,9 @@ public class VisionShootCmd extends SequentialCommandGroup {
     desiredShooterState = shooter.calculateDesiredShooterState(distanceToSpeaker);
     desiredShooterVelocity = desiredShooterState[0];
     desiredShooterAngle = desiredShooterState[1];
+
+    SmartDashboard.putNumber("desiredShooterVelocity", desiredShooterVelocity);
+    SmartDashboard.putNumber("desiredShooterAngle", desiredShooterAngle);
 
     return new TiltShooterToSetpointCmd(shooter,
         desiredShooterState[1])

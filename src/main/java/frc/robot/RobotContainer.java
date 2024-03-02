@@ -170,14 +170,14 @@ public class RobotContainer {
         // new InstantCommand(() -> collector.setRollerMotor(0.33)), () ->
         // collector.isNotePresent()));
 
-        NamedCommands.registerCommand("ShootSubwooferSpeakerCmd1",
-                (new TiltShooterToSetpointCmd(shooter,
+        NamedCommands.registerCommand("ShootSubwooferSpeakerCmd",
+                new TiltShooterToSetpointCmd(shooter,
                         -61)
                         .andThen(
                                 new ShootAtRPMsCmd(shooter,
                                         4000))
-                        .alongWith(new SequentialCommandGroup(new WaitCommand(1), new RunIndexerCmd(shooter)))
-                        .withTimeout(4)));
+                        .alongWith(new SequentialCommandGroup(new WaitCommand(2), new RunIndexerCmd(shooter)))
+                        .withTimeout(4));
 
         // NamedCommands.registerCommand("FarShotCmd",
         // (new TiltShooterToSetpointCmd(shooter,
@@ -351,13 +351,15 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return new TiltShooterToSetpointCmd(shooter,
-                -61)
-                .andThen(
-                        new ShootAtRPMsCmd(shooter,
-                                4000))
-                .alongWith(new SequentialCommandGroup(new WaitCommand(1), new RunIndexerCmd(shooter)))
-                .withTimeout(4);
+        return autoChooser.getSelected();
+        // return new TiltShooterToSetpointCmd(shooter,
+        // -61)
+        // .andThen(
+        // new ShootAtRPMsCmd(shooter,
+        // 4000))
+        // .alongWith(new SequentialCommandGroup(new WaitCommand(2), new
+        // RunIndexerCmd(shooter)))
+        // .withTimeout(4);
 
     }
 
