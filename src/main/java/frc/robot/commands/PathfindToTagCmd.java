@@ -17,10 +17,12 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.SwerveBase;
@@ -54,6 +56,16 @@ public class PathfindToTagCmd extends SequentialCommandGroup {
 
         public Command getCommand() {
 
+                // if (RobotContainer.alliance == Alliance.Red) {
+                // ID_OF_TAG_TO_CHASE = 4;
+                // System.out.println("RED" + ID_OF_TAG_TO_CHASE);
+
+                // } else {
+                // ID_OF_TAG_TO_CHASE = 7;
+                // System.out.println("BLUE" + ID_OF_TAG_TO_CHASE);
+
+                // }
+
                 var robotPose2d = swerveBase.getPose();
 
                 var robotPose3d = new Pose3d(robotPose2d.getX(), robotPose2d.getY(), 0,
@@ -67,6 +79,7 @@ public class PathfindToTagCmd extends SequentialCommandGroup {
                         try {
                                 var allTargets = result.getTargets();
                                 for (PhotonTrackedTarget target : allTargets) {
+
                                         if (target.getFiducialId() == ID_OF_TAG_TO_CHASE) {
                                                 targetToUse = target;
 

@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.VisionConstants;
 
 import java.io.IOException;
@@ -35,8 +37,9 @@ public class Vision extends SubsystemBase {
   private PhotonCamera camera;
   AprilTagFieldLayout aprilTagFieldLayout;
   PhotonPoseEstimator photonPoseEstimator;
-  public Pose2d speakerPosition = new Pose2d(-0.0381, 5.547868, new Rotation2d());
+  public Pose2d speakerPosition = RobotContainer.speakerPose;// new Pose2d(-0.0381, 5.547868, new Rotation2d());
   public double distanceToSpeakerFieldToCamera = 0;
+
   public Transform3d fieldToCamera = new Transform3d();
 
   public static Vision instance;
@@ -115,9 +118,22 @@ public class Vision extends SubsystemBase {
     double x = fieldToCamera.getX();
     double y = fieldToCamera.getY();
     Rotation2d theta = fieldToCamera.getRotation().toRotation2d();
+
+    // red
     distanceToSpeakerFieldToCamera = Units
-        .metersToInches(PhotonUtils.getDistanceToPose(new Pose2d(x, y, theta), speakerPosition));
+        .metersToInches(PhotonUtils.getDistanceToPose(new Pose2d(x, y, theta),
+            new Pose2d(16.579342, 5.547868, new Rotation2d(Math.PI))));
+
+    // blue
+    // distanceToSpeakerFieldToCamera = Units
+    // .metersToInches(PhotonUtils.getDistanceToPose(new Pose2d(x, y, theta),
+    // new Pose2d(-0.0381, 5.547868, new Rotation2d())));
+
     return distanceToSpeakerFieldToCamera;
+  }
+
+  public void setDistanceToSpeakerFieldToCamera(double distanceToSpeakerFieldToCamera) {
+    this.distanceToSpeakerFieldToCamera = distanceToSpeakerFieldToCamera;
   }
 
   public PhotonCamera getCamera() {
@@ -156,6 +172,8 @@ public class Vision extends SubsystemBase {
 
   @Override
   public void periodic() {
+
+    // System.out.println(RobotContainer.speakerPose.toString());
     // Logger.recordOutput("speaker pos", speakerPosition.toString());
 
     // Query the latest result from PhotonVision

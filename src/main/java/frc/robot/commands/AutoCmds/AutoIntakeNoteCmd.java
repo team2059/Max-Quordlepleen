@@ -12,10 +12,13 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.CollectorConstants;
+import frc.robot.commands.ShooterCmds.RunIndexerCmd;
+import frc.robot.commands.ShooterCmds.ShootAtRPMsCmd;
 import frc.robot.commands.ShooterCmds.TiltShooterToCollectorCmd;
 import frc.robot.commands.ShooterAndCollectorIndexerCmd;
 import frc.robot.commands.CollectorCmds.TiltCollectorToShooterCmd;
 import frc.robot.commands.ShooterCmds.TiltShooterToRestPosCmd;
+import frc.robot.commands.ShooterCmds.TiltShooterToSetpointCmd;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Shooter;
 
@@ -31,7 +34,7 @@ public class AutoIntakeNoteCmd extends Command {
   public AutoIntakeNoteCmd(Collector collector, Shooter shooter) {
     this.collector = collector;
     this.shooter = shooter;
-    addRequirements(collector, shooter);
+    // addRequirements(collector, shooter);
 
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -61,6 +64,14 @@ public class AutoIntakeNoteCmd extends Command {
   @Override
   public void end(boolean interrupted) {
     collector.rollerMotor.set(0);
+
+    CommandScheduler.getInstance().schedule(new TiltShooterToSetpointCmd(shooter,
+        -45)
+        .andThen(
+            new ShootAtRPMsCmd(shooter,
+                4000))
+        .alongWith(new SequentialCommandGroup(new WaitCommand(1), new RunIndexerCmd(shooter)))
+        .withTimeout(4));
 
   }
 

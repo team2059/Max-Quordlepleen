@@ -16,6 +16,19 @@
           "data": {
             "name": "ShootSubwooferSpeakerCmd"
           }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "RightSide"
+                }
+              }
+            ]
+          }
         }
       ]
     }

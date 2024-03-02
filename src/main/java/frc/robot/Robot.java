@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.Optional;
+
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -13,7 +15,10 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import com.pathplanner.lib.pathfinding.Pathfinding;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -110,6 +115,22 @@ public class Robot extends LoggedRobot {
 
     SmartDashboard.putData("cmdScheduler", CommandScheduler.getInstance());
 
+    Optional<Alliance> ally = DriverStation.getAlliance();
+    if (ally.isPresent()) {
+      if (ally.get() == Alliance.Red) {
+        RobotContainer.alliance = Alliance.Red;
+        RobotContainer.speakerPose = new Pose2d(16.579342, 5.547868, new Rotation2d(Math.PI));
+      }
+      if (ally.get() == Alliance.Blue) {
+        RobotContainer.alliance = Alliance.Blue;
+        RobotContainer.speakerPose = new Pose2d(-0.0381, 5.547868, new Rotation2d());
+
+      }
+    } else {
+      RobotContainer.speakerPose = new Pose2d();
+
+    }
+
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -186,4 +207,5 @@ public class Robot extends LoggedRobot {
   @Override
   public void testPeriodic() {
   }
+
 }
