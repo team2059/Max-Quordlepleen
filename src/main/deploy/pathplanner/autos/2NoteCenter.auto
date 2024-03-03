@@ -28,6 +28,12 @@
           "data": {
             "pathName": "CenterPath"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoIntakeNoteCmd"
+          }
         }
       ]
     }

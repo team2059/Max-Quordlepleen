@@ -108,7 +108,7 @@ public class PathfindToTagCmd extends SequentialCommandGroup {
                                 System.out.println(goalPose.toString());
 
                                 return AutoBuilder.pathfindToPose(goalPose, new PathConstraints(
-                                                1.5, 1,
+                                                2, 1.5,
                                                 Units.degreesToRadians(540), Units.degreesToRadians(720)), 0);
 
                         } catch (NullPointerException ex) {

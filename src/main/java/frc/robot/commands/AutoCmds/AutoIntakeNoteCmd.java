@@ -65,13 +65,13 @@ public class AutoIntakeNoteCmd extends Command {
   public void end(boolean interrupted) {
     collector.rollerMotor.set(0);
 
-    CommandScheduler.getInstance().schedule(new TiltShooterToSetpointCmd(shooter,
-        -45)
-        .andThen(
-            new ShootAtRPMsCmd(shooter,
-                4000))
-        .alongWith(new SequentialCommandGroup(new WaitCommand(1), new RunIndexerCmd(shooter)))
-        .withTimeout(4));
+    // CommandScheduler.getInstance().schedule(new TiltShooterToSetpointCmd(shooter,
+    //     -40)
+    //     .andThen(
+    //         new ShootAtRPMsCmd(shooter,
+    //             4000))
+    //     .alongWith(new SequentialCommandGroup(new WaitCommand(1), new RunIndexerCmd(shooter)))
+    //     .withTimeout(4));
 
   }
 

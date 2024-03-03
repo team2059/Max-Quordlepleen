@@ -157,7 +157,7 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("AutoIntakeNoteCmd",
                 new AutoIntakeNoteCmd(collector,
-                        shooter).withTimeout(5));
+                        shooter).withTimeout(10));
 
         // NamedCommands.registerCommand("AutoIntakeNoteCmd",
         // new ConditionalCommand(
@@ -239,10 +239,10 @@ public class RobotContainer {
         zeroGyro.onTrue(new InstantCommand(() -> swerveBase.getNavX().zeroYaw()));
 
         // red
-        goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 4, 60));
+        // goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 4, 40));
 
         // blue
-        // goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 7, 60));
+        goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 7, 40));
 
         /* SHOOT SUBWOOFER */
         new JoystickButton(buttonBox, 1)
