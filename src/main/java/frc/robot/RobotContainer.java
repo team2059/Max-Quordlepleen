@@ -71,312 +71,332 @@ import frc.robot.subsystems.Vision;
  */
 public class RobotContainer {
 
-    /* XBOX CONTROLLER */
-    public static final XboxController controller = new XboxController(0);
+        /* XBOX CONTROLLER */
+        public static final XboxController controller = new XboxController(0);
 
-    /* LOGITECH */
-    public final static Joystick logitech = new Joystick(1);
+        /* LOGITECH */
+        public final static Joystick logitech = new Joystick(1);
 
-    /* Button Box */
-    public final static GenericHID buttonBox = new GenericHID(2);
+        /* Button Box */
+        public final static GenericHID buttonBox = new GenericHID(2);
 
-    private final int kLogitechTranslationAxis = 1;
-    private final int kLogitechStrafeAxis = 0;
-    private final int kLogitechRotationAxis = 2;
-    private final int kLogitechSliderAxis = 3;
-    private final int kZeroGyro = 5;
-    private final int kFieldOriented = 12;
-    private final int kInverted = 6; // switch
-    private final int kGoToTagButton = 1; // switch
-    private final int kStrafeOnly = 2;
-    private final int kSlowEverything = 3;
+        private final int kLogitechTranslationAxis = 1;
+        private final int kLogitechStrafeAxis = 0;
+        private final int kLogitechRotationAxis = 2;
+        private final int kLogitechSliderAxis = 3;
+        private final int kZeroGyro = 5;
+        private final int kFieldOriented = 12;
+        private final int kInverted = 6; // switch
+        private final int kGoToTagButton = 1; // switch
+        private final int kStrafeOnly = 2;
+        private final int kSlowEverything = 3;
 
-    private final JoystickButton zeroGyro = new JoystickButton(logitech, kZeroGyro);
+        private final JoystickButton zeroGyro = new JoystickButton(logitech, kZeroGyro);
 
-    private final JoystickButton goToTag = new JoystickButton(logitech, kGoToTagButton);
+        private final JoystickButton goToTag = new JoystickButton(logitech, kGoToTagButton);
 
-    private final JoystickButton invertButton = new JoystickButton(logitech, kInverted);
+        private final JoystickButton invertButton = new JoystickButton(logitech, kInverted);
 
-    /* Driver Buttons */
-
-    // private final JoystickButton alignWithTarget = new JoystickButton(driver,
-    // XboxController.Button.kRightBumper.value);
-    // private final JoystickButton autoBalance = new JoystickButton(driver,
-    // XboxController.Button.kX.value);
-
-    /* Subsystems */
-    private static final SwerveBase swerveBase = new SwerveBase();
-
-    private static final Collector collector = new Collector();
-
-    private static final Climber climber = new Climber();
-
-    private final static Shooter shooter = new Shooter();
-
-    private static final Vision vision = new Vision();
-
-    public static Pose2d speakerPose = new Pose2d();
-    public static Alliance alliance;
-    // private final PowerDistributionPanel powerDistributionPanel = new
-    // PowerDistributionPanel();
-
-    SendableChooser<Command> autoChooser;
-
-    boolean isbeinginverted = false;
-
-    /* Commands */
-
-    /**
-     * The container for the robot. Contains subsystems, OI devices, and commands.
-     */
-    public RobotContainer() {
-
-        var field = new Field2d();
-        SmartDashboard.putData("Field", field);
-
-        // Logging callback for current robot pose
-        PathPlannerLogging.setLogCurrentPoseCallback((pose) -> {
-            // Do whatever you want with the pose here
-            field.setRobotPose(pose);
-        });
-
-        // Logging callback for target robot pose
-        PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
-            // Do whatever you want with the pose here
-            field.getObject("target pose").setPose(pose);
-        });
-
-        // Logging callback for the active path, this is sent as a list of poses
-        PathPlannerLogging.setLogActivePathCallback((poses) -> {
-            // Do whatever you want with the poses here
-            field.getObject("trajectory").setPoses(poses);
-        });
-
-        // NamedCommands.registerCommand("PathfindToTagCmd",
-        // new PathfindToTagCmd(swerveBase, vision, 4, 78));
-
-        NamedCommands.registerCommand("AutoIntakeNoteCmd",
-                new AutoIntakeNoteCmd(collector,
-                        shooter).withTimeout(10));
-
-        // NamedCommands.registerCommand("AutoIntakeNoteCmd",
-        // new ConditionalCommand(
-        // new SequentialCommandGroup(new InstantCommand(() ->
-        // collector.setRollerMotor(0)),
-        // new ParallelCommandGroup(new TiltShooterToCollectorCmd(shooter),
-        // new TiltCollectorToShooterCmd(collector)),
-        // new WaitCommand(0.5),
-        // new ShooterAndCollectorIndexerCmd(collector, shooter)),
-        // new InstantCommand(() -> collector.setRollerMotor(0.33)), () ->
-        // collector.isNotePresent()));
-
-        NamedCommands.registerCommand("ShootSubwooferSpeakerCmd",
-                new TiltShooterToSetpointCmd(shooter,
-                        -61)
-                        .andThen(
-                                new ShootAtRPMsCmd(shooter,
-                                        4000))
-                        .alongWith(new SequentialCommandGroup(new WaitCommand(2), new RunIndexerCmd(shooter)))
-                        .withTimeout(4));
-
-        // NamedCommands.registerCommand("FarShotCmd",
-        // (new TiltShooterToSetpointCmd(shooter,
-        // -50)
-        // .andThen(
-        // new ShootAtRPMsCmd(shooter,
-        // 500))
-        // .alongWith(new SequentialCommandGroup(new WaitCommand(1), new
-        // RunIndexerCmd(shooter)))
-        // .withTimeout(4)));
-
-        NamedCommands.registerCommand("AutoVisionShootCmd", new AutoVisionShootCmd(shooter, vision));
-        NamedCommands.registerCommand("AutoShootCmd", new AutoShootCmd(shooter, 500, -45));
-        NamedCommands.registerCommand("RunIndexerCmd", new RunIndexerCmd(shooter));
-        NamedCommands.registerCommand("TiltCollectorToCollectPosCmd", new TiltCollectorToCollectPosCmd(collector));
-
-        // Configure the button bindings
-        configureButtonBindings();
-
-        // NamedCommands.registerCommand("arm", new PIDTiltArmCmd(tiltArm, 0.65));
-
-        autoChooser = AutoBuilder.buildAutoChooser();
-
-        SmartDashboard.putData("Auto Chooser", autoChooser);
-
-        // invertButton.toggleOnTrue(new InstantCommand(() -> isbeinginverted =
-        // !isbeinginverted)); invert toggle button
-
-        swerveBase.setDefaultCommand(new TeleopSwerveCmd(swerveBase,
-                () -> logitech.getRawAxis(kLogitechTranslationAxis),
-                () -> logitech.getRawAxis(kLogitechStrafeAxis), () -> logitech.getRawAxis(kLogitechRotationAxis),
-                () -> logitech.getRawAxis(kLogitechSliderAxis),
-                () -> !logitech.getRawButton(kFieldOriented),
-                () -> logitech.getRawButton(kInverted), () -> logitech.getRawButton(kStrafeOnly),
-                () -> logitech.getRawButton(kSlowEverything)));
-
-        // collector.setDefaultCommand(new MoveCollectorToSetpointCmd(collector,
-        // CollectorConstants.collectorTiltAlignToShooterPos)
-        // .onlyIf(() -> collector.isNotePresent()));
-
-        // shooter.setDefaultCommand(new InstantCommand(() ->
-        // shooter.indexerMotor.set(0)));
-        // collector.setDefaultCommand(new InstantCommand(() ->
-        // collector.rollerMotor.set(0)));
-
-    }
-
-    /**
-     * Use this method to define your button->command mappings. Buttons can be
-     * created by
-     * instantiating a {@link GenericHID} or one of its subclasses ({@link
-     * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), anxd then passing
-     * it to a {@link
-     * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-     */
-    private void configureButtonBindings() {
         /* Driver Buttons */
 
-        zeroGyro.onTrue(new InstantCommand(() -> swerveBase.getNavX().zeroYaw()));
+        // private final JoystickButton alignWithTarget = new JoystickButton(driver,
+        // XboxController.Button.kRightBumper.value);
+        // private final JoystickButton autoBalance = new JoystickButton(driver,
+        // XboxController.Button.kX.value);
 
-        // red
-        // goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 4, 40));
+        /* Subsystems */
+        private static final SwerveBase swerveBase = new SwerveBase();
 
-        // blue
-        goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 7, 40));
+        private static final Collector collector = new Collector();
 
-        /* SHOOT SUBWOOFER */
-        new JoystickButton(buttonBox, 1)
-                .whileTrue(new TiltShooterToSetpointCmd(shooter,
-                        -62.5)
-                        .andThen(
-                                new ShootAtRPMsCmd(shooter,
-                                        2500)));
-        /* SHOOTER MID */
-        new JoystickButton(buttonBox, 2)
-                .whileTrue(new TiltShooterToSetpointCmd(shooter,
-                        -40)
-                        .andThen(
-                                new ShootAtRPMsCmd(shooter,
-                                        3250)));
-        /* SHOOTER FAR */
-        new JoystickButton(buttonBox, 3)
-                .whileTrue(new TiltShooterToSetpointCmd(shooter,
-                        -30)
-                        .andThen(
-                                new ShootAtRPMsCmd(shooter,
-                                        4000)));
+        private static final Climber climber = new Climber();
 
-        /* ZERO SHOOTER TILT */
-        new JoystickButton(buttonBox, 4)
-                .whileTrue(new TiltShooterToSetpointCmd(shooter,
-                        -88));
+        private final static Shooter shooter = new Shooter();
 
-        /* CLIMBER WINCH UP */
-        new JoystickButton(buttonBox, 8)
-                .whileTrue(
-                        new TiltCollectorToSetpointCmd(collector, ClimberConstants.COLLECTOR_POS_BEFORE_CLIMBING)
-                                .repeatedly()
-                                .alongWith(new InstantCommand(() -> climber.setClimberMotorSpeed(0.66))))
-                .whileFalse(new InstantCommand(() -> climber.setClimberMotorSpeed(0)));
+        private static final Vision vision = new Vision();
 
-        /* CLIMBER WINCH DOWN */
-        new JoystickButton(buttonBox, 7)
-                .whileTrue(
-                        new TiltCollectorToSetpointCmd(collector, ClimberConstants.COLLECTOR_POS_BEFORE_CLIMBING)
-                                .repeatedly()
-                                .alongWith(new InstantCommand(() -> climber.setClimberMotorSpeed(-0.66))))
-                .whileFalse(new InstantCommand(() -> climber.setClimberMotorSpeed(0)));
+        public static Pose2d speakerPose = new Pose2d();
+        public static Alliance alliance;
+        // private final PowerDistributionPanel powerDistributionPanel = new
+        // PowerDistributionPanel();
 
-        /* SHOOTER ELEVATOR TO TRAP POS */
-        new JoystickButton(buttonBox, 10)
-                .whileTrue(new ElevateShooterToTrapCmd(shooter));
+        SendableChooser<Command> autoChooser;
 
-        /* SHOOTER TILT TO TRAP POS */
-        new JoystickButton(buttonBox, 11)
-                .whileTrue(new TiltShooterToSetpointCmd(shooter, ClimberConstants.SHOOTER_TILT_TRAP_POS));
+        boolean isbeinginverted = false;
 
-        /* SHOOTER EJECT TO TRAP */
-        new JoystickButton(buttonBox, 12)
-                .whileTrue(new InstantCommand(() -> shooter.setIndexMotorSpeed(1)))
-                .whileFalse(new InstantCommand(() -> shooter.setIndexMotorSpeed(0)));
+        /* Commands */
 
-        /* A - INTAKE HOME */
-        new JoystickButton(controller, 1)
-                .onTrue(new TiltCollectorToShooterCmd(collector));
-        // new JoystickButton(controller, 4)
-        // .whileTrue(new ElevateShooterToTrapCmd(shooter));
+        /**
+         * The container for the robot. Contains subsystems, OI devices, and commands.
+         */
+        public RobotContainer() {
 
-        /* Y - INTAKE COLLECT */
-        new JoystickButton(controller, 4)
-                .onTrue(new TiltCollectorToCollectPosCmd(collector));
+                var field = new Field2d();
+                SmartDashboard.putData("Field", field);
 
-        /* X - INTAKE ROLLER */
-        new JoystickButton(controller, 3).whileTrue(new IntakeNoteCmd(collector,
-                shooter));
+                // Logging callback for current robot pose
+                PathPlannerLogging.setLogCurrentPoseCallback((pose) -> {
+                        // Do whatever you want with the pose here
+                        field.setRobotPose(pose);
+                });
 
-        /* B - OUTTAKE ROLLER */
-        new JoystickButton(controller, 2)
-                .whileTrue(new InstantCommand(() -> collector.setRollerMotor(-0.33)))
-                .whileFalse(new InstantCommand(() -> collector.setRollerMotor(0)));
+                // Logging callback for target robot pose
+                PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
+                        // Do whatever you want with the pose here
+                        field.getObject("target pose").setPose(pose);
+                });
 
-        /* LEFT BUMPER - REV UP SHOOTER */
-        new JoystickButton(controller, 5)
+                // Logging callback for the active path, this is sent as a list of poses
+                PathPlannerLogging.setLogActivePathCallback((poses) -> {
+                        // Do whatever you want with the poses here
+                        field.getObject("trajectory").setPoses(poses);
+                });
+
+                // NamedCommands.registerCommand("PathfindToTagCmd",
+                // new PathfindToTagCmd(swerveBase, vision, 4, 78));
+
+                NamedCommands.registerCommand("AutoIntakeNoteCmd",
+                                new AutoIntakeNoteCmd(collector,
+                                                shooter).withTimeout(10));
+
+                // NamedCommands.registerCommand("AutoIntakeNoteCmd",
+                // new ConditionalCommand(
+                // new SequentialCommandGroup(new InstantCommand(() ->
+                // collector.setRollerMotor(0)),
+                // new ParallelCommandGroup(new TiltShooterToCollectorCmd(shooter),
+                // new TiltCollectorToShooterCmd(collector)),
+                // new WaitCommand(0.5),
+                // new ShooterAndCollectorIndexerCmd(collector, shooter)),
+                // new InstantCommand(() -> collector.setRollerMotor(0.33)), () ->
+                // collector.isNotePresent()));
+
+                NamedCommands.registerCommand("ShootSubwooferSpeakerCmd",
+                                new TiltShooterToSetpointCmd(shooter,
+                                                -61)
+                                                .andThen(
+                                                                new ShootAtRPMsCmd(shooter,
+                                                                                4000))
+                                                .alongWith(new SequentialCommandGroup(new WaitCommand(2),
+                                                                new RunIndexerCmd(shooter)))
+                                                .withTimeout(4));
+
+                NamedCommands.registerCommand("ShootSubwooferSpeakerFARCmd",
+                                new TiltShooterToSetpointCmd(shooter,
+                                                -40)
+                                                .andThen(
+                                                                new ShootAtRPMsCmd(shooter,
+                                                                                4000))
+                                                .alongWith(new SequentialCommandGroup(new WaitCommand(2),
+                                                                new RunIndexerCmd(shooter)))
+                                                .withTimeout(4));
+
+                // NamedCommands.registerCommand("FarShotCmd",
+                // (new TiltShooterToSetpointCmd(shooter,
+                // -50)
+                // .andThen(
+                // new ShootAtRPMsCmd(shooter,
+                // 500))
+                // .alongWith(new SequentialCommandGroup(new WaitCommand(1), new
+                // RunIndexerCmd(shooter)))
+                // .withTimeout(4)));
+
+                NamedCommands.registerCommand("AutoVisionShootCmd", new AutoVisionShootCmd(shooter, vision));
+                NamedCommands.registerCommand("AutoShootCmd", new AutoShootCmd(shooter, 500, -45));
+                NamedCommands.registerCommand("RunIndexerCmd", new RunIndexerCmd(shooter));
+                NamedCommands.registerCommand("TiltCollectorToCollectPosCmd",
+                                new TiltCollectorToCollectPosCmd(collector));
+
+                // Configure the button bindings
+                configureButtonBindings();
+
+                // NamedCommands.registerCommand("arm", new PIDTiltArmCmd(tiltArm, 0.65));
+
+                autoChooser = AutoBuilder.buildAutoChooser();
+
+                SmartDashboard.putData("Auto Chooser", autoChooser);
+
+                // invertButton.toggleOnTrue(new InstantCommand(() -> isbeinginverted =
+                // !isbeinginverted)); invert toggle button
+
+                swerveBase.setDefaultCommand(new TeleopSwerveCmd(swerveBase,
+                                () -> logitech.getRawAxis(kLogitechTranslationAxis),
+                                () -> logitech.getRawAxis(kLogitechStrafeAxis),
+                                () -> logitech.getRawAxis(kLogitechRotationAxis),
+                                () -> logitech.getRawAxis(kLogitechSliderAxis),
+                                () -> !logitech.getRawButton(kFieldOriented),
+                                () -> logitech.getRawButton(kInverted), () -> logitech.getRawButton(kStrafeOnly),
+                                () -> logitech.getRawButton(kSlowEverything)));
+
+                // collector.setDefaultCommand(new MoveCollectorToSetpointCmd(collector,
+                // CollectorConstants.collectorTiltAlignToShooterPos)
+                // .onlyIf(() -> collector.isNotePresent()));
+
+                // shooter.setDefaultCommand(new InstantCommand(() ->
+                // shooter.indexerMotor.set(0)));
+                // collector.setDefaultCommand(new InstantCommand(() ->
+                // collector.rollerMotor.set(0)));
+
+        }
+
+        /**
+         * Use this method to define your button->command mappings. Buttons can be
+         * created by
+         * instantiating a {@link GenericHID} or one of its subclasses ({@link
+         * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), anxd then passing
+         * it to a {@link
+         * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+         */
+        private void configureButtonBindings() {
+                /* Driver Buttons */
+
+                zeroGyro.onTrue(new InstantCommand(() -> swerveBase.getNavX().zeroYaw()));
+
+                // red
+                // goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 4, 40));
+
+                // blue
+                goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 7, 40));
+
+                /* SHOOT SUBWOOFER */
+                new JoystickButton(buttonBox, 1)
+                                .whileTrue(new TiltShooterToSetpointCmd(shooter,
+                                                -62.5)
+                                                .andThen(
+                                                                new ShootAtRPMsCmd(shooter,
+                                                                                2500)));
+                /* SHOOTER MID */
+                new JoystickButton(buttonBox, 2)
+                                .whileTrue(new TiltShooterToSetpointCmd(shooter,
+                                                -40)
+                                                .andThen(
+                                                                new ShootAtRPMsCmd(shooter,
+                                                                                3250)));
+                /* SHOOTER FAR */
+                new JoystickButton(buttonBox, 3)
+                                .whileTrue(new TiltShooterToSetpointCmd(shooter,
+                                                -30)
+                                                .andThen(
+                                                                new ShootAtRPMsCmd(shooter,
+                                                                                4000)));
+
+                /* ZERO SHOOTER TILT */
+                new JoystickButton(buttonBox, 4)
+                                .whileTrue(new TiltShooterToSetpointCmd(shooter,
+                                                -88));
+
+                /* CLIMBER WINCH UP */
+                new JoystickButton(buttonBox, 8)
+                                .whileTrue(
+                                                new TiltCollectorToSetpointCmd(collector,
+                                                                ClimberConstants.COLLECTOR_POS_BEFORE_CLIMBING)
+                                                                .repeatedly()
+                                                                .alongWith(new InstantCommand(() -> climber
+                                                                                .setClimberMotorSpeed(0.66))))
+                                .whileFalse(new InstantCommand(() -> climber.setClimberMotorSpeed(0)));
+
+                /* CLIMBER WINCH DOWN */
+                new JoystickButton(buttonBox, 7)
+                                .whileTrue(
+                                                new TiltCollectorToSetpointCmd(collector,
+                                                                ClimberConstants.COLLECTOR_POS_BEFORE_CLIMBING)
+                                                                .repeatedly()
+                                                                .alongWith(new InstantCommand(() -> climber
+                                                                                .setClimberMotorSpeed(-0.66))))
+                                .whileFalse(new InstantCommand(() -> climber.setClimberMotorSpeed(0)));
+
+                /* SHOOTER ELEVATOR TO TRAP POS */
+                new JoystickButton(buttonBox, 10)
+                                .whileTrue(new ElevateShooterToTrapCmd(shooter));
+
+                /* SHOOTER TILT TO TRAP POS */
+                new JoystickButton(buttonBox, 11)
+                                .whileTrue(new TiltShooterToSetpointCmd(shooter,
+                                                ClimberConstants.SHOOTER_TILT_TRAP_POS));
+
+                /* SHOOTER EJECT TO TRAP */
+                new JoystickButton(buttonBox, 12)
+                                .whileTrue(new InstantCommand(() -> shooter.setIndexMotorSpeed(1)))
+                                .whileFalse(new InstantCommand(() -> shooter.setIndexMotorSpeed(0)));
+
+                /* A - INTAKE HOME */
+                new JoystickButton(controller, 1)
+                                .onTrue(new TiltCollectorToShooterCmd(collector));
+                // new JoystickButton(controller, 4)
+                // .whileTrue(new ElevateShooterToTrapCmd(shooter));
+
+                /* Y - INTAKE COLLECT */
+                new JoystickButton(controller, 4)
+                                .onTrue(new TiltCollectorToCollectPosCmd(collector));
+
+                /* X - INTAKE ROLLER */
+                new JoystickButton(controller, 3).whileTrue(new IntakeNoteCmd(collector,
+                                shooter));
+
+                /* B - OUTTAKE ROLLER */
+                new JoystickButton(controller, 2)
+                                .whileTrue(new InstantCommand(() -> collector.setRollerMotor(-0.33)))
+                                .whileFalse(new InstantCommand(() -> collector.setRollerMotor(0)));
+
+                /* LEFT BUMPER - REV UP SHOOTER */
+                new JoystickButton(controller, 5)
                 .whileTrue(new VisionShootCmd(shooter, vision));
+                // new JoystickButton(controller, 5)
+                //                 .whileTrue(new ShootAtRPMsCmd(shooter, 1000));
 
-        // new JoystickButton(controller, 5)
-        // .whileTrue(
-        // new ShootAtRPMsSupplierCmd(shooter,
-        // () -> MathUtil.clamp(-MathUtil.applyDeadband(logitech.getRawAxis(3) * 5000,
-        // 0.25),
-        // 0, 5000)));
+                // new JoystickButton(controller, 5)
+                // .whileTrue(
+                // new ShootAtRPMsSupplierCmd(shooter,
+                // () -> MathUtil.clamp(-MathUtil.applyDeadband(logitech.getRawAxis(3) * 5000,
+                // 0.25),
+                // 0, 5000)));
 
-        // new JoystickButton(controller, 5)
-        // .whileTrue(
-        // new TiltShooterToSetpointCmd(shooter,
-        // -25)
-        // .andThen(
-        // new ShootAtRPMsCmd(shooter,
-        // 5000)));
+                // new JoystickButton(controller, 5)
+                // .whileTrue(
+                // new TiltShooterToSetpointCmd(shooter,
+                // -25)
+                // .andThen(
+                // new ShootAtRPMsCmd(shooter,
+                // 5000)));
 
-        /* RIGHT BUMPER - RUN SHOOTER INDEXER (FIRE NOTE) */
-        new JoystickButton(controller, 6)
-                .whileTrue(
-                        new RunIndexerCmd(shooter));
+                /* RIGHT BUMPER - RUN SHOOTER INDEXER (FIRE NOTE) */
+                new JoystickButton(controller, 6)
+                                .whileTrue(
+                                                new RunIndexerCmd(shooter));
 
-    }
+        }
 
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     */
-    public Command getAutonomousCommand() {
-        return autoChooser.getSelected();
-        // return new TiltShooterToSetpointCmd(shooter,
-        // -61)
-        // .andThen(
-        // new ShootAtRPMsCmd(shooter,
-        // 4000))
-        // .alongWith(new SequentialCommandGroup(new WaitCommand(2), new
-        // RunIndexerCmd(shooter)))
-        // .withTimeout(4);
+        /**
+         * Use this to pass the autonomous command to the main {@link Robot} class.
+         *
+         * @return the command to run in autonomous
+         */
+        public Command getAutonomousCommand() {
+                return autoChooser.getSelected();
+                // return new TiltShooterToSetpointCmd(shooter,
+                // -61)
+                // .andThen(
+                // new ShootAtRPMsCmd(shooter,
+                // 4000))
+                // .alongWith(new SequentialCommandGroup(new WaitCommand(2), new
+                // RunIndexerCmd(shooter)))
+                // .withTimeout(4);
 
-    }
+        }
 
-    public SwerveBase getSwerveBase() {
-        return swerveBase;
-    }
+        public SwerveBase getSwerveBase() {
+                return swerveBase;
+        }
 
-    public static Shooter getShooter() {
-        return shooter;
-    }
+        public static Shooter getShooter() {
+                return shooter;
+        }
 
-    public Vision getVision() {
-        return vision;
-    }
+        public Vision getVision() {
+                return vision;
+        }
 
-    public static Collector getCollector() {
-        return collector;
-    }
+        public static Collector getCollector() {
+                return collector;
+        }
 
 }
