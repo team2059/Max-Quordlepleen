@@ -164,7 +164,8 @@ public class RobotContainer {
                                                                 .andThen(new SequentialCommandGroup(
                                                                                 new ParallelCommandGroup(
                                                                                                 new TiltShooterToCollectorCmd(
-                                                                                                                shooter),
+                                                                                                                shooter)
+                                                                                                                .withTimeout(1),
                                                                                                 new TiltCollectorToShooterCmd(
                                                                                                                 collector)),
                                                                                 new WaitCommand(0.5),
@@ -189,7 +190,7 @@ public class RobotContainer {
                                                 -61),
                                                 new ShootAtRPMsCmd(shooter,
                                                                 3000),
-                                                new SequentialCommandGroup(new WaitCommand(2.5).andThen(
+                                                new SequentialCommandGroup(new WaitCommand(2).andThen(
                                                                 new RunIndexerCmd(shooter)
                                                                                 .withTimeout(1.5))))
                                                 .withTimeout(5));
@@ -199,7 +200,7 @@ public class RobotContainer {
                                                 -40),
                                                 new ShootAtRPMsCmd(shooter,
                                                                 3000),
-                                                new SequentialCommandGroup(new WaitCommand(2.5).andThen(
+                                                new SequentialCommandGroup(new WaitCommand(2).andThen(
                                                                 new RunIndexerCmd(shooter)
                                                                                 .withTimeout(1.5))))
                                                 .withTimeout(5));
