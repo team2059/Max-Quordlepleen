@@ -196,7 +196,7 @@ public class RobotContainer {
 
                 NamedCommands.registerCommand("ShootSubwooferSpeakerFARCmd",
                                 new ParallelCommandGroup(new TiltShooterToSetpointCmd(shooter,
-                                                -38),
+                                                -35),
                                                 new ShootAtRPMsCmd(shooter,
                                                                 3750),
                                                 new SequentialCommandGroup(new WaitCommand(1).andThen(
