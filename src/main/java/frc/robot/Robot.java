@@ -115,22 +115,6 @@ public class Robot extends LoggedRobot {
 
     SmartDashboard.putData("cmdScheduler", CommandScheduler.getInstance());
 
-    Optional<Alliance> ally = DriverStation.getAlliance();
-    if (ally.isPresent()) {
-      if (ally.get() == Alliance.Red) {
-        RobotContainer.alliance = Alliance.Red;
-        RobotContainer.speakerPose = new Pose2d(16.579342, 5.547868, new Rotation2d(Math.PI));
-      }
-      if (ally.get() == Alliance.Blue) {
-        RobotContainer.alliance = Alliance.Blue;
-        RobotContainer.speakerPose = new Pose2d(-0.0381, 5.547868, new Rotation2d());
-
-      }
-    } else {
-      RobotContainer.speakerPose = new Pose2d();
-
-    }
-
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

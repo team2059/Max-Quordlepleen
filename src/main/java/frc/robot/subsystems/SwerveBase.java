@@ -31,6 +31,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.SPI;
 
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -152,22 +153,12 @@ public class SwerveBase extends SubsystemBase {
     // Add vision to pose estimator
     final Optional<EstimatedRobotPose> optionalEstimatedPose = vision
         .getEstimatedGlobalPose(poseEstimator.getEstimatedPosition());
-    if (optionalEstimatedPose.isPresent()) {
+    if (optionalEstimatedPose.isPresent() && RobotState.isTeleop()) {
       final EstimatedRobotPose estimatedPose = optionalEstimatedPose.get();
       poseEstimator.addVisionMeasurement(estimatedPose.estimatedPose.toPose2d(),
           estimatedPose.timestampSeconds);
 
-      // poseEstimator.addVisionMeasurement(estimatedPose.estimatedPose,
-      // estimatedPose.timestampSeconds,
-      // poseEstimator.getDefaultVisionMeasurementStdDevs().times(new
-      // Translation2d().getNorm()));
-
     }
-
-    // vision.getEstimatedGlobalPose(poseEstimator.getEstimatedPosition())
-    // .ifPresent(pose ->
-    // poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(),
-    // pose.timestampSeconds));
 
     // Update the odometry of the swerve drive using the wheel encoders and gyro in
     // the periodic block every 20 ms

@@ -193,17 +193,17 @@ public class RobotContainer {
                                                 new SequentialCommandGroup(new WaitCommand(2).andThen(
                                                                 new RunIndexerCmd(shooter)
                                                                                 .withTimeout(1.5))))
-                                                .withTimeout(5));
+                                                .withTimeout(4));
 
                 NamedCommands.registerCommand("ShootSubwooferSpeakerFARCmd",
                                 new ParallelCommandGroup(new TiltShooterToSetpointCmd(shooter,
-                                                -40),
+                                                -38),
                                                 new ShootAtRPMsCmd(shooter,
-                                                                3000),
+                                                                3500),
                                                 new SequentialCommandGroup(new WaitCommand(2).andThen(
                                                                 new RunIndexerCmd(shooter)
                                                                                 .withTimeout(1.5))))
-                                                .withTimeout(5));
+                                                .withTimeout(4));
 
                 // NamedCommands.registerCommand("FarShotCmd",
                 // (new TiltShooterToSetpointCmd(shooter,

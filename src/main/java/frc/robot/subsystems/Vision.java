@@ -79,21 +79,6 @@ public class Vision extends SubsystemBase {
 
     photonPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
-    // Optional<Alliance> ally = DriverStation.getAlliance();
-    // ally.ifPresent((alliance) -> System.out.println(alliance.toString()));
-    // if (ally.isPresent()) {
-    // if (ally.get() == Alliance.Red) {
-    // aprilTagFieldLayout.getTagPose(4).ifPresent(pose -> speakerPosition =
-    // pose.toPose2d()); // Get pose2d of speaker
-    // // on red alliance
-    // } else if (ally.get() == Alliance.Blue) {
-    // aprilTagFieldLayout.getTagPose(7).ifPresent(pose -> speakerPosition =
-    // pose.toPose2d()); // Get pose2d of speaker
-    // // on blue alliance
-
-    // }
-    // }
-
   }
 
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
