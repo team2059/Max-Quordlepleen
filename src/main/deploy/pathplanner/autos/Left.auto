@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.69,
-      "y": 6.56
+      "x": 0.73,
+      "y": 6.45
     },
-    "rotation": 56.15
+    "rotation": 60.0
   },
   "command": {
     "type": "sequential",
@@ -14,19 +14,38 @@
         {
           "type": "named",
           "data": {
-            "name": "TiltCollectorToCollectPosCmd"
+            "name": "ShootSubwooferSpeakerCmd"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ShootSubwooferSpeakerCmd"
+            "name": "TiltCollectorToCollectPosCmd"
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "LeftSide"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "LeftSide"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoIntakeNoteCmd"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootFARSubwooferSpeakerRIGHTCmd"
           }
         }
       ]
