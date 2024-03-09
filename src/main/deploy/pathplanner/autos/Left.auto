@@ -12,15 +12,22 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "ShootSubwooferSpeakerCmd"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "TiltCollectorToCollectPosCmd"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "TiltCollectorToCollectPosCmd"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShootSubwooferSpeakerCmd"
+                }
+              }
+            ]
           }
         },
         {
@@ -45,7 +52,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ShootFARSubwooferSpeakerRIGHTCmd"
+            "name": "ShootFARSubwooferSpeakerSIDESCmd"
           }
         }
       ]

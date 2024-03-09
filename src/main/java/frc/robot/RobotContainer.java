@@ -189,30 +189,30 @@ public class RobotContainer {
                                                 -61),
                                                 new ShootAtRPMsCmd(shooter,
                                                                 3000),
-                                                new SequentialCommandGroup(new WaitCommand(2).andThen(
+                                                new SequentialCommandGroup(new WaitCommand(1).andThen(
                                                                 new RunIndexerCmd(shooter)
-                                                                                .withTimeout(1.5))))
-                                                .withTimeout(4));
+                                                                                .withTimeout(1))))
+                                                .withTimeout(1.66));
 
                 NamedCommands.registerCommand("ShootSubwooferSpeakerFARCmd",
                                 new ParallelCommandGroup(new TiltShooterToSetpointCmd(shooter,
                                                 -38),
                                                 new ShootAtRPMsCmd(shooter,
                                                                 3750),
-                                                new SequentialCommandGroup(new WaitCommand(2).andThen(
+                                                new SequentialCommandGroup(new WaitCommand(1).andThen(
                                                                 new RunIndexerCmd(shooter)
                                                                                 .withTimeout(1.5))))
-                                                .withTimeout(4));
+                                                .withTimeout(1.66));
 
-                NamedCommands.registerCommand("ShootFARSubwooferSpeakerRIGHTCmd",
+                NamedCommands.registerCommand("ShootFARSubwooferSpeakerSIDESCmd",
                                 new ParallelCommandGroup(new TiltShooterToSetpointCmd(shooter,
                                                 -33),
                                                 new ShootAtRPMsCmd(shooter,
                                                                 4000),
-                                                new SequentialCommandGroup(new WaitCommand(2).andThen(
+                                                new SequentialCommandGroup(new WaitCommand(1).andThen(
                                                                 new RunIndexerCmd(shooter)
                                                                                 .withTimeout(1.5))))
-                                                .withTimeout(4));
+                                                .withTimeout(1.66));
 
                 // NamedCommands.registerCommand("FarShotCmd",
                 // (new TiltShooterToSetpointCmd(shooter,
