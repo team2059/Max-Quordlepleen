@@ -160,19 +160,18 @@ public class RobotContainer {
                                 new AutoIntakeNoteCmd(collector,
                                                 shooter)
                                                 .until(collector::isNotePresent)
-                                                .andThen(new PrintCommand("ENDED AutoIntakeNoteCmd")
-                                                                .andThen(new SequentialCommandGroup(
-                                                                                new ParallelCommandGroup(
-                                                                                                new TiltShooterToCollectorCmd(
-                                                                                                                shooter)
-                                                                                                                .withTimeout(1),
-                                                                                                new TiltCollectorToShooterCmd(
-                                                                                                                collector)),
-                                                                                new WaitCommand(0.5),
-                                                                                new ShooterAndCollectorIndexerCmd(
-                                                                                                collector,
+                                                .andThen(new SequentialCommandGroup(
+                                                                new ParallelCommandGroup(
+                                                                                new TiltShooterToCollectorCmd(
                                                                                                 shooter)
-                                                                                                .until(shooter::isNotePresent)))));
+                                                                                                .withTimeout(1),
+                                                                                new TiltCollectorToShooterCmd(
+                                                                                                collector)),
+                                                                new WaitCommand(0.5),
+                                                                new ShooterAndCollectorIndexerCmd(
+                                                                                collector,
+                                                                                shooter)
+                                                                                .until(shooter::isNotePresent))));
 
                 // NamedCommands.registerCommand("AutoIntakeNoteCmd",
                 // new ConditionalCommand(
@@ -199,7 +198,17 @@ public class RobotContainer {
                                 new ParallelCommandGroup(new TiltShooterToSetpointCmd(shooter,
                                                 -38),
                                                 new ShootAtRPMsCmd(shooter,
-                                                                3500),
+                                                                3750),
+                                                new SequentialCommandGroup(new WaitCommand(2).andThen(
+                                                                new RunIndexerCmd(shooter)
+                                                                                .withTimeout(1.5))))
+                                                .withTimeout(4));
+
+                NamedCommands.registerCommand("ShootFARSubwooferSpeakerRIGHTCmd",
+                                new ParallelCommandGroup(new TiltShooterToSetpointCmd(shooter,
+                                                -33),
+                                                new ShootAtRPMsCmd(shooter,
+                                                                4000),
                                                 new SequentialCommandGroup(new WaitCommand(2).andThen(
                                                                 new RunIndexerCmd(shooter)
                                                                                 .withTimeout(1.5))))
