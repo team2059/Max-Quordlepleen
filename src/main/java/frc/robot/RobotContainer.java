@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -157,7 +158,20 @@ public class RobotContainer {
 
                 NamedCommands.registerCommand("AutoIntakeNoteCmd",
                                 new AutoIntakeNoteCmd(collector,
-                                                shooter).withTimeout(10));
+                                                shooter)
+                                                .until(collector::isNotePresent)
+                                                .andThen(new PrintCommand("ENDED AutoIntakeNoteCmd")
+                                                                .andThen(new SequentialCommandGroup(
+                                                                                new ParallelCommandGroup(
+                                                                                                new TiltShooterToCollectorCmd(
+                                                                                                                shooter),
+                                                                                                new TiltCollectorToShooterCmd(
+                                                                                                                collector)),
+                                                                                new WaitCommand(0.5),
+                                                                                new ShooterAndCollectorIndexerCmd(
+                                                                                                collector,
+                                                                                                shooter)
+                                                                                                .until(shooter::isNotePresent)))));
 
                 // NamedCommands.registerCommand("AutoIntakeNoteCmd",
                 // new ConditionalCommand(
@@ -171,24 +185,24 @@ public class RobotContainer {
                 // collector.isNotePresent()));
 
                 NamedCommands.registerCommand("ShootSubwooferSpeakerCmd",
-                                new TiltShooterToSetpointCmd(shooter,
-                                                -61)
-                                                .andThen(
-                                                                new ShootAtRPMsCmd(shooter,
-                                                                                4000))
-                                                .alongWith(new SequentialCommandGroup(new WaitCommand(2),
-                                                                new RunIndexerCmd(shooter)))
-                                                .withTimeout(4));
+                                new ParallelCommandGroup(new TiltShooterToSetpointCmd(shooter,
+                                                -61),
+                                                new ShootAtRPMsCmd(shooter,
+                                                                3000),
+                                                new SequentialCommandGroup(new WaitCommand(2.5).andThen(
+                                                                new RunIndexerCmd(shooter)
+                                                                                .withTimeout(1.5))))
+                                                .withTimeout(5));
 
                 NamedCommands.registerCommand("ShootSubwooferSpeakerFARCmd",
-                                new TiltShooterToSetpointCmd(shooter,
-                                                -40)
-                                                .andThen(
-                                                                new ShootAtRPMsCmd(shooter,
-                                                                                4000))
-                                                .alongWith(new SequentialCommandGroup(new WaitCommand(2),
-                                                                new RunIndexerCmd(shooter)))
-                                                .withTimeout(4));
+                                new ParallelCommandGroup(new TiltShooterToSetpointCmd(shooter,
+                                                -40),
+                                                new ShootAtRPMsCmd(shooter,
+                                                                3000),
+                                                new SequentialCommandGroup(new WaitCommand(2.5).andThen(
+                                                                new RunIndexerCmd(shooter)
+                                                                                .withTimeout(1.5))))
+                                                .withTimeout(5));
 
                 // NamedCommands.registerCommand("FarShotCmd",
                 // (new TiltShooterToSetpointCmd(shooter,
@@ -339,9 +353,9 @@ public class RobotContainer {
 
                 /* LEFT BUMPER - REV UP SHOOTER */
                 new JoystickButton(controller, 5)
-                .whileTrue(new VisionShootCmd(shooter, vision));
+                                .whileTrue(new VisionShootCmd(shooter, vision));
                 // new JoystickButton(controller, 5)
-                //                 .whileTrue(new ShootAtRPMsCmd(shooter, 1000));
+                // .whileTrue(new ShootAtRPMsCmd(shooter, 1000));
 
                 // new JoystickButton(controller, 5)
                 // .whileTrue(

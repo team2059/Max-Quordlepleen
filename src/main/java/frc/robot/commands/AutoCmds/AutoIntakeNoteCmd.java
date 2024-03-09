@@ -4,6 +4,8 @@
 
 package frc.robot.commands.AutoCmds;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -47,16 +49,19 @@ public class AutoIntakeNoteCmd extends Command {
   @Override
   public void execute() {
 
-    if (collector.isNotePresent()) {
+    collector.setRollerMotor(0.55);
 
-      CommandScheduler.getInstance()
-          .schedule(new SequentialCommandGroup(new ParallelCommandGroup(new TiltShooterToCollectorCmd(shooter),
-              new TiltCollectorToShooterCmd(collector)), new WaitCommand(0.5),
-              new ShooterAndCollectorIndexerCmd(collector, shooter)));
+    // if (collector.isNotePresent()) {
 
-    } else {
-      collector.setRollerMotor(0.33);
-    }
+    // CommandScheduler.getInstance()
+    // .schedule(new SequentialCommandGroup(new ParallelCommandGroup(new
+    // TiltShooterToCollectorCmd(shooter),
+    // new TiltCollectorToShooterCmd(collector)), new WaitCommand(0.5),
+    // new ShooterAndCollectorIndexerCmd(collector, shooter)));
+
+    // } else {
+    // collector.setRollerMotor(0.55);
+    // }
 
   }
 
@@ -66,12 +71,13 @@ public class AutoIntakeNoteCmd extends Command {
     collector.rollerMotor.set(0);
 
     // CommandScheduler.getInstance().schedule(new TiltShooterToSetpointCmd(shooter,
-    //     -40)
-    //     .andThen(
-    //         new ShootAtRPMsCmd(shooter,
-    //             4000))
-    //     .alongWith(new SequentialCommandGroup(new WaitCommand(1), new RunIndexerCmd(shooter)))
-    //     .withTimeout(4));
+    // -40)
+    // .andThen(
+    // new ShootAtRPMsCmd(shooter,
+    // 4000))
+    // .alongWith(new SequentialCommandGroup(new WaitCommand(1), new
+    // RunIndexerCmd(shooter)))
+    // .withTimeout(4));
 
   }
 

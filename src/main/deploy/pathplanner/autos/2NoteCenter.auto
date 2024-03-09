@@ -18,9 +18,9 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "CenterPath"
+            "name": "TiltCollectorToCollectPosCmd"
           }
         },
         {
@@ -30,13 +30,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "TiltCollectorToCollectPosCmd"
+                  "name": "AutoIntakeNoteCmd"
                 }
               },
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "AutoIntakeNoteCmd"
+                  "pathName": "CenterPath"
                 }
               }
             ]
