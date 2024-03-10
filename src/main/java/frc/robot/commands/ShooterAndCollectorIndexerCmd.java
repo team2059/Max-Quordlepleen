@@ -29,8 +29,8 @@ public class ShooterAndCollectorIndexerCmd extends Command {
   @Override
   public void execute() {
     if (!shooter.isNotePresent()) {
-      shooter.setIndexMotorSpeed(-0.33);
-      collector.setRollerMotor(-0.33);
+      shooter.setIndexMotorSpeed(-0.5);
+      collector.setRollerMotor(-0.5);
     }
   }
 

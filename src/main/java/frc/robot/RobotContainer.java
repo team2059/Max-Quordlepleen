@@ -6,10 +6,13 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -38,9 +41,7 @@ import frc.robot.commands.PathfindToTagCmd;
 import frc.robot.commands.ShooterAndCollectorIndexerCmd;
 import frc.robot.commands.TeleopSwerveCmd;
 import frc.robot.commands.AutoCmds.AutoIntakeNoteCmd;
-import frc.robot.commands.AutoCmds.AutoShootCmd;
 import frc.robot.commands.AutoCmds.AutoTiltShooterToSetpointCmd;
-import frc.robot.commands.AutoCmds.AutoVisionShootCmd;
 import frc.robot.commands.CollectorCmds.TiltCollectorToShooterCmd;
 import frc.robot.commands.ScoringCmds.VisionShootCmd;
 import frc.robot.commands.CollectorCmds.TiltCollectorToSetpointCmd;
@@ -206,7 +207,7 @@ public class RobotContainer {
 
                 NamedCommands.registerCommand("ShootFARSubwooferSpeakerSIDESCmd",
                                 new ParallelCommandGroup(new TiltShooterToSetpointCmd(shooter,
-                                                -33),
+                                                -36),
                                                 new ShootAtRPMsCmd(shooter,
                                                                 4000),
                                                 new SequentialCommandGroup(new WaitCommand(1).andThen(
@@ -224,8 +225,6 @@ public class RobotContainer {
                 // RunIndexerCmd(shooter)))
                 // .withTimeout(4)));
 
-                NamedCommands.registerCommand("AutoVisionShootCmd", new AutoVisionShootCmd(shooter, vision));
-                NamedCommands.registerCommand("AutoShootCmd", new AutoShootCmd(shooter, 500, -45));
                 NamedCommands.registerCommand("RunIndexerCmd", new RunIndexerCmd(shooter));
                 NamedCommands.registerCommand("TiltCollectorToCollectPosCmd",
                                 new TiltCollectorToCollectPosCmd(collector));
@@ -279,7 +278,14 @@ public class RobotContainer {
                 // goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 4, 40));
 
                 // blue
-                goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 7, 40));
+                // goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 7, 40));
+
+                goToTag.whileTrue(swerveBase.pathFindToPose(
+                                new Pose2d(2.6, 4.4, new Rotation2d(Units.degreesToRadians(-27.5))),
+                                new PathConstraints(
+                                                3.0, 1.5,
+                                                Units.degreesToRadians(540), Units.degreesToRadians(720)),
+                                0));
 
                 /* SHOOT SUBWOOFER */
                 new JoystickButton(buttonBox, 1)
