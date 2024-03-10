@@ -83,7 +83,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ShootFARSubwooferSpeakerSIDESCmd"
+            "name": "ShootFARSubwooferSpeakerLEFTCmd"
           }
         }
       ]

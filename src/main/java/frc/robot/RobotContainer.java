@@ -205,9 +205,19 @@ public class RobotContainer {
                                                                                 .withTimeout(1.5))))
                                                 .withTimeout(1.66));
 
-                NamedCommands.registerCommand("ShootFARSubwooferSpeakerSIDESCmd",
+                NamedCommands.registerCommand("ShootFARSubwooferSpeakerRIGHTCmd",
                                 new ParallelCommandGroup(new TiltShooterToSetpointCmd(shooter,
                                                 -36),
+                                                new ShootAtRPMsCmd(shooter,
+                                                                4000),
+                                                new SequentialCommandGroup(new WaitCommand(1).andThen(
+                                                                new RunIndexerCmd(shooter)
+                                                                                .withTimeout(1.5))))
+                                                .withTimeout(1.66));
+
+                NamedCommands.registerCommand("ShootFARSubwooferSpeakerLEFTCmd",
+                                new ParallelCommandGroup(new TiltShooterToSetpointCmd(shooter,
+                                                -34.5),
                                                 new ShootAtRPMsCmd(shooter,
                                                                 4000),
                                                 new SequentialCommandGroup(new WaitCommand(1).andThen(
