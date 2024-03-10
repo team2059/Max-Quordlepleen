@@ -291,11 +291,19 @@ public class RobotContainer {
                 // goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 7, 40));
 
                 goToTag.whileTrue(swerveBase.pathFindToPose(
-                                new Pose2d(2.6, 4.4, new Rotation2d(Units.degreesToRadians(-27.5))),
+                                new Pose2d(2.4, 4.5, new Rotation2d(Units.degreesToRadians(-30))),
                                 new PathConstraints(
-                                                3.0, 1.5,
+                                                3, 2,
                                                 Units.degreesToRadians(540), Units.degreesToRadians(720)),
-                                0));
+                                0).andThen(
+                                                new ParallelCommandGroup(new TiltShooterToSetpointCmd(shooter,
+                                                                -35),
+                                                                new ShootAtRPMsCmd(shooter,
+                                                                                3500),
+                                                                new SequentialCommandGroup(new WaitCommand(1).andThen(
+                                                                                new RunIndexerCmd(shooter)
+                                                                                                .withTimeout(1.5))))
+                                                                .withTimeout(1.66)));
 
                 /* SHOOT SUBWOOFER */
                 new JoystickButton(buttonBox, 1)

@@ -153,7 +153,14 @@ public class SwerveBase extends SubsystemBase {
     // Add vision to pose estimator
     final Optional<EstimatedRobotPose> optionalEstimatedPose = vision
         .getEstimatedGlobalPose(poseEstimator.getEstimatedPosition());
-    if (optionalEstimatedPose.isPresent() && RobotState.isTeleop()) {
+    // if (optionalEstimatedPose.isPresent() && RobotState.isTeleop()) {
+    // final EstimatedRobotPose estimatedPose = optionalEstimatedPose.get();
+    // poseEstimator.addVisionMeasurement(estimatedPose.estimatedPose.toPose2d(),
+    // estimatedPose.timestampSeconds);
+
+    // }
+
+    if (optionalEstimatedPose.isPresent()) {
       final EstimatedRobotPose estimatedPose = optionalEstimatedPose.get();
       poseEstimator.addVisionMeasurement(estimatedPose.estimatedPose.toPose2d(),
           estimatedPose.timestampSeconds);

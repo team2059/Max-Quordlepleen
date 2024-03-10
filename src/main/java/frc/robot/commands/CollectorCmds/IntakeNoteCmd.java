@@ -52,8 +52,10 @@ public class IntakeNoteCmd extends Command {
       // }
 
       CommandScheduler.getInstance()
-          .schedule(new SequentialCommandGroup(new ParallelCommandGroup(new TiltShooterToCollectorCmd(shooter).withTimeout(1),
-              new TiltCollectorToShooterCmd(collector)), new WaitCommand(0.25),
+          .schedule(new SequentialCommandGroup(
+              new ParallelCommandGroup(new TiltShooterToCollectorCmd(shooter).withTimeout(1),
+                  new TiltCollectorToShooterCmd(collector)),
+              new WaitCommand(0.25),
               new ShooterAndCollectorIndexerCmd(collector, shooter)));
 
       // isReady = false;
