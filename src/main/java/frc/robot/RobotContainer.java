@@ -37,6 +37,7 @@ import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.CollectorConstants;
 import frc.robot.Constants.ScoringPresets;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.commands.LED;
 import frc.robot.commands.PathfindToTagCmd;
 import frc.robot.commands.ShooterAndCollectorIndexerCmd;
 import frc.robot.commands.TeleopSwerveCmd;
@@ -109,7 +110,7 @@ public class RobotContainer {
         /* Subsystems */
         private static final SwerveBase swerveBase = new SwerveBase();
 
-        private static final Collector collector = new Collector();
+        public static final Collector collector = new Collector();
 
         private static final Climber climber = new Climber();
 
@@ -125,6 +126,8 @@ public class RobotContainer {
         SendableChooser<Command> autoChooser;
 
         boolean isbeinginverted = false;
+
+        public static final LED led = new LED();
 
         /* Commands */
 

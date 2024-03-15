@@ -113,6 +113,8 @@ public class Robot extends LoggedRobot {
     // RobotContainer.getCollector().rollerMotor.set(0);
     // }
 
+    RobotContainer.led.setOrange();
+
     SmartDashboard.putData("cmdScheduler", CommandScheduler.getInstance());
 
   }
