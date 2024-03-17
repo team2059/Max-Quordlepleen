@@ -37,7 +37,7 @@ import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.CollectorConstants;
 import frc.robot.Constants.ScoringPresets;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.commands.LED;
+// import frc.robot.commands.LED;
 import frc.robot.commands.PathfindToTagCmd;
 import frc.robot.commands.ShooterAndCollectorIndexerCmd;
 import frc.robot.commands.TeleopSwerveCmd;
@@ -56,6 +56,7 @@ import frc.robot.commands.ShooterCmds.TiltShooterToCollectorCmd;
 import frc.robot.commands.ShooterCmds.TiltShooterToSetpointCmd;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Collector;
+import frc.robot.subsystems.LEDStrip;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveBase;
 import frc.robot.subsystems.Vision;
@@ -100,6 +101,9 @@ public class RobotContainer {
 
         private final JoystickButton invertButton = new JoystickButton(logitech, kInverted);
 
+        /* LED Strips */
+        public final LEDStrip ledStrip = new LEDStrip(0);
+
         /* Driver Buttons */
 
         // private final JoystickButton alignWithTarget = new JoystickButton(driver,
@@ -126,8 +130,6 @@ public class RobotContainer {
         SendableChooser<Command> autoChooser;
 
         boolean isbeinginverted = false;
-
-        public static final LED led = new LED();
 
         /* Commands */
 
@@ -271,6 +273,9 @@ public class RobotContainer {
                 // shooter.indexerMotor.set(0)));
                 // collector.setDefaultCommand(new InstantCommand(() ->
                 // collector.rollerMotor.set(0)));
+
+                // Light LEDs orange to test them
+                ledStrip.setOrange();
 
         }
 

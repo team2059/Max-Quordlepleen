@@ -17,6 +17,8 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -113,8 +115,6 @@ public class Robot extends LoggedRobot {
     // RobotContainer.getCollector().rollerMotor.set(0);
     // }
 
-    RobotContainer.led.setOrange();
-
     SmartDashboard.putData("cmdScheduler", CommandScheduler.getInstance());
 
   }
@@ -173,6 +173,7 @@ public class Robot extends LoggedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+    
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
