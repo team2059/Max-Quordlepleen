@@ -103,7 +103,7 @@ public class RobotContainer {
         /* Subsystems */
         private static final SwerveBase swerveBase = new SwerveBase();
 
-        public static final Collector collector = new Collector();
+        private static final Collector collector = new Collector();
 
         private static final Climber climber = new Climber();
 
