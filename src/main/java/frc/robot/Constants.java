@@ -18,6 +18,10 @@ public final class Constants {
                 public static final int collectorTiltThruBoreDIO = 1;
                 public static final int shooterTiltThruBoreEncoderDIO = 2;
                 public static final int shooterOpticalDIO = 3;
+                public static final int climberHallEffectDIO = 8;
+
+                public static final int topElevatorHallEffectDIO = 9;
+
         }
 
         public static final class PowerDistribution {
@@ -44,8 +48,7 @@ public final class Constants {
                 public static final int shooterTiltID = 15;
                 public static final int elevatorID = 10;
 
-                public static final int topElevatorHallEffectDIO = 9;
-                public static final double TOP_LIMIT = 63;
+                public static final double TOP_LIMIT = 60;
 
                 public static final double alignToCollectorPos = -45; // 0.78; // encoder value for getting note from
                                                                       // collector
@@ -76,13 +79,12 @@ public final class Constants {
 
         public static final class ClimberConstants {
                 public static final int climberWinchMotorID = 9; // TODO: change placeholder CAN IDs
-                public static final int climberHallEffectDIO = 8;
 
                 public static final double climbkP = 0;
                 public static final double climbkD = 0;
 
                 public static final double COLLECTOR_POS_BEFORE_CLIMBING = 0.57;
-                public static final double SHOOTER_TILT_TRAP_POS = 130;
+                public static final double SHOOTER_TILT_TRAP_POS = 115;
         }
 
         public static final class CollectorConstants {
@@ -101,8 +103,8 @@ public final class Constants {
 
         public static final class ScoringPresets {
 
-                public static final double AMP_SHOOTER_TILT = -60;// 0.83;
-                public static final double AMP_SHOOTER_VELOCITY = 900;
+                public static final double AMP_SHOOTER_TILT = 40;
+                public static final double AMP_SHOOTER_VELOCITY = 1250;
 
                 public static final double SPEAKER_SUBWOOFER_SHOOTER_TILT = -60; // distance of 36 inches from the front
                                                                                  // of the bumper

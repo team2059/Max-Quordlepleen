@@ -9,7 +9,6 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -21,37 +20,27 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
-import edu.wpi.first.wpilibj2.command.ProxyCommand;
-import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.ClimberConstants;
-import frc.robot.Constants.CollectorConstants;
-import frc.robot.Constants.ScoringPresets;
-import frc.robot.Constants.ShooterConstants;
-import frc.robot.commands.PathfindToTagCmd;
 import frc.robot.commands.ShooterAndCollectorIndexerCmd;
 import frc.robot.commands.TeleopSwerveCmd;
 import frc.robot.commands.AutoCmds.AutoIntakeNoteCmd;
-import frc.robot.commands.AutoCmds.AutoTiltShooterToSetpointCmd;
-import frc.robot.commands.CollectorCmds.TiltCollectorToShooterCmd;
-import frc.robot.commands.ScoringCmds.VisionShootCmd;
-import frc.robot.commands.CollectorCmds.TiltCollectorToSetpointCmd;
+import frc.robot.commands.ClimberCmds.ClimbDownCmd;
+import frc.robot.commands.ClimberCmds.ClimbUpCmd;
 import frc.robot.commands.CollectorCmds.IntakeNoteCmd;
 import frc.robot.commands.CollectorCmds.TiltCollectorToCollectPosCmd;
+import frc.robot.commands.CollectorCmds.TiltCollectorToSetpointONLYCLIMBCmd;
+import frc.robot.commands.CollectorCmds.TiltCollectorToShooterCmd;
+import frc.robot.commands.ScoringCmds.VisionShootCmd;
 import frc.robot.commands.ShooterCmds.ElevateShooterToTrapCmd;
 import frc.robot.commands.ShooterCmds.RunIndexerCmd;
 import frc.robot.commands.ShooterCmds.ShootAtRPMsCmd;
-import frc.robot.commands.ShooterCmds.ShootAtRPMsSupplierCmd;
 import frc.robot.commands.ShooterCmds.TiltShooterToCollectorCmd;
+import frc.robot.commands.ShooterCmds.TiltShooterToRestPosCmd;
 import frc.robot.commands.ShooterCmds.TiltShooterToSetpointCmd;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Collector;
@@ -291,20 +280,18 @@ public class RobotContainer {
                 // goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 7, 40));
 
                 goToTag.whileTrue(swerveBase.pathFindToPose(
+                                // red
+                                // new Pose2d(14, 4.5, new Rotation2d(Units.degreesToRadians(30)))
+                                // blue
                                 new Pose2d(2.4, 4.5, new Rotation2d(Units.degreesToRadians(-30))),
                                 new PathConstraints(
-                                                3, 2,
+                                                2.5, 1.5,
                                                 Units.degreesToRadians(540), Units.degreesToRadians(720)),
-                                0).andThen(
+                                0).alongWith(
                                                 new ParallelCommandGroup(new TiltShooterToSetpointCmd(shooter,
                                                                 -35),
                                                                 new ShootAtRPMsCmd(shooter,
-                                                                                3500),
-                                                                new SequentialCommandGroup(new WaitCommand(1).andThen(
-                                                                                new RunIndexerCmd(shooter)
-                                                                                                .withTimeout(1.5))))
-                                                                .withTimeout(1.66)));
-
+                                                                                3500))));
                 /* SHOOT SUBWOOFER */
                 new JoystickButton(buttonBox, 1)
                                 .whileTrue(new TiltShooterToSetpointCmd(shooter,
@@ -332,25 +319,17 @@ public class RobotContainer {
                                 .whileTrue(new TiltShooterToSetpointCmd(shooter,
                                                 -88));
 
+                /* CLIMBER TILT COLLECTOR TO CLIMB POS */
+                new JoystickButton(buttonBox, 13).whileTrue(new TiltCollectorToSetpointONLYCLIMBCmd(collector,
+                                ClimberConstants.COLLECTOR_POS_BEFORE_CLIMBING));
+
                 /* CLIMBER WINCH UP */
                 new JoystickButton(buttonBox, 8)
-                                .whileTrue(
-                                                new TiltCollectorToSetpointCmd(collector,
-                                                                ClimberConstants.COLLECTOR_POS_BEFORE_CLIMBING)
-                                                                .repeatedly()
-                                                                .alongWith(new InstantCommand(() -> climber
-                                                                                .setClimberMotorSpeed(0.66))))
-                                .whileFalse(new InstantCommand(() -> climber.setClimberMotorSpeed(0)));
+                                .whileTrue(new ClimbUpCmd(climber));
 
                 /* CLIMBER WINCH DOWN */
                 new JoystickButton(buttonBox, 7)
-                                .whileTrue(
-                                                new TiltCollectorToSetpointCmd(collector,
-                                                                ClimberConstants.COLLECTOR_POS_BEFORE_CLIMBING)
-                                                                .repeatedly()
-                                                                .alongWith(new InstantCommand(() -> climber
-                                                                                .setClimberMotorSpeed(-0.66))))
-                                .whileFalse(new InstantCommand(() -> climber.setClimberMotorSpeed(0)));
+                                .whileTrue(new ClimbDownCmd(climber));
 
                 /* SHOOTER ELEVATOR TO TRAP POS */
                 new JoystickButton(buttonBox, 10)
@@ -360,6 +339,12 @@ public class RobotContainer {
                 new JoystickButton(buttonBox, 11)
                                 .whileTrue(new TiltShooterToSetpointCmd(shooter,
                                                 ClimberConstants.SHOOTER_TILT_TRAP_POS));
+
+                /* AMP */
+                new JoystickButton(buttonBox, 6)
+                                .whileTrue(new TiltShooterToSetpointCmd(shooter,
+                                                40).alongWith(
+                                                                new ShootAtRPMsCmd(shooter, 1000)));
 
                 /* SHOOTER EJECT TO TRAP */
                 new JoystickButton(buttonBox, 12)

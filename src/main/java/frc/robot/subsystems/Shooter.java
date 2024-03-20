@@ -64,7 +64,7 @@ public class Shooter extends SubsystemBase {
     public DutyCycleEncoder shooterTiltThruBoreEncoder = new DutyCycleEncoder(
             DIOConstants.shooterTiltThruBoreEncoderDIO);
 
-    public DigitalInput topElevatorHallEffect = new DigitalInput(ShooterConstants.topElevatorHallEffectDIO);
+    public DigitalInput topElevatorHallEffect = new DigitalInput(DIOConstants.topElevatorHallEffectDIO);
 
     public Shooter() {
 

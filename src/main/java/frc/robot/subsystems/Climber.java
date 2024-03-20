@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -13,6 +14,7 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
+import frc.robot.Constants.DIOConstants;
 
 public class Climber extends SubsystemBase {
 
@@ -24,7 +26,8 @@ public class Climber extends SubsystemBase {
     public Climber() {
 
         climberMotor = new CANSparkMax(ClimberConstants.climberWinchMotorID, MotorType.kBrushless);
-        topHallEffect = new DigitalInput(ClimberConstants.climberHallEffectDIO);
+        climberMotor.setIdleMode(IdleMode.kBrake);
+        topHallEffect = new DigitalInput(DIOConstants.climberHallEffectDIO);
 
     }
 
