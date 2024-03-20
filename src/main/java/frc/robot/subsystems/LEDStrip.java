@@ -23,17 +23,36 @@ public class LEDStrip extends SubsystemBase {
 
   public RGB off = new RGB(0, 0, 0);
   public RGB white = new RGB(255, 255, 255);
-  public RGB purple = new RGB(190, 0, 255);
-  public RGB yellow = new RGB(255, 255, 0);
-  public RGB orange = new RGB(255, 140, 0);
+  public RGB red = new RGB(255, 0, 0);
+  public RGB green = new RGB(0, 255, 0);
+  public RGB blue = new RGB(0, 0, 255);
+
+  // team colors
+  // TODO: find a good orange
+  public RGB orange = new RGB(255, 255, 255);
 
   /** Creates a new LEDStrip. */
-  public LEDStrip(int port) {
+  public LEDStrip(Shooter shooter, Collector collector, int port, int length) {
     led = new AddressableLED(port);
-    buffer = new AddressableLEDBuffer(10);
+    buffer = new AddressableLEDBuffer(length);
 
     led.setLength(buffer.getLength());
     setOff();
+
+    while(true) {
+      if (shooter.isNotePresent() && !collector.isNotePresent()) { // only shooter has note
+        setRGB(red);
+        blinkSequence();
+      } else if (collector.isNotePresent() && !shooter.isNotePresent()) { // only collector has note
+        setRGB(green);
+        blinkSequence();
+      } else if (collector.isNotePresent() && shooter.isNotePresent()) { // both shooter & collector have note
+        setRGB(blue);
+        blinkSequence();
+      } else { // none have a note
+        setRGB(orange);
+      }
+    }
   }
 
   public void setRGB(RGB target) {
@@ -47,17 +66,17 @@ public class LEDStrip extends SubsystemBase {
   public void setOff() {
     setRGB(off);
   }
-  public void setWhite() {
-    setRGB(white);
+
+  public void waitXSeconds(double seconds) {
+    try {
+      Thread.sleep((long)(seconds * 1000));
+    } catch (Exception e) {};
   }
-  public void setPurple() {
-    setRGB(purple);
-  }
-  public void setYellow() {
-    setRGB(yellow);
-  }
-  public void setOrange() {
-    setRGB(orange);
+
+  public void blinkSequence() {
+    waitXSeconds(0.5);
+    setRGB(off);
+    waitXSeconds(0.5);
   }
 
   @Override

@@ -101,9 +101,6 @@ public class RobotContainer {
 
         private final JoystickButton invertButton = new JoystickButton(logitech, kInverted);
 
-        /* LED Strips */
-        public final LEDStrip ledStrip = new LEDStrip(0);
-
         /* Driver Buttons */
 
         // private final JoystickButton alignWithTarget = new JoystickButton(driver,
@@ -126,6 +123,9 @@ public class RobotContainer {
         public static Alliance alliance;
         // private final PowerDistributionPanel powerDistributionPanel = new
         // PowerDistributionPanel();
+
+        /* LED Strips */
+        public final LEDStrip ledStrip = new LEDStrip(shooter, collector, 0, 10);
 
         SendableChooser<Command> autoChooser;
 
@@ -273,9 +273,6 @@ public class RobotContainer {
                 // shooter.indexerMotor.set(0)));
                 // collector.setDefaultCommand(new InstantCommand(() ->
                 // collector.rollerMotor.set(0)));
-
-                // Light LEDs orange to test them
-                ledStrip.setOrange();
 
         }
 
