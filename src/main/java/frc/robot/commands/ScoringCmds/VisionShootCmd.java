@@ -55,7 +55,7 @@ public class VisionShootCmd extends SequentialCommandGroup {
 
     return new TiltShooterToSetpointCmd(shooter,
         desiredShooterState[1])
-        .andThen(
+        .alongWith(
             new ShootAtRPMsCmd(shooter,
                 desiredShooterState[0]));
 

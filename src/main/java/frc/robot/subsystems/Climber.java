@@ -20,14 +20,14 @@ public class Climber extends SubsystemBase {
 
     public CANSparkMax climberMotor;
     public PIDController climberPIDController;
-    public DigitalInput topHallEffect;
+    public DigitalInput bottomHallEffect;
 
     /** Creates a new Climber. */
     public Climber() {
 
         climberMotor = new CANSparkMax(ClimberConstants.climberWinchMotorID, MotorType.kBrushless);
         climberMotor.setIdleMode(IdleMode.kBrake);
-        topHallEffect = new DigitalInput(DIOConstants.climberHallEffectDIO);
+        bottomHallEffect = new DigitalInput(DIOConstants.climberHallEffectDIO);
 
     }
 
@@ -43,18 +43,18 @@ public class Climber extends SubsystemBase {
         return climberPIDController;
     }
 
-    public boolean isTopLimitReached() {
-        return !topHallEffect.get();
+    public boolean isBottomLimitReached() {
+        return !bottomHallEffect.get();
     }
 
     @Override
     public void periodic() {
 
-        SmartDashboard.putBoolean("is top limit climber reached", isTopLimitReached());
+        SmartDashboard.putBoolean("is bottom limit climber reached", isBottomLimitReached());
 
-        if (isTopLimitReached()) {
-            climberMotor.set(0);
-        }
+        // if (isTopLimitReached()) {
+        // climberMotor.set(0);
+        // }
 
         // This method will be called once per scheduler run
     }

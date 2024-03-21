@@ -45,7 +45,7 @@ public class Collector extends SubsystemBase {
 
         Logger.recordOutput("collecter note sensor", isNotePresent());
 
-        SmartDashboard.putBoolean("note sensor", isNotePresent());
+        SmartDashboard.putBoolean("HAS NOTE?", isNotePresent());
 
         // if (isNotePresent()) {
         // rollerMotor.set(0);

@@ -83,7 +83,7 @@ public final class Constants {
                 public static final double climbkP = 0;
                 public static final double climbkD = 0;
 
-                public static final double COLLECTOR_POS_BEFORE_CLIMBING = 0.57;
+                public static final double COLLECTOR_POS_BEFORE_CLIMBING = 0.47;
                 public static final double SHOOTER_TILT_TRAP_POS = 115;
         }
 
@@ -92,12 +92,12 @@ public final class Constants {
                 public static final int collectorRollerID = 12;
                 public static final int collectorTiltID = 11;
 
-                public static final double collectorTiltAlignToShooterPos = 0.7; // encoder value for "retracted"
+                public static final double collectorTiltAlignToShooterPos = 0.65; // encoder value for "retracted"
                                                                                  // collector
-                public static final double collectorTiltCollectPos = 0.3; // encoder value for collecting
+                public static final double collectorTiltCollectPos = 0.2; // encoder value for collecting
 
-                public static final double tiltkD = 0.05;
-                public static final double tiltkP = 1.25;
+                public static final double tiltkD = 0.033;
+                public static final double tiltkP = 1.33;
 
         }
 

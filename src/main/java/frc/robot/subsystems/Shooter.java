@@ -140,7 +140,7 @@ public class Shooter extends SubsystemBase {
         // indexerMotor.set(0);
         // }
 
-        SmartDashboard.putBoolean("isTopLimitReached", isTopLimitReached());
+        SmartDashboard.putBoolean("is SHOOTER top Limit Reached", isTopLimitReached());
 
         // double tiltSetpoint = ShooterConstants.alignToCollectorPos;
 
