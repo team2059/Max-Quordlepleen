@@ -6,16 +6,12 @@ package frc.robot.commands.CollectorCmds;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.Constants.CollectorConstants;
 import frc.robot.commands.ShooterCmds.TiltShooterToCollectorCmd;
 import frc.robot.commands.ShooterAndCollectorIndexerCmd;
-import frc.robot.commands.ShooterCmds.TiltShooterToRestPosCmd;
-import frc.robot.commands.ShooterCmds.TiltShooterToSetpointCmd;
+
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Shooter;
 

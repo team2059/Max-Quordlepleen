@@ -12,26 +12,18 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DriverStation;
+
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.Joystick;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Robot;
+
 import frc.robot.Constants.DIOConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.ShooterRegressionConstants;
-import frc.robot.RobotContainer;
 
 public class Shooter extends SubsystemBase {
 
@@ -64,7 +56,8 @@ public class Shooter extends SubsystemBase {
     public DutyCycleEncoder shooterTiltThruBoreEncoder = new DutyCycleEncoder(
             DIOConstants.shooterTiltThruBoreEncoderDIO);
 
-    public DigitalInput topElevatorHallEffect = new DigitalInput(DIOConstants.topElevatorHallEffectDIO);
+    public DigitalInput topElevatorHallEffect = new DigitalInput(DIOConstants.topShooterElevatorHallEffectDIO);
+    public DigitalInput bottomElevatorHallEffect = new DigitalInput(DIOConstants.bottomShooterElevatorHallEffectDIO);
 
     public Shooter() {
 
@@ -94,6 +87,8 @@ public class Shooter extends SubsystemBase {
 
         elevatorMotor = new CANSparkMax(Constants.ShooterConstants.elevatorID,
                 MotorType.kBrushless);
+
+        elevatorMotor.getEncoder().setPosition(0);
 
         elevatorMotor.setInverted(false);
 
@@ -141,6 +136,7 @@ public class Shooter extends SubsystemBase {
         // }
 
         SmartDashboard.putBoolean("is SHOOTER top Limit Reached", isTopLimitReached());
+        SmartDashboard.putBoolean("is SHOOTER bottom limit Reached", isBottomLimitReached());
 
         // double tiltSetpoint = ShooterConstants.alignToCollectorPos;
 
@@ -150,6 +146,7 @@ public class Shooter extends SubsystemBase {
 
         Logger.recordOutput("Absolute Shooter Tilt Pos Degrees", getAbsoluteShooterTiltPosDegrees());
         Logger.recordOutput("Absolute Shooter Tilt Pos Raw", getAbsoluteShooterTiltPosRaw());
+        Logger.recordOutput("shooter elevator pos", elevatorMotor.getEncoder().getPosition());
 
         // Logger.recordOutput("shooter tilt setpoint", tiltSetpoint);
         // Logger.recordOutput("tiltoutput", tiltOutput);
@@ -165,6 +162,10 @@ public class Shooter extends SubsystemBase {
 
     public boolean isTopLimitReached() {
         return !topElevatorHallEffect.get();
+    }
+
+    public boolean isBottomLimitReached() {
+        return !bottomElevatorHallEffect.get();
     }
 
     public boolean isNotePresent() {

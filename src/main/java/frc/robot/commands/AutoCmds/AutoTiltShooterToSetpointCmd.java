@@ -4,14 +4,10 @@
 
 package frc.robot.commands.AutoCmds;
 
-import org.apache.commons.math3.util.MathUtils;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -67,7 +63,7 @@ public class AutoTiltShooterToSetpointCmd extends Command {
     @Override
     public void end(boolean interrupted) {
 
-       // shooter.shooterTiltMotor.set(0);
+        // shooter.shooterTiltMotor.set(0);
 
     }
 

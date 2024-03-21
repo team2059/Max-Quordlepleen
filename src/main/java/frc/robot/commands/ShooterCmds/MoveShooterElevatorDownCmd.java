@@ -5,6 +5,7 @@
 package frc.robot.commands.ShooterCmds;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
@@ -13,16 +14,17 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.Shooter;
 
-public class MoveShooterElevatorToSetpointCmd extends Command {
+public class MoveShooterElevatorDownCmd extends Command {
   Shooter shooter;
   double setPoint;
   double kP, kD, kV, maxVel, maxAcc;
   ProfiledPIDController profiledPIDController;
-  ElevatorFeedforward elevatorFeedforward;
+  // ElevatorFeedforward elevatorFeedforward;
   double currentPosition;
+  PIDController pidController;
 
   /** Creates a new ElevateToAmpCmd. */
-  public MoveShooterElevatorToSetpointCmd(Shooter shooter, double setPoint) {
+  public MoveShooterElevatorDownCmd(Shooter shooter, double setPoint) {
     this.shooter = shooter;
     this.setPoint = setPoint;
 
@@ -31,16 +33,16 @@ public class MoveShooterElevatorToSetpointCmd extends Command {
     maxAcc = 125;
 
     // PID coefficients
-    kP = 0.75;
+    kP = 0.66;
     kD = 0;
     kV = 0.05;
 
     profiledPIDController = new ProfiledPIDController(kP, 0, kD,
         new TrapezoidProfile.Constraints(maxVel, maxAcc));
 
-    profiledPIDController.setGoal(new State(setPoint, 0));
+    pidController = new PIDController(kP, 0, 0);
 
-    elevatorFeedforward = new ElevatorFeedforward(0, 0, kV);
+    profiledPIDController.setGoal(new State(setPoint, 0));
 
     addRequirements(shooter);
 
@@ -63,34 +65,38 @@ public class MoveShooterElevatorToSetpointCmd extends Command {
     currentPosition = shooter.elevatorMotor.getEncoder().getPosition();
 
     // goal = final target of mechanism
-    double pidOutput = profiledPIDController.calculate(currentPosition,
+    double pidOutput = pidController.calculate(currentPosition,
         setPoint);
 
     double pidVelocitySetpoint = profiledPIDController.getSetpoint().velocity;
     // SmartDashboard.putNumber("desiredVelocity", pidVelocitySetpoint);
 
-    double ffOutput = elevatorFeedforward.calculate(pidVelocitySetpoint);
+    // double ffOutput = elevatorFeedforward.calculate(pidVelocitySetpoint);
 
     // SmartDashboard.putNumber("ffOutput", ffOutput);
 
     // m_motor.set(MathUtil.clamp(-new Joystick(0).getRawAxis(1), -0.25, 0.25));
 
-    if (shooter.isTopLimitReached() || currentPosition >= ShooterConstants.TOP_LIMIT) {
-      System.out.println("stopped!!!!!");
-      shooter.elevatorMotor.set(0);
-    } else {
-      shooter.elevatorMotor.setVoltage(pidOutput + ffOutput);
-    }
+    // if (shooter.isTopLimitReached() || currentPosition >=
+    // ShooterConstants.TOP_LIMIT) {
+    // System.out.println("stopped!!!!!");
+    // shooter.elevatorMotor.set(0);
+    // } else {
+    shooter.elevatorMotor.set(pidOutput);
+    // }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    System.out.println("DOWN ENDED!");
+    shooter.elevatorMotor.set(0);
+
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return profiledPIDController.atGoal();
+    return shooter.elevatorMotor.getEncoder().getPosition() <= 2.5 || shooter.isBottomLimitReached();
   }
 }

@@ -8,11 +8,8 @@ import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.CANSparkMax;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.RobotContainer;
+
 import frc.robot.subsystems.Shooter;
 
 public class AutoShootAtRPMsCmd extends Command {

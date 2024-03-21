@@ -6,18 +6,14 @@ package frc.robot.commands.ScoringCmds;
 
 import java.util.Set;
 
-import org.photonvision.PhotonUtils;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.DeferredCommand;
-import edu.wpi.first.wpilibj2.command.ProxyCommand;
+
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.ShooterCmds.ShootAtRPMsCmd;
 import frc.robot.commands.ShooterCmds.TiltShooterToSetpointCmd;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.SwerveBase;
 import frc.robot.subsystems.Vision;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more

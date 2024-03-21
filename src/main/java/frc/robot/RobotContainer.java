@@ -41,11 +41,15 @@ import frc.robot.commands.CollectorCmds.TiltCollectorToSetpointONLYCLIMBCmd;
 import frc.robot.commands.CollectorCmds.TiltCollectorToShooterCmd;
 import frc.robot.commands.ScoringCmds.VisionShootCmd;
 import frc.robot.commands.ShooterCmds.ElevateShooterToTrapCmd;
+import frc.robot.commands.ShooterCmds.MoveShooterElevatorDownCmd;
+import frc.robot.commands.ShooterCmds.MoveShooterElevatorToSetpointCmd;
+import frc.robot.commands.ShooterCmds.MoveShooterElevatorUpCmd;
 import frc.robot.commands.ShooterCmds.RunIndexerCmd;
 import frc.robot.commands.ShooterCmds.ShootAtRPMsCmd;
 import frc.robot.commands.ShooterCmds.TiltShooterToCollectorCmd;
 import frc.robot.commands.ShooterCmds.TiltShooterToRestPosCmd;
 import frc.robot.commands.ShooterCmds.TiltShooterToSetpointCmd;
+
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.LEDStrip;
@@ -289,9 +293,11 @@ public class RobotContainer {
 
                 goToTag.whileTrue(swerveBase.pathFindToPose(
                                 // red
-                                // new Pose2d(14, 4.5, new Rotation2d(Units.degreesToRadians(30)))
+                                // new Pose2d(14, 4.5, new Rotation2d(Units.degreesToRadians(30))),
+
                                 // blue
                                 new Pose2d(2.4, 4.5, new Rotation2d(Units.degreesToRadians(-30))),
+
                                 new PathConstraints(
                                                 2.5, 1.5,
                                                 Units.degreesToRadians(540), Units.degreesToRadians(720)),
@@ -339,20 +345,30 @@ public class RobotContainer {
                 new JoystickButton(buttonBox, 7)
                                 .whileTrue(new ClimbDownCmd(climber));
 
+                new JoystickButton(buttonBox, 5)
+                                .whileTrue(new TiltShooterToSetpointCmd(shooter, -75).withTimeout(1)
+                                                .andThen(new MoveShooterElevatorDownCmd(shooter, 1))
+                                                .andThen(new TiltShooterToRestPosCmd(shooter)));
+
+                new JoystickButton(buttonBox, 6)
+                                .whileTrue(new MoveShooterElevatorUpCmd(shooter, ShooterConstants.TOP_LIMIT));
+
                 /* SHOOTER ELEVATOR TO TRAP POS */
-                new JoystickButton(buttonBox, 10)
-                                .whileTrue(new ElevateShooterToTrapCmd(shooter));
+                // new JoystickButton(buttonBox, 10)
+                // .whileTrue(new ElevateShooterToTrapCmd(shooter));
 
                 /* SHOOTER TILT TO TRAP POS */
-                new JoystickButton(buttonBox, 11)
-                                .whileTrue(new TiltShooterToSetpointCmd(shooter,
-                                                ClimberConstants.SHOOTER_TILT_TRAP_POS));
+                // new JoystickButton(buttonBox, 11)
+                // .whileTrue(new TiltShooterToSetpointCmd(shooter,
+                // ClimberConstants.SHOOTER_TILT_TRAP_POS));
 
                 /* AMP */
-                new JoystickButton(buttonBox, 6)
-                                .whileTrue(new TiltShooterToSetpointCmd(shooter,
-                                                40).alongWith(
-                                                                new ShootAtRPMsCmd(shooter, 1000)));
+                // new JoystickButton(buttonBox, 6)
+                // .whileTrue(new TiltShooterToSetpointCmd(shooter,
+                // 40).alongWith(
+                // new ShootAtRPMsCmd(shooter, 1000)));
+                // new JoystickButton(buttonBox, 6)
+                // .whileTrue(new MoveShooterElevatorToSetpointCmd(shooter, 30));
 
                 /* SHOOTER EJECT TO TRAP */
                 new JoystickButton(buttonBox, 12)
@@ -378,7 +394,7 @@ public class RobotContainer {
                                 .whileTrue(new InstantCommand(() -> collector.setRollerMotor(-0.33)))
                                 .whileFalse(new InstantCommand(() -> collector.setRollerMotor(0)));
 
-                /* LEFT BUMPER - REV UP SHOOTER */
+                /* LEFT BUMPER - VISION SHOOT */
                 new JoystickButton(controller, 5)
                                 .whileTrue(new VisionShootCmd(shooter, vision));
                 // new JoystickButton(controller, 5)
