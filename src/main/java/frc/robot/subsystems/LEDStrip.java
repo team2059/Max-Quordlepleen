@@ -27,37 +27,27 @@ public class LEDStrip extends SubsystemBase {
   public RGB green = new RGB(0, 255, 0);
   public RGB blue = new RGB(0, 0, 255);
 
+  public Collector collector;
+  public Shooter shooter;
+
   // team colors
   // TODO: find a good orange
   public RGB orange = new RGB(255, 255, 255);
 
   /** Creates a new LEDStrip. */
   public LEDStrip(Shooter shooter, Collector collector, int port, int length) {
+    this.collector = collector;
+    this.shooter = shooter;
     led = new AddressableLED(port);
     buffer = new AddressableLEDBuffer(length);
 
     led.setLength(buffer.getLength());
     setOff();
-
-    while(true) {
-      if (shooter.isNotePresent() && !collector.isNotePresent()) { // only shooter has note
-        setRGB(red);
-        blinkSequence();
-      } else if (collector.isNotePresent() && !shooter.isNotePresent()) { // only collector has note
-        setRGB(green);
-        blinkSequence();
-      } else if (collector.isNotePresent() && shooter.isNotePresent()) { // both shooter & collector have note
-        setRGB(blue);
-        blinkSequence();
-      } else { // none have a note
-        setRGB(orange);
-      }
-    }
   }
 
   public void setRGB(RGB target) {
     for (int i = 0; i < buffer.getLength(); i++) {
-      buffer.setRGB(i, target.r, target.g, target.b);
+      if (i%2==0) buffer.setRGB(i, target.r, target.g, target.b);
     }
     led.setData(buffer);
     led.start();
@@ -81,6 +71,17 @@ public class LEDStrip extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+      if (shooter.isNotePresent() && !collector.isNotePresent()) { // only shooter has note
+        setRGB(red);
+        //blinkSequence();
+      } else if (collector.isNotePresent() && !shooter.isNotePresent()) { // only collector has note
+        setRGB(green);
+        //blinkSequence();
+      } else if (collector.isNotePresent() && shooter.isNotePresent()) { // both shooter & collector have note
+        setRGB(blue);
+        //blinkSequence();
+      } else { // none have a note
+        setRGB(off);
+      }
   }
 }
