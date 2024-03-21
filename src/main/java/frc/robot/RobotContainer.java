@@ -26,6 +26,10 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.ClimberConstants;
+import frc.robot.Constants.CollectorConstants;
+import frc.robot.Constants.ScoringPresets;
+import frc.robot.Constants.ShooterConstants;
+import frc.robot.commands.PathfindToTagCmd;
 import frc.robot.commands.ShooterAndCollectorIndexerCmd;
 import frc.robot.commands.TeleopSwerveCmd;
 import frc.robot.commands.AutoCmds.AutoIntakeNoteCmd;
@@ -44,6 +48,7 @@ import frc.robot.commands.ShooterCmds.TiltShooterToRestPosCmd;
 import frc.robot.commands.ShooterCmds.TiltShooterToSetpointCmd;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Collector;
+import frc.robot.subsystems.LEDStrip;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveBase;
 import frc.robot.subsystems.Vision;
@@ -110,6 +115,9 @@ public class RobotContainer {
         public static Alliance alliance;
         // private final PowerDistributionPanel powerDistributionPanel = new
         // PowerDistributionPanel();
+
+        /* LED Strips */
+        public final LEDStrip ledStrip = new LEDStrip(shooter, collector, 0, 35);
 
         SendableChooser<Command> autoChooser;
 
