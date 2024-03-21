@@ -75,10 +75,10 @@ public class LEDStrip extends SubsystemBase {
         setRGB(red);
         //blinkSequence();
       } else if (collector.isNotePresent() && !shooter.isNotePresent()) { // only collector has note
-        setRGB(green);
+        setRGB(blue);
         //blinkSequence();
       } else if (collector.isNotePresent() && shooter.isNotePresent()) { // both shooter & collector have note
-        setRGB(blue);
+        setRGB(green);
         //blinkSequence();
       } else { // none have a note
         setRGB(off);
