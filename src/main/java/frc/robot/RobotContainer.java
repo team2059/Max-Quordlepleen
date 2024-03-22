@@ -50,7 +50,7 @@ import frc.robot.commands.ShooterCmds.ShootAtRPMsCmd;
 import frc.robot.commands.ShooterCmds.TiltShooterToCollectorCmd;
 import frc.robot.commands.ShooterCmds.TiltShooterToRestPosCmd;
 import frc.robot.commands.ShooterCmds.TiltShooterToSetpointCmd;
-
+import frc.robot.commands.VisionCmds.TurnToAngleCmd;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.LEDStrip;
@@ -363,6 +363,10 @@ public class RobotContainer {
                 // new JoystickButton(buttonBox, 11)
                 // .whileTrue(new TiltShooterToSetpointCmd(shooter,
                 // ClimberConstants.SHOOTER_TILT_TRAP_POS));
+
+                /* AUTO ALIGN VISION */
+                new JoystickButton(buttonBox, 11)
+                                .whileTrue(new TurnToAngleCmd(swerveBase, vision));
 
                 /* AMP */
                 // new JoystickButton(buttonBox, 6)

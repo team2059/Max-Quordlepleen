@@ -16,8 +16,8 @@ import frc.robot.subsystems.Vision;
 public class TurnToAngleCmd extends Command {
   SwerveBase swerveBase;
   Vision vision;
-  final double ANGULAR_P = 0.4;
-  final double ANGULAR_D = 0.01;
+  final double ANGULAR_P = 2;
+  final double ANGULAR_D = 0.0;
   double yaw = 0;
   PIDController turnController = new PIDController(ANGULAR_P, 0.0, ANGULAR_D);
   double rotationSpeed;
@@ -30,7 +30,7 @@ public class TurnToAngleCmd extends Command {
     this.swerveBase = swerveBase;
     this.vision = vision;
     addRequirements(swerveBase, vision);
-    turnController.enableContinuousInput(-180, 180);
+   // turnController.enableContinuousInput(-180, 180);
     // turnController.setTolerance(0.5, 2.5);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -45,10 +45,11 @@ public class TurnToAngleCmd extends Command {
 
     hasTarget = result.hasTargets();
 
-    if (hasTarget == false || result.getBestTarget().getPoseAmbiguity() >= 0.2) {
+    if (hasTarget == false || result.getBestTarget().getPoseAmbiguity() >= 0.2
+        || result.getBestTarget().getFiducialId() != 7) {
       this.cancel();
     } else {
-      double yaw = result.getBestTarget().getBestCameraToTarget().getRotation().getZ();
+      double yaw = result.getBestTarget().getBestCameraToTarget().getY();
       measurement = yaw;
       swerveBase.getNavX().reset();
     }
@@ -58,7 +59,7 @@ public class TurnToAngleCmd extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    measurement = swerveBase.getHeading().getDegrees();
+    // measurement = swerveBase.getHeading().getDegrees();
     SmartDashboard.putNumber("measurement", measurement);
 
     rotationSpeed = turnController.calculate(measurement, 0);
