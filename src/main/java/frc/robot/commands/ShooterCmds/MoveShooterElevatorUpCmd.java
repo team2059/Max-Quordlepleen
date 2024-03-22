@@ -48,7 +48,7 @@ public class MoveShooterElevatorUpCmd extends Command {
 
     elevatorFeedforward = new ElevatorFeedforward(0, 0, kV);
 
-    addRequirements(shooter);
+    //addRequirements(shooter);
 
     // Use addRequirements() here to declare subsystem dependencies.
   }

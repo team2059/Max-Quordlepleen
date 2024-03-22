@@ -32,7 +32,7 @@ public class TiltShooterToSetpointCmd extends Command {
         this.shooter = shooter;
         this.setpoint = setpoint;
 
-        addRequirements(shooter);
+      //  addRequirements(shooter);
         // Use addRequirements() here to declare subsystem dependencies.
     }
 

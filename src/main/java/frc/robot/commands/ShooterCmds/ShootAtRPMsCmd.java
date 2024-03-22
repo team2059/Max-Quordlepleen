@@ -21,7 +21,7 @@ public class ShootAtRPMsCmd extends Command {
   public ShootAtRPMsCmd(Shooter shooter, double desiredRPMs) {
     this.shooter = shooter;
     this.desiredRPMs = desiredRPMs;
-    //addRequirements(shooter);
+    // addRequirements(shooter);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 

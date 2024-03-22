@@ -104,7 +104,7 @@ public final class Constants {
 
         public static final class ScoringPresets {
 
-                public static final double AMP_SHOOTER_HEIGHT = 55;
+                public static final double AMP_SHOOTER_HEIGHT = 57.5;
                 public static final double AMP_SHOOTER_TILT = 40;
                 public static final double AMP_SHOOTER_VELOCITY = 1250;
 

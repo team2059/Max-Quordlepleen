@@ -22,8 +22,8 @@ public class ScoreAmpCmd extends SequentialCommandGroup {
 
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new MoveShooterElevatorUpCmd(shooter, ScoringPresets.AMP_SHOOTER_HEIGHT),
-        new TiltShooterToSetpointCmd(shooter, ScoringPresets.AMP_SHOOTER_TILT)
-            .andThen(new ShootAtRPMsCmd(shooter, ScoringPresets.AMP_SHOOTER_VELOCITY)));
+    addCommands(new MoveShooterElevatorUpCmd(shooter, ScoringPresets.AMP_SHOOTER_HEIGHT).alongWith(
+        new TiltShooterToSetpointCmd(shooter, ScoringPresets.AMP_SHOOTER_TILT),
+        new ShootAtRPMsCmd(shooter, ScoringPresets.AMP_SHOOTER_VELOCITY)));
   }
 }
