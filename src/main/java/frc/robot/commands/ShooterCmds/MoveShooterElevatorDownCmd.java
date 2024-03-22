@@ -97,6 +97,6 @@ public class MoveShooterElevatorDownCmd extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return shooter.elevatorMotor.getEncoder().getPosition() <= 2.5 || shooter.isBottomLimitReached();
+    return shooter.elevatorMotor.getEncoder().getPosition() <= 1 || shooter.isBottomLimitReached();
   }
 }

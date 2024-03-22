@@ -39,6 +39,7 @@ import frc.robot.commands.CollectorCmds.IntakeNoteCmd;
 import frc.robot.commands.CollectorCmds.TiltCollectorToCollectPosCmd;
 import frc.robot.commands.CollectorCmds.TiltCollectorToSetpointONLYCLIMBCmd;
 import frc.robot.commands.CollectorCmds.TiltCollectorToShooterCmd;
+import frc.robot.commands.ScoringCmds.ScoreAmpCmd;
 import frc.robot.commands.ScoringCmds.VisionShootCmd;
 import frc.robot.commands.ShooterCmds.ElevateShooterToTrapCmd;
 import frc.robot.commands.ShooterCmds.MoveShooterElevatorDownCmd;
@@ -345,13 +346,14 @@ public class RobotContainer {
                 new JoystickButton(buttonBox, 7)
                                 .whileTrue(new ClimbDownCmd(climber));
 
+                /* RESET SHOOTER ELEVATOR TO HOME */
                 new JoystickButton(buttonBox, 5)
                                 .whileTrue(new TiltShooterToSetpointCmd(shooter, -75).withTimeout(1)
                                                 .andThen(new MoveShooterElevatorDownCmd(shooter, 1))
                                                 .andThen(new TiltShooterToRestPosCmd(shooter)));
 
                 new JoystickButton(buttonBox, 6)
-                                .whileTrue(new MoveShooterElevatorUpCmd(shooter, ShooterConstants.TOP_LIMIT));
+                                .whileTrue(new ScoreAmpCmd(shooter));
 
                 /* SHOOTER ELEVATOR TO TRAP POS */
                 // new JoystickButton(buttonBox, 10)

@@ -102,7 +102,7 @@ public class MoveShooterElevatorUpCmd extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return shooter.elevatorMotor.getEncoder().getPosition() >= ShooterConstants.TOP_LIMIT - 2.5
+    return shooter.elevatorMotor.getEncoder().getPosition() >= setPoint - 1.5
         || shooter.isTopLimitReached();
   }
 }
