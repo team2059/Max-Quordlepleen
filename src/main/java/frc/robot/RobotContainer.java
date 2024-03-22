@@ -402,7 +402,8 @@ public class RobotContainer {
 
                 /* LEFT BUMPER - VISION SHOOT */
                 new JoystickButton(controller, 5)
-                                .whileTrue(new VisionShootCmd(shooter, vision));
+                                .whileTrue(new TurnToAngleCmd(swerveBase, vision)
+                                                .andThen(new VisionShootCmd(shooter, vision)));
                 // new JoystickButton(controller, 5)
                 // .whileTrue(new ShootAtRPMsCmd(shooter, 1000));
 

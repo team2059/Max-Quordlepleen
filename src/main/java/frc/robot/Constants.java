@@ -35,7 +35,7 @@ public final class Constants {
                 public static double[] velocities = new double[] { 2000, 2500, 3000, 3250, 3500, 4000, 5000 };// RPMs
                 // public static double[] angles = new double[] { -62.5, -50, -40, -35, -31,
                 // -28, -25 }; // degrees
-                public static double[] angles = new double[] { -64, -51.5, -41.5, -36.5, -32.5, -29.5, -26.5 }; // degrees
+                public static double[] angles = new double[] { -64, -53, -43, -36.5, -32.5, -29.5, -26.5 }; // degrees
 
         }
 

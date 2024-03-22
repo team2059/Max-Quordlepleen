@@ -30,7 +30,7 @@ public class TurnToAngleCmd extends Command {
     this.swerveBase = swerveBase;
     this.vision = vision;
     addRequirements(swerveBase, vision);
-   // turnController.enableContinuousInput(-180, 180);
+    // turnController.enableContinuousInput(-180, 180);
     // turnController.setTolerance(0.5, 2.5);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -38,6 +38,13 @@ public class TurnToAngleCmd extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    turnController.setTolerance(0.04);
+
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
 
     // Vision-alignment mode
     // Query the latest result from PhotonVision
@@ -51,14 +58,8 @@ public class TurnToAngleCmd extends Command {
     } else {
       double yaw = result.getBestTarget().getBestCameraToTarget().getY();
       measurement = yaw;
-      swerveBase.getNavX().reset();
+      // swerveBase.getNavX().reset();
     }
-
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
     // measurement = swerveBase.getHeading().getDegrees();
     SmartDashboard.putNumber("measurement", measurement);
 
@@ -73,6 +74,8 @@ public class TurnToAngleCmd extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    rotationSpeed = 0;
+    swerveBase.drive(0, 0, 0, true);
 
   }
 
@@ -80,6 +83,6 @@ public class TurnToAngleCmd extends Command {
   @Override
   public boolean isFinished() {
 
-    return Math.abs(rotationSpeed) < 0.1;
+    return turnController.atSetpoint() || Math.abs(rotationSpeed) < 0.1;
   }
 }
