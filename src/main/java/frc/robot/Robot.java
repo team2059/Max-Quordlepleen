@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import java.sql.Driver;
 import java.util.Optional;
 
 import org.littletonrobotics.junction.LogFileUtil;
