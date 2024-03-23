@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.SwerveBase;
 import frc.robot.subsystems.Vision;
 
@@ -53,7 +54,7 @@ public class TurnToAngleCmd extends Command {
     hasTarget = result.hasTargets();
 
     if (hasTarget == false || result.getBestTarget().getPoseAmbiguity() >= 0.2
-        || result.getBestTarget().getFiducialId() != 7) {
+        || result.getBestTarget().getFiducialId() != (RobotContainer.isRed ? 4 : 7)) {
       this.cancel();
     } else {
       double yaw = result.getBestTarget().getBestCameraToTarget().getY();

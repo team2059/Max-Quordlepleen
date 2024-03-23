@@ -104,15 +104,18 @@ public class Vision extends SubsystemBase {
     double y = fieldToCamera.getY();
     Rotation2d theta = fieldToCamera.getRotation().toRotation2d();
 
-    // red
-    // distanceToSpeakerFieldToCamera = Units
-    // .metersToInches(PhotonUtils.getDistanceToPose(new Pose2d(x, y, theta),
-    // new Pose2d(16.579342, 5.547868, new Rotation2d(Math.PI))));
+    if (RobotContainer.isRed) {
+      // red
+      distanceToSpeakerFieldToCamera = Units
+          .metersToInches(PhotonUtils.getDistanceToPose(new Pose2d(x, y, theta),
+              new Pose2d(16.579342, 5.547868, new Rotation2d(Math.PI))));
+    } else {
 
-    // blue
-    distanceToSpeakerFieldToCamera = Units
-        .metersToInches(PhotonUtils.getDistanceToPose(new Pose2d(x, y, theta),
-            new Pose2d(-0.0381, 5.547868, new Rotation2d())));
+      // blueChange
+      distanceToSpeakerFieldToCamera = Units
+          .metersToInches(PhotonUtils.getDistanceToPose(new Pose2d(x, y, theta),
+              new Pose2d(-0.0381, 5.547868, new Rotation2d())));
+    }
 
     return distanceToSpeakerFieldToCamera;
   }

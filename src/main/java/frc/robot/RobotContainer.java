@@ -71,6 +71,8 @@ import frc.robot.subsystems.Vision;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+        public static boolean isRed = false;
+        public static SendableChooser<Boolean> allianceChooser = new SendableChooser<>();
 
         /* XBOX CONTROLLER */
         public static final XboxController controller = new XboxController(0);
@@ -117,7 +119,7 @@ public class RobotContainer {
         private static final Vision vision = new Vision();
 
         public static Pose2d speakerPose = new Pose2d();
-        public static Alliance alliance;
+
         // private final PowerDistributionPanel powerDistributionPanel = new
         // PowerDistributionPanel();
 
@@ -247,8 +249,11 @@ public class RobotContainer {
                 // NamedCommands.registerCommand("arm", new PIDTiltArmCmd(tiltArm, 0.65));
 
                 autoChooser = AutoBuilder.buildAutoChooser();
+                allianceChooser.addOption("RED", true);
+                allianceChooser.setDefaultOption("BLUE", false);
 
                 SmartDashboard.putData("Auto Chooser", autoChooser);
+                SmartDashboard.putData("Alliance Chooser", allianceChooser);
 
                 // invertButton.toggleOnTrue(new InstantCommand(() -> isbeinginverted =
                 // !isbeinginverted)); invert toggle button
@@ -289,15 +294,15 @@ public class RobotContainer {
                 // red
                 // goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 4, 40));
 
-                // blue
+                // blueChange
                 // goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 7, 40));
 
-                goToTag.whileTrue(swerveBase.pathFindToPose(
-                                // red
-                                // new Pose2d(14, 4.5, new Rotation2d(Units.degreesToRadians(30))),
+                goToTag.whileTrue(swerveBase.pathFindToPose(isRed ?
+                // red
+                                new Pose2d(14, 4.5, new Rotation2d(Units.degreesToRadians(30)))
 
-                                // blue
-                                new Pose2d(2.4, 4.5, new Rotation2d(Units.degreesToRadians(-30))),
+                                // blueChange
+                                : new Pose2d(2.4, 4.5, new Rotation2d(Units.degreesToRadians(-30))),
 
                                 new PathConstraints(
                                                 2.5, 1.5,
@@ -311,21 +316,21 @@ public class RobotContainer {
                 new JoystickButton(buttonBox, 1)
                                 .whileTrue(new TiltShooterToSetpointCmd(shooter,
                                                 -62.5)
-                                                .andThen(
+                                                .alongWith(
                                                                 new ShootAtRPMsCmd(shooter,
                                                                                 2500)));
                 /* SHOOTER MID */
                 new JoystickButton(buttonBox, 2)
                                 .whileTrue(new TiltShooterToSetpointCmd(shooter,
                                                 -40)
-                                                .andThen(
+                                                .alongWith(
                                                                 new ShootAtRPMsCmd(shooter,
                                                                                 3250)));
                 /* SHOOTER FAR */
                 new JoystickButton(buttonBox, 3)
                                 .whileTrue(new TiltShooterToSetpointCmd(shooter,
                                                 -30)
-                                                .andThen(
+                                                .alongWith(
                                                                 new ShootAtRPMsCmd(shooter,
                                                                                 4000)));
 

@@ -56,15 +56,14 @@ public class PathfindToTagCmd extends SequentialCommandGroup {
 
         public Command getCommand() {
 
-                // if (RobotContainer.alliance == Alliance.Red) {
-                // ID_OF_TAG_TO_CHASE = 4;
-                // System.out.println("RED" + ID_OF_TAG_TO_CHASE);
+                if (RobotContainer.isRed) {
+                        ID_OF_TAG_TO_CHASE = 4;
+                        System.out.println("RED" + ID_OF_TAG_TO_CHASE);
 
-                // } else {
-                // ID_OF_TAG_TO_CHASE = 7;
-                // System.out.println("BLUE" + ID_OF_TAG_TO_CHASE);
-
-                // }
+                } else {
+                        ID_OF_TAG_TO_CHASE = 7;
+                        System.out.println("BLUE" + ID_OF_TAG_TO_CHASE);
+                }
 
                 var robotPose2d = swerveBase.getPose();
 

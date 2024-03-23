@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.Optional;
+
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -18,8 +20,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -114,6 +118,25 @@ public class Robot extends LoggedRobot {
 
     SmartDashboard.putData("cmdScheduler", CommandScheduler.getInstance());
 
+    try {
+      Optional<Alliance> ally = DriverStation.getAlliance();
+      if (ally.isPresent()) {
+        if (ally.get() == Alliance.Red) {
+          RobotContainer.isRed = true;
+        }
+        if (ally.get() == Alliance.Blue) {
+          RobotContainer.isRed = false;
+
+        }
+      } else {
+        System.out.println("NO COLOR YET");
+      }
+    } catch (NullPointerException ex) {
+
+      RobotContainer.isRed = RobotContainer.allianceChooser.getSelected();
+    }
+    SmartDashboard.putBoolean("isRED?", RobotContainer.isRed);
+
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -170,10 +193,11 @@ public class Robot extends LoggedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    
+
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
   }
 
   /** This function is called periodically during operator control. */

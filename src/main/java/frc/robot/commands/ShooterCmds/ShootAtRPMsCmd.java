@@ -14,8 +14,8 @@ import frc.robot.subsystems.Shooter;
 
 public class ShootAtRPMsCmd extends Command {
   Shooter shooter;
-  public static double desiredRPMs;
-  public static double shooterVelocity;
+  double desiredRPMs;
+  double shooterVelocity;
 
   /** Creates a new ShootAtRPMsCmd. */
   public ShootAtRPMsCmd(Shooter shooter, double desiredRPMs) {
