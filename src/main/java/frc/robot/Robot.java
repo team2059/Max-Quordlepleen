@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import java.sql.Driver;
+import java.util.Optional;
+
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -19,6 +22,7 @@ import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -39,6 +43,8 @@ public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+
+  public static Optional<Alliance> ally;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -134,6 +140,9 @@ public class Robot extends LoggedRobot {
    */
   @Override
   public void autonomousInit() {
+    // get alliance color
+    ally = DriverStation.getAlliance();
+
     // m_robotContainer.getExtendArm().setServoAngle(Constants.ArmConstants.restServoAngle);
     // m_robotContainer.getSwerveSubsytem().getNavX().reset();
     // m_robotContainer.getSwerveSubsytem().getOdometry().resetPosition(new
@@ -190,6 +199,14 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
+  }
+
+  public static Boolean isAllyBlue(Optional<Alliance> ally) {
+    return (ally.get() == Alliance.Blue);
+  }
+
+  public static Boolean isAllyRed(Optional<Alliance> ally) {
+    return (ally.get() == Alliance.Red);
   }
 
 }

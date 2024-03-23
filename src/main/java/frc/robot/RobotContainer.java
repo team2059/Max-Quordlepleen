@@ -286,17 +286,22 @@ public class RobotContainer {
 
                 zeroGyro.onTrue(new InstantCommand(() -> swerveBase.getNavX().zeroYaw()));
 
-                // red
-                // goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 4, 40));
+                if (Robot.isAllyRed(Robot.ally)) { // red
+                        goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 4, 40));
+                        goToTag.whileTrue(swerveBase.pathFindToPose(
+                                new Pose2d(14, 4.5, new Rotation2d(Units.degreesToRadians(30))),
 
-                // blue
-                // goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 7, 40));
-
-                goToTag.whileTrue(swerveBase.pathFindToPose(
-                                // red
-                                // new Pose2d(14, 4.5, new Rotation2d(Units.degreesToRadians(30))),
-
-                                // blue
+                                new PathConstraints(
+                                                2.5, 1.5,
+                                                Units.degreesToRadians(540), Units.degreesToRadians(720)),
+                                0).alongWith(
+                                                new ParallelCommandGroup(new TiltShooterToSetpointCmd(shooter,
+                                                                -35),
+                                                                new ShootAtRPMsCmd(shooter,
+                                                                                3500))));
+                } else if (Robot.isAllyBlue(Robot.ally)) { //blue
+                        goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 7, 40));
+                        goToTag.whileTrue(swerveBase.pathFindToPose(
                                 new Pose2d(2.4, 4.5, new Rotation2d(Units.degreesToRadians(-30))),
 
                                 new PathConstraints(
@@ -307,6 +312,8 @@ public class RobotContainer {
                                                                 -35),
                                                                 new ShootAtRPMsCmd(shooter,
                                                                                 3500))));
+                }
+
                 /* SHOOT SUBWOOFER */
                 new JoystickButton(buttonBox, 1)
                                 .whileTrue(new TiltShooterToSetpointCmd(shooter,
