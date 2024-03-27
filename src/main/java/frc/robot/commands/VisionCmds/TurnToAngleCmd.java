@@ -17,7 +17,7 @@ import frc.robot.subsystems.Vision;
 public class TurnToAngleCmd extends Command {
   SwerveBase swerveBase;
   Vision vision;
-  final double ANGULAR_P = 2;
+  final double ANGULAR_P = 4;
   final double ANGULAR_D = 0.0;
   double yaw = 0;
   PIDController turnController = new PIDController(ANGULAR_P, 0.0, ANGULAR_D);
@@ -39,7 +39,7 @@ public class TurnToAngleCmd extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    turnController.setTolerance(0.04);
+    turnController.setTolerance(0.01);
 
   }
 
@@ -54,6 +54,7 @@ public class TurnToAngleCmd extends Command {
     hasTarget = result.hasTargets();
 
     if (hasTarget == false || result.getBestTarget().getPoseAmbiguity() >= 0.2
+        || result.getBestTarget().getFiducialId() != (RobotContainer.isRed ? 5 : 6)
         || result.getBestTarget().getFiducialId() != (RobotContainer.isRed ? 4 : 7)) {
       this.cancel();
     } else {
@@ -84,6 +85,6 @@ public class TurnToAngleCmd extends Command {
   @Override
   public boolean isFinished() {
 
-    return turnController.atSetpoint() || Math.abs(rotationSpeed) < 0.1;
+    return turnController.atSetpoint();
   }
 }

@@ -44,7 +44,7 @@ public class MoveShooterElevatorDownCmd extends Command {
 
     profiledPIDController.setGoal(new State(setPoint, 0));
 
-    addRequirements(shooter);
+   // addRequirements(shooter);
 
     // Use addRequirements() here to declare subsystem dependencies.
   }

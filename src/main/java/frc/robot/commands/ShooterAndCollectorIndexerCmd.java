@@ -30,7 +30,7 @@ public class ShooterAndCollectorIndexerCmd extends Command {
   public void execute() {
     if (!shooter.isNotePresent()) {
       shooter.setIndexMotorSpeed(-0.5);
-      collector.setRollerMotor(-0.5);
+      collector.setRollerMotor(-0.4);
     }
   }
 

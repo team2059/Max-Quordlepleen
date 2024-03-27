@@ -33,7 +33,7 @@ public class AutoIntakeNoteCmd extends Command {
   @Override
   public void execute() {
 
-    collector.setRollerMotor(0.55);
+    collector.setRollerMotor(0.4);
 
     // if (collector.isNotePresent()) {
 

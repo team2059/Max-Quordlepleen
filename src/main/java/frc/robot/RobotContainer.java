@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -124,7 +125,7 @@ public class RobotContainer {
         // PowerDistributionPanel();
 
         /* LED Strips */
-        public final LEDStrip ledStrip = new LEDStrip(shooter, collector, 0, 35);
+        // public final LEDStrip ledStrip = new LEDStrip(shooter, collector, 0, 35);
 
         SendableChooser<Command> autoChooser;
 
@@ -297,21 +298,39 @@ public class RobotContainer {
                 // blueChange
                 // goToTag.whileTrue(new PathfindToTagCmd(swerveBase, vision, 7, 40));
 
-                goToTag.whileTrue(swerveBase.pathFindToPose(isRed ?
-                // red
-                                new Pose2d(14, 4.5, new Rotation2d(Units.degreesToRadians(30)))
+                // goToTag.whileTrue(swerveBase.pathFindToPose(isRed ?
+                // // red
+                // new Pose2d(14, 4.5, new Rotation2d(Units.degreesToRadians(-150)))
 
-                                // blueChange
-                                : new Pose2d(2.4, 4.5, new Rotation2d(Units.degreesToRadians(-30))),
+                // // blueChange
+                // : new Pose2d(2.4, 4.5, new Rotation2d(Units.degreesToRadians(-30))),
 
-                                new PathConstraints(
-                                                2.5, 1.5,
-                                                Units.degreesToRadians(540), Units.degreesToRadians(720)),
-                                0).alongWith(
-                                                new ParallelCommandGroup(new TiltShooterToSetpointCmd(shooter,
-                                                                -35),
-                                                                new ShootAtRPMsCmd(shooter,
-                                                                                3500))));
+                // new PathConstraints(
+                // 2.5, 1.5,
+                // Units.degreesToRadians(540), Units.degreesToRadians(720)),
+                // 0).alongWith(
+                // new ParallelCommandGroup(new TiltShooterToSetpointCmd(shooter,
+                // -35),
+                // new ShootAtRPMsCmd(shooter,
+                // 3500))));
+
+                /* PATHFIND TO PODIUM */
+                goToTag.whileTrue(new TiltShooterToSetpointCmd(shooter,
+                                -88));
+                // goToTag.whileTrue(swerveBase.pathFindToPose(
+
+                // // blueChange
+                // new Pose2d(2.4, 4.5, new Rotation2d(Units.degreesToRadians(-30))),
+
+                // new PathConstraints(
+                // 2.5, 1.5,
+                // Units.degreesToRadians(540), Units.degreesToRadians(720)),
+                // 0).alongWith(
+                // new ParallelCommandGroup(new TiltShooterToSetpointCmd(shooter,
+                // -35),
+                // new ShootAtRPMsCmd(shooter,
+                // 3750))));
+
                 /* SHOOT SUBWOOFER */
                 new JoystickButton(buttonBox, 1)
                                 .whileTrue(new TiltShooterToSetpointCmd(shooter,
@@ -353,12 +372,16 @@ public class RobotContainer {
 
                 /* RESET SHOOTER ELEVATOR TO HOME */
                 new JoystickButton(buttonBox, 5)
-                                .whileTrue(new TiltShooterToSetpointCmd(shooter, -75).withTimeout(1)
-                                                .andThen(new MoveShooterElevatorDownCmd(shooter, 1))
-                                                .andThen(new TiltShooterToRestPosCmd(shooter)));
+                                .whileTrue(new ParallelCommandGroup(new MoveShooterElevatorDownCmd(shooter, 1),
+                                                new TiltShooterToCollectorCmd(shooter)));
 
+                /* AMP */
                 new JoystickButton(buttonBox, 6)
                                 .whileTrue(new ScoreAmpCmd(shooter));
+
+                /* AUTO ALIGN VISION */
+                new JoystickButton(buttonBox, 11)
+                                .whileTrue(new TurnToAngleCmd(swerveBase, vision));
 
                 /* SHOOTER ELEVATOR TO TRAP POS */
                 // new JoystickButton(buttonBox, 10)
@@ -368,10 +391,6 @@ public class RobotContainer {
                 // new JoystickButton(buttonBox, 11)
                 // .whileTrue(new TiltShooterToSetpointCmd(shooter,
                 // ClimberConstants.SHOOTER_TILT_TRAP_POS));
-
-                /* AUTO ALIGN VISION */
-                new JoystickButton(buttonBox, 11)
-                                .whileTrue(new TurnToAngleCmd(swerveBase, vision));
 
                 /* AMP */
                 // new JoystickButton(buttonBox, 6)
@@ -402,13 +421,18 @@ public class RobotContainer {
 
                 /* B - OUTTAKE ROLLER */
                 new JoystickButton(controller, 2)
-                                .whileTrue(new InstantCommand(() -> collector.setRollerMotor(-0.33)))
+                                .whileTrue(new InstantCommand(() -> collector.setRollerMotor(-0.5)))
                                 .whileFalse(new InstantCommand(() -> collector.setRollerMotor(0)));
+
+                /* WINDOW BUTTON - AUTO ALIGN */
+                new JoystickButton(controller, 7).whileTrue(new TurnToAngleCmd(swerveBase, vision));
 
                 /* LEFT BUMPER - VISION SHOOT */
                 new JoystickButton(controller, 5)
-                                .whileTrue(new TurnToAngleCmd(swerveBase, vision)
-                                                .andThen(new VisionShootCmd(shooter, vision)));
+                                .whileTrue(new VisionShootCmd(shooter, vision));
+                // new JoystickButton(controller, 5)
+                // .whileTrue(new TurnToAngleCmd(swerveBase, vision));
+
                 // new JoystickButton(controller, 5)
                 // .whileTrue(new ShootAtRPMsCmd(shooter, 1000));
 

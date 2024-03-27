@@ -83,7 +83,7 @@ public class IntakeNoteCmd extends Command {
       // }
 
     } else {
-      collector.setRollerMotor(0.75);
+      collector.setRollerMotor(0.4);
     }
 
   }
