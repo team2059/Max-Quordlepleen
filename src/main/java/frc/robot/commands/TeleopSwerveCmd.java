@@ -41,7 +41,8 @@ public class TeleopSwerveCmd extends Command {
       DoubleSupplier fwdY,
       DoubleSupplier rot,
       DoubleSupplier slowSlider,
-      Supplier<Boolean> fieldOrientedFunction, Supplier<Boolean> inverted, Supplier<Boolean> strafeOnly,
+      Supplier<Boolean> fieldOrientedFunction, Supplier<Boolean> inverted,
+      Supplier<Boolean> strafeOnly,
       Supplier<Boolean> slowAll) {
 
     drive = subsystem;

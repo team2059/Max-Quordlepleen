@@ -51,6 +51,7 @@ import frc.robot.commands.ShooterCmds.ShootAtRPMsCmd;
 import frc.robot.commands.ShooterCmds.TiltShooterToCollectorCmd;
 import frc.robot.commands.ShooterCmds.TiltShooterToRestPosCmd;
 import frc.robot.commands.ShooterCmds.TiltShooterToSetpointCmd;
+import frc.robot.commands.VisionCmds.ParallelTurnToAngleCmd;
 import frc.robot.commands.VisionCmds.TurnToAngleCmd;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Collector;
@@ -92,7 +93,7 @@ public class RobotContainer {
         private final int kFieldOriented = 12;
         private final int kInverted = 6; // switch
         private final int kGoToTagButton = 1; // switch
-        private final int kStrafeOnly = 2;
+         private final int kStrafeOnly = 2;
         private final int kSlowEverything = 3;
 
         private final JoystickButton zeroGyro = new JoystickButton(logitech, kZeroGyro);
@@ -263,13 +264,13 @@ public class RobotContainer {
                 // !isbeinginverted)); invert toggle button
 
                 swerveBase.setDefaultCommand(new TeleopSwerveCmd(swerveBase,
-                                () -> logitech.getRawAxis(kLogitechTranslationAxis),
-                                () -> logitech.getRawAxis(kLogitechStrafeAxis),
-                                () -> logitech.getRawAxis(kLogitechRotationAxis),
-                                () -> logitech.getRawAxis(kLogitechSliderAxis),
-                                () -> !logitech.getRawButton(kFieldOriented),
-                                () -> logitech.getRawButton(kInverted), () -> logitech.getRawButton(kStrafeOnly),
-                                () -> logitech.getRawButton(kSlowEverything)));
+                () -> logitech.getRawAxis(kLogitechTranslationAxis),
+                () -> logitech.getRawAxis(kLogitechStrafeAxis),
+                () -> logitech.getRawAxis(kLogitechRotationAxis),
+                () -> logitech.getRawAxis(kLogitechSliderAxis),
+                () -> !logitech.getRawButton(kFieldOriented),
+                () -> logitech.getRawButton(kInverted), () -> logitech.getRawButton(kStrafeOnly),
+                    () -> logitech.getRawButton(kSlowEverything)));
 
                 // collector.setDefaultCommand(new MoveCollectorToSetpointCmd(collector,
                 // CollectorConstants.collectorTiltAlignToShooterPos)
@@ -317,9 +318,10 @@ public class RobotContainer {
                 // new ShootAtRPMsCmd(shooter,
                 // 3500))));
 
-                /* PATHFIND TO PODIUM */
                 goToTag.whileTrue(new TiltShooterToSetpointCmd(shooter,
                                 -88));
+
+                new JoystickButton(logitech, 2).whileTrue(new ParallelTurnToAngleCmd(swerveBase, vision));
                 // goToTag.whileTrue(swerveBase.pathFindToPose(
 
                 // // blueChange
@@ -428,7 +430,10 @@ public class RobotContainer {
                                 .whileFalse(new InstantCommand(() -> collector.setRollerMotor(0)));
 
                 /* WINDOW BUTTON - AUTO ALIGN */
-                new JoystickButton(controller, 7).whileTrue(new TurnToAngleCmd(swerveBase, vision));
+                new JoystickButton(controller, 7).whileTrue(new ScoreAmpCmd(shooter));
+                new JoystickButton(controller, 8)
+                                .whileTrue(new ParallelCommandGroup(new MoveShooterElevatorDownCmd(shooter, 1),
+                                                new TiltShooterToCollectorCmd(shooter)));
 
                 /* LEFT BUMPER - VISION SHOOT */
                 new JoystickButton(controller, 5)
