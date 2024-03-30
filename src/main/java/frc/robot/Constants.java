@@ -51,7 +51,7 @@ public final class Constants {
 
                 public static final double TOP_LIMIT = 57.5;
 
-                public static final double alignToCollectorPos = -45; // 0.78; // encoder value for getting note from
+                public static final double alignToCollectorPos = -50; // 0.78; // encoder value for getting note from
                                                                       // collector
                 public static final double restPos = -90;// 0.91;
 
@@ -105,7 +105,7 @@ public final class Constants {
         public static final class ScoringPresets {
 
                 public static final double AMP_SHOOTER_HEIGHT = 57.5;
-                public static final double AMP_SHOOTER_TILT = 40;
+                public static final double AMP_SHOOTER_TILT = 35;
                 public static final double AMP_SHOOTER_VELOCITY = 1250;
 
                 public static final double SPEAKER_SUBWOOFER_SHOOTER_TILT = -60; // distance of 36 inches from the front

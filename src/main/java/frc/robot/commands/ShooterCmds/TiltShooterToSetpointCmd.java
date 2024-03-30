@@ -19,6 +19,7 @@ import frc.robot.subsystems.Shooter;
 
 public class TiltShooterToSetpointCmd extends Command {
     Shooter shooter;
+    double pidOutout;
     double setpoint;
     // PIDController tiltController = new PIDController(2, 0, 0.05);
 
@@ -32,7 +33,7 @@ public class TiltShooterToSetpointCmd extends Command {
         this.shooter = shooter;
         this.setpoint = setpoint;
 
-      //  addRequirements(shooter);
+        // addRequirements(shooter);
         // Use addRequirements() here to declare subsystem dependencies.
     }
 
@@ -40,7 +41,7 @@ public class TiltShooterToSetpointCmd extends Command {
     @Override
     public void initialize() {
 
-        tiltController.setTolerance(1.5);
+        tiltController.setTolerance(1);
         tiltController.reset(shooter.getAbsoluteShooterTiltPosDegrees());
         // tiltController.enableContinuousInput(-90, 90);
 
@@ -53,7 +54,7 @@ public class TiltShooterToSetpointCmd extends Command {
         // double pidOutout = tiltController.calculate(shooter.getShooterTiltPos(),
         // setpoint);
 
-        double pidOutout = tiltController.calculate(shooter.getAbsoluteShooterTiltPosDegrees(),
+        pidOutout = tiltController.calculate(shooter.getAbsoluteShooterTiltPosDegrees(),
                 new State(setpoint, 0));
 
         shooter.shooterTiltMotor.set(MathUtil.clamp(pidOutout, -1.0, 1.0));

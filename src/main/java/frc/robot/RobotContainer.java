@@ -230,6 +230,9 @@ public class RobotContainer {
                                                                                 .withTimeout(1.5))))
                                                 .withTimeout(1.66));
 
+                NamedCommands.registerCommand("ShooterTiltToCollectorPos",
+                                new TiltShooterToSetpointCmd(shooter, ShooterConstants.alignToCollectorPos));
+
                 // NamedCommands.registerCommand("FarShotCmd",
                 // (new TiltShooterToSetpointCmd(shooter,
                 // -50)
@@ -429,7 +432,8 @@ public class RobotContainer {
 
                 /* LEFT BUMPER - VISION SHOOT */
                 new JoystickButton(controller, 5)
-                                .whileTrue(new VisionShootCmd(shooter, vision));
+                                .whileTrue(new TurnToAngleCmd(swerveBase, vision)
+                                                .alongWith(new VisionShootCmd(shooter, vision)));
                 // new JoystickButton(controller, 5)
                 // .whileTrue(new TurnToAngleCmd(swerveBase, vision));
 

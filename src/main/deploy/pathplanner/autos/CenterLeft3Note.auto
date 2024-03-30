@@ -85,6 +85,12 @@
           "data": {
             "name": "ShootFARSubwooferSpeakerLEFTCmd"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShooterTiltToCollectorPos"
+          }
         }
       ]
     }

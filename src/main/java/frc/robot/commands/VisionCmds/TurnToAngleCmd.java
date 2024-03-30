@@ -4,6 +4,9 @@
 
 package frc.robot.commands.VisionCmds;
 
+import org.photonvision.targeting.PhotonTrackedTarget;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -30,7 +33,7 @@ public class TurnToAngleCmd extends Command {
   public TurnToAngleCmd(SwerveBase swerveBase, Vision vision) {
     this.swerveBase = swerveBase;
     this.vision = vision;
-    addRequirements(swerveBase, vision);
+    addRequirements(swerveBase);
     // turnController.enableContinuousInput(-180, 180);
     // turnController.setTolerance(0.5, 2.5);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -53,25 +56,31 @@ public class TurnToAngleCmd extends Command {
 
     hasTarget = result.hasTargets();
 
-    if (hasTarget == false || result.getBestTarget().getPoseAmbiguity() >= 0.2
-        || result.getBestTarget().getFiducialId() != (RobotContainer.isRed ? 5 : 6)
-        || result.getBestTarget().getFiducialId() != (RobotContainer.isRed ? 4 : 7)) {
+    if (hasTarget == false) {
       this.cancel();
     } else {
-      double yaw = result.getBestTarget().getBestCameraToTarget().getY();
-      measurement = yaw;
-      // swerveBase.getNavX().reset();
+      var targets = result.targets;
+      for (PhotonTrackedTarget target : targets) {
+        if ((target.getFiducialId() == 4 || target.getFiducialId() == 5 || target.getFiducialId() == 6
+            || target.getFiducialId() == 7) && target.getPoseAmbiguity() <= 0.2) {
+
+          double yaw = target.getBestCameraToTarget().getY();
+          measurement = yaw;
+          SmartDashboard.putNumber("measurement", measurement);
+
+          rotationSpeed = MathUtil.clamp(turnController.calculate(measurement, 0), -1, 1);
+
+          SmartDashboard.putNumber("rotationSpeed", rotationSpeed);
+
+          swerveBase.drive(0, 0, rotationSpeed, true);
+
+        }
+      }
+
     }
-    // measurement = swerveBase.getHeading().getDegrees();
-    SmartDashboard.putNumber("measurement", measurement);
-
-    rotationSpeed = turnController.calculate(measurement, 0);
-
-    SmartDashboard.putNumber("rotationSpeed", rotationSpeed);
-
-    swerveBase.drive(0, 0, rotationSpeed, true);
-
+    // swerveBase.getNavX().reset();
   }
+  // measurement = swerveBase.getHeading().getDegrees();
 
   // Called once the command ends or is interrupted.
   @Override
