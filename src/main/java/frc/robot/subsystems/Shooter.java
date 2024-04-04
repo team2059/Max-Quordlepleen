@@ -138,6 +138,10 @@ public class Shooter extends SubsystemBase {
         SmartDashboard.putBoolean("is SHOOTER top Limit Reached", isTopLimitReached());
         SmartDashboard.putBoolean("is SHOOTER bottom limit Reached", isBottomLimitReached());
 
+        if (isBottomLimitReached()) {
+            shooterTiltMotor.getEncoder().setPosition(0);
+        }
+
         // double tiltSetpoint = ShooterConstants.alignToCollectorPos;
 
         // double tiltOutput = tiltController.calculate(currentTiltPos, tiltSetpoint);

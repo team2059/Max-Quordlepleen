@@ -21,7 +21,7 @@ public final class Constants {
                 public static final int climberHallEffectDIO = 8;
 
                 public static final int topShooterElevatorHallEffectDIO = 9;
-                public static final int bottomShooterElevatorHallEffectDIO = 4;
+                public static final int bottomShooterElevatorHallEffectDIO = 5;
 
         }
 

@@ -171,7 +171,7 @@ public class RobotContainer {
                                                                 new ParallelCommandGroup(
                                                                                 new TiltShooterToCollectorCmd(
                                                                                                 shooter)
-                                                                                                .withTimeout(1),
+                                                                                                .withTimeout(1.25),
                                                                                 new TiltCollectorToShooterCmd(
                                                                                                 collector)),
                                                                 new WaitCommand(0.5),
