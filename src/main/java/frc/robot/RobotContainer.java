@@ -126,7 +126,7 @@ public class RobotContainer {
         // PowerDistributionPanel();
 
         /* LED Strips */
-        // public final LEDStrip ledStrip = new LEDStrip(shooter, collector, 0, 35);
+        public final LEDStrip ledStrip = new LEDStrip(shooter, collector, 0, 35);
 
         SendableChooser<Command> autoChooser;
 
