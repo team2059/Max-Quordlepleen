@@ -19,7 +19,6 @@ import frc.robot.Constants.DIOConstants;
 public class Climber extends SubsystemBase {
 
     public CANSparkMax climberMotor;
-    public PIDController climberPIDController;
     public DigitalInput bottomHallEffect;
 
     /** Creates a new Climber. */
@@ -37,10 +36,6 @@ public class Climber extends SubsystemBase {
 
     public void setClimberMotorSpeed(double output) {
         climberMotor.set(output);
-    }
-
-    public PIDController getClimberController() {
-        return climberPIDController;
     }
 
     public boolean isBottomLimitReached() {

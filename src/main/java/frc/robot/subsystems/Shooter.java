@@ -94,18 +94,18 @@ public class Shooter extends SubsystemBase {
 
         shooterTiltMotor.setInverted(false);
 
-        shooterUpperController.setP(0.00015);
+        shooterUpperController.setP(ShooterConstants.shooterkP);
         shooterUpperController.setI(0);
         shooterUpperController.setD(0);
-        shooterUpperController.setFF(0.000155);
+        shooterUpperController.setFF(ShooterConstants.shooterkFF);
         shooterUpperController.setOutputRange(-1, 1);
 
         // elevatorMotor.enableVoltageCompensation(12);
 
-        shooterLowerController.setP(0.00015);
+        shooterLowerController.setP(ShooterConstants.shooterkP);
         shooterLowerController.setI(0);
         shooterLowerController.setD(0);
-        shooterLowerController.setFF(0.000155);
+        shooterLowerController.setFF(ShooterConstants.shooterkFF);
         shooterLowerController.setOutputRange(-1, 1);
 
         // shooterLowerMotor.restoreFactoryDefaults();
@@ -119,7 +119,7 @@ public class Shooter extends SubsystemBase {
 
         // shooterTiltThruBoreEncoder.setDistancePerRotation(2 * Math.PI);
         // shooterTiltThruBoreEncoder.setPositionOffset(0);
-        shooterTiltThruBoreEncoder.setPositionOffset(0.659);
+        shooterTiltThruBoreEncoder.setPositionOffset(ShooterConstants.TILT_OFFSET);
         shooterTiltThruBoreEncoder.setDistancePerRotation(-360);
 
     }
@@ -151,6 +151,9 @@ public class Shooter extends SubsystemBase {
         Logger.recordOutput("Absolute Shooter Tilt Pos Degrees", getAbsoluteShooterTiltPosDegrees());
         Logger.recordOutput("Absolute Shooter Tilt Pos Raw", getAbsoluteShooterTiltPosRaw());
         Logger.recordOutput("shooter elevator pos", elevatorMotor.getEncoder().getPosition());
+
+        SmartDashboard.putNumber("ShooterTilt pos raw", getAbsoluteShooterTiltPosRaw());
+        SmartDashboard.putNumber("ShooterTilt pos degrees", getAbsoluteShooterTiltPosDegrees());
 
         // Logger.recordOutput("shooter tilt setpoint", tiltSetpoint);
         // Logger.recordOutput("tiltoutput", tiltOutput);

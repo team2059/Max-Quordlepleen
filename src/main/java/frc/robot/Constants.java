@@ -51,14 +51,9 @@ public final class Constants {
 
                 public static final double TOP_LIMIT = 57.5;
 
-                public static final double alignToCollectorPos = -50; // 0.78; // encoder value for getting note from
+                public static final double alignToCollectorPos = -45; // 0.78; // encoder value for getting note from
                                                                       // collector
                 public static final double restPos = -90;// 0.91;
-
-                public static final double tiltkP = 0;
-                public static final double tiltkD = 0;
-                public static final double elevatorkP = 0;
-                public static final double elevatorkD = 0;
 
                 // To measure Ks
                 // manually, slowly increase the voltage to the mechanism until it starts to
@@ -74,17 +69,17 @@ public final class Constants {
                 // flywheel overshoots, reduce Kv.
 
                 public static final SimpleMotorFeedforward shooterFF = new SimpleMotorFeedforward(0, 0, 0.0);
-                public static final double shooterkP = 0.0;
-                public static final double shooterkD = 0.0;
+                public static final double shooterkP = 0.00015;
+                public static final double shooterkFF = 0.000155;
         }
 
         public static final class ClimberConstants {
-                public static final int climberWinchMotorID = 9; // TODO: change placeholder CAN IDs
+                public static final int climberWinchMotorID = 9;
 
                 public static final double climbkP = 0;
                 public static final double climbkD = 0;
 
-                public static final double COLLECTOR_POS_BEFORE_CLIMBING = 0.47;
+                public static final double COLLECTOR_POS_BEFORE_CLIMBING = 0.36;
                 public static final double SHOOTER_TILT_TRAP_POS = 115;
         }
 
@@ -93,9 +88,9 @@ public final class Constants {
                 public static final int collectorRollerID = 12;
                 public static final int collectorTiltID = 11;
 
-                public static final double collectorTiltAlignToShooterPos = 0.65; // encoder value for "retracted"
+                public static final double collectorTiltAlignToShooterPos = 0.50; // encoder value for "retracted"
                                                                                   // collector
-                public static final double collectorTiltCollectPos = 0.2; // encoder value for collecting
+                public static final double collectorTiltCollectPos = 0.00; // encoder value for collecting
 
                 public static final double tiltkD = 0.033;
                 public static final double tiltkP = 1.33;

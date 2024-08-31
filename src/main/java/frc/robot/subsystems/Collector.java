@@ -37,13 +37,14 @@ public class Collector extends SubsystemBase {
         rollerMotor.setInverted(false);
 
         tiltThruBore = new DutyCycleEncoder(DIOConstants.collectorTiltThruBoreDIO);
-
     }
 
     @Override
     public void periodic() {
 
         Logger.recordOutput("collecter note sensor", isNotePresent());
+
+        SmartDashboard.putNumber("collector thrubore pos", tiltThruBore.getAbsolutePosition());
 
         SmartDashboard.putBoolean("HAS NOTE?", isNotePresent());
 
@@ -80,7 +81,7 @@ public class Collector extends SubsystemBase {
     }
 
     public boolean isNotePresent() {
-        return !collectorNoteSensor.get();
+        return collectorNoteSensor.get();
 
     }
 }
