@@ -435,15 +435,15 @@ public class RobotContainer {
                                 .whileTrue(new ParallelCommandGroup(new MoveShooterElevatorDownCmd(shooter, 1),
                                                 new TiltShooterToCollectorCmd(shooter)));
 
-                // /* LEFT BUMPER - VISION SHOOT */
-                // new JoystickButton(controller, 5)
-                //                 .whileTrue(new TurnToAngleCmd(swerveBase, vision)
-                //                                 .alongWith(new VisionShootCmd(shooter, vision)));
+                /* LEFT BUMPER - VISION SHOOT */
+                new JoystickButton(controller, 5)
+                                .whileTrue(new TurnToAngleCmd(swerveBase, vision)
+                                                .alongWith(new VisionShootCmd(shooter, vision)));
                 // new JoystickButton(controller, 5)
                 // .whileTrue(new TurnToAngleCmd(swerveBase, vision));
 
-                new JoystickButton(controller, 5)
-                .whileTrue(new ShootAtRPMsCmd(shooter, 1000));
+                // new JoystickButton(controller, 5)
+                // .whileTrue(new ShootAtRPMsCmd(shooter, 1000));
 
                 // new JoystickButton(controller, 5)
                 // .whileTrue(

@@ -7,6 +7,7 @@ package frc.robot.commands.CollectorCmds;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.CollectorConstants;
 import frc.robot.subsystems.Collector;
@@ -40,8 +41,8 @@ public class TiltCollectorToSetpointONLYCLIMBCmd extends Command {
         double pidOutout = tiltController.calculate(collector.tiltThruBore.getAbsolutePosition(),
                 setpoint);
 
-        Logger.recordOutput("pid output", pidOutout);
-        Logger.recordOutput("setpoint", setpoint);
+        SmartDashboard.putNumber("pid output", pidOutout);
+        SmartDashboard.putNumber("setpoint", setpoint);
 
         collector.tiltMotor.set(pidOutout);
 
@@ -50,11 +51,12 @@ public class TiltCollectorToSetpointONLYCLIMBCmd extends Command {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
+        collector.tiltMotor.set(0);
     }
 
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return false;
+        return tiltController.atSetpoint();
     }
 }

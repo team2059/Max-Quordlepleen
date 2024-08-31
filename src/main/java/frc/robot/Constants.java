@@ -79,7 +79,7 @@ public final class Constants {
                 public static final double climbkP = 0;
                 public static final double climbkD = 0;
 
-                public static final double COLLECTOR_POS_BEFORE_CLIMBING = 0.36;
+                public static final double COLLECTOR_POS_BEFORE_CLIMBING = 0.3;
                 public static final double SHOOTER_TILT_TRAP_POS = 115;
         }
 
