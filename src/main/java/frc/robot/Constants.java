@@ -88,9 +88,9 @@ public final class Constants {
                 public static final int collectorRollerID = 12;
                 public static final int collectorTiltID = 11;
 
-                public static final double collectorTiltAlignToShooterPos = 0.50; // encoder value for "retracted"
+                public static final double collectorTiltAlignToShooterPos = 0.666; // encoder value for "retracted"
                                                                                   // collector
-                public static final double collectorTiltCollectPos = 0.00; // encoder value for collecting
+                public static final double collectorTiltCollectPos = 0.1687; // encoder value for collecting
 
                 public static final double tiltkD = 0.033;
                 public static final double tiltkP = 1.33;
