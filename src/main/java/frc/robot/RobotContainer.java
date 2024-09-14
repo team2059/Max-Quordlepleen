@@ -125,6 +125,7 @@ public class RobotContainer {
         // private final PowerDistributionPanel powerDistributionPanel = new
         // PowerDistributionPanel();
 
+        
         /* LED Strips */
         public final LEDStrip ledStrip = new LEDStrip(shooter, collector, 0, 35);
 
