@@ -40,6 +40,7 @@ import frc.robot.commands.CollectorCmds.IntakeNoteCmd;
 import frc.robot.commands.CollectorCmds.TiltCollectorToCollectPosCmd;
 import frc.robot.commands.CollectorCmds.TiltCollectorToSetpointONLYCLIMBCmd;
 import frc.robot.commands.CollectorCmds.TiltCollectorToShooterCmd;
+import frc.robot.commands.LEDCmds.RotateTeamColorsCmd;
 import frc.robot.commands.ScoringCmds.ScoreAmpCmd;
 import frc.robot.commands.ScoringCmds.VisionShootCmd;
 import frc.robot.commands.ShooterCmds.ElevateShooterToTrapCmd;
@@ -124,10 +125,9 @@ public class RobotContainer {
 
         // private final PowerDistributionPanel powerDistributionPanel = new
         // PowerDistributionPanel();
-
         
         /* LED Strips */
-        public final LEDStrip ledStrip = new LEDStrip(shooter, collector, 0, 35);
+        //public final LEDStrip ledStrip = new LEDStrip(Constants.LEDConstants.kLEDPort, Constants.LEDConstants.kLEDLength);
 
         SendableChooser<Command> autoChooser;
 
@@ -273,6 +273,13 @@ public class RobotContainer {
                 () -> logitech.getRawButton(kInverted), () -> logitech.getRawButton(kStrafeOnly),
                     () -> logitech.getRawButton(kSlowEverything)));
 
+                // ledStrip.setDefaultCommand(
+                //         new RotateTeamColorsCmd(
+                //                 ledStrip, 
+                //                 () -> (shooter.isNotePresent() || collector.isNotePresent())
+                //         )
+                // );
+
                 // collector.setDefaultCommand(new MoveCollectorToSetpointCmd(collector,
                 // CollectorConstants.collectorTiltAlignToShooterPos)
                 // .onlyIf(() -> collector.isNotePresent()));
@@ -376,10 +383,9 @@ public class RobotContainer {
                 new JoystickButton(buttonBox, 7)
                                 .whileTrue(new ClimbDownCmd(climber));
 
-                /* RESET SHOOTER ELEVATOR TO HOME */
+                /* ELEVATOR DOWN */
                 new JoystickButton(buttonBox, 5)
-                                .whileTrue(new ParallelCommandGroup(new MoveShooterElevatorDownCmd(shooter, 1),
-                                                new TiltShooterToCollectorCmd(shooter)));
+                                .whileTrue(new MoveShooterElevatorDownCmd(shooter, 1));
 
                 /* AMP */
                 new JoystickButton(buttonBox, 6)

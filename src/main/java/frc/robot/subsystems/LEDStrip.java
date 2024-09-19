@@ -4,8 +4,8 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LEDStrip extends SubsystemBase {
@@ -25,19 +25,13 @@ public class LEDStrip extends SubsystemBase {
   public RGB white = new RGB(255, 255, 255);
   public RGB red = new RGB(255, 0, 0);
   public RGB green = new RGB(0, 255, 0);
-  public RGB blue = new RGB(0, 0, 255);
-
-  public Collector collector;
-  public Shooter shooter;
-
   // team colors
-  // TODO: find a good orange
-  public RGB orange = new RGB(255, 255, 255);
+  public RGB orange = new RGB(100, 15, 0);
+  public RGB blue = new RGB(0, 0, 100);
 
   /** Creates a new LEDStrip. */
-  public LEDStrip(Shooter shooter, Collector collector, int port, int length) {
-    this.collector = collector;
-    this.shooter = shooter;
+  public LEDStrip(int port, int length) {
+
     led = new AddressableLED(port);
     buffer = new AddressableLEDBuffer(length);
 
@@ -45,43 +39,55 @@ public class LEDStrip extends SubsystemBase {
     setOff();
   }
 
-  public void setRGB(RGB target) {
+  public void setTeamColors(RGB orange, RGB blue) {
     for (int i = 0; i < buffer.getLength(); i++) {
-      if (i%2==0) buffer.setRGB(i, target.r, target.g, target.b);
+      if ((i % 2) == 0) {
+        buffer.setRGB(i, orange.r, orange.g, orange.b);
+      } else {
+        buffer.setRGB(i, blue.r, blue.g, blue.b);
+      }
+    }
+    led.setData(buffer);
+    led.start();
+  }
+
+  public void setRGB(int i, int r, int g, int b) {
+    buffer.setRGB(i, r, g, b);
+  }
+
+  public void setHSV(int i, int h, int s, int v) {
+    buffer.setHSV(i, h, s, v);
+  }
+
+  public void setBuffer() {
+    led.setData(buffer);
+  }
+
+  public void setAllRGB(RGB target) {
+    for (int i = 0; i < buffer.getLength(); i++) {
+      buffer.setRGB(i, target.r, target.g, target.b);
+    }
+    led.setData(buffer);
+    led.start();
+  }
+
+  public void setEveryOtherRGB(RGB target) {
+    for (int i = 0; i < buffer.getLength(); i++) {
+      if (i % 2 == 0) buffer.setRGB(i, target.r, target.g, target.b);
     }
     led.setData(buffer);
     led.start();
   }
 
   public void setOff() {
-    setRGB(off);
-  }
-
-  public void waitXSeconds(double seconds) {
-    try {
-      Thread.sleep((long)(seconds * 1000));
-    } catch (Exception e) {};
-  }
-
-  public void blinkSequence() {
-    waitXSeconds(0.5);
-    setRGB(off);
-    waitXSeconds(0.5);
+    for(int i = 0; i < buffer.getLength(); i++) {
+      buffer.setRGB(i, 0, 0, 0);
+    }
+    led.setData(buffer);
+    led.start();
   }
 
   @Override
   public void periodic() {
-      if (shooter.isNotePresent() && !collector.isNotePresent()) { // only shooter has note
-        setRGB(red);
-        //blinkSequence();
-      } else if (collector.isNotePresent() && !shooter.isNotePresent()) { // only collector has note
-        setRGB(blue);
-        //blinkSequence();
-      } else if (collector.isNotePresent() && shooter.isNotePresent()) { // both shooter & collector have note
-        setRGB(green);
-        //blinkSequence();
-      } else { // none have a note
-        setRGB(off);
-      }
   }
 }

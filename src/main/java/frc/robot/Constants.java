@@ -13,6 +13,11 @@ import edu.wpi.first.math.util.Units;
 
 public final class Constants {
 
+        public static final class LEDConstants {
+                public static final int kLEDLength = 35;
+                public static final int kLEDPort = 0;
+        }
+
         public static final class DIOConstants {
                 public static final int collectorOpticalDIO = 0;
                 public static final int collectorTiltThruBoreDIO = 1;
