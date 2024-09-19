@@ -9,7 +9,6 @@ import org.littletonrobotics.junction.Logger;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.Shooter;
 
 public class ShootAtRPMsCmd extends Command {

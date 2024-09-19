@@ -4,7 +4,6 @@
 
 package frc.robot.commands.CollectorCmds;
 
-import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;

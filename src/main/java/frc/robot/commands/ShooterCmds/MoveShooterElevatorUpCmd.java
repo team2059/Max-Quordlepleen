@@ -11,9 +11,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.Shooter;
 
 public class MoveShooterElevatorUpCmd extends Command {

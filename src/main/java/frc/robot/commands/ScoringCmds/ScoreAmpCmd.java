@@ -6,7 +6,6 @@ package frc.robot.commands.ScoringCmds;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.ScoringPresets;
-import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.ShooterCmds.MoveShooterElevatorUpCmd;
 import frc.robot.commands.ShooterCmds.ShootAtRPMsCmd;
 import frc.robot.commands.ShooterCmds.TiltShooterToSetpointCmd;

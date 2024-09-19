@@ -5,10 +5,7 @@
 package frc.robot.commands.ShooterCmds;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants.CollectorConstants;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.commands.CollectorCmds.TiltCollectorToSetpointCmd;
-import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Shooter;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more

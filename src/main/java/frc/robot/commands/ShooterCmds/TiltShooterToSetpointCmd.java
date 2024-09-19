@@ -4,14 +4,10 @@
 
 package frc.robot.commands.ShooterCmds;
 
-import org.apache.commons.math3.util.MathUtils;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj2.command.Command;

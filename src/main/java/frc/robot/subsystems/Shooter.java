@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import java.util.function.DoubleSupplier;
 
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
