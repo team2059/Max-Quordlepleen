@@ -132,28 +132,15 @@ public class SwerveBase extends SubsystemBase {
     poseEstimator = new SwerveDrivePoseEstimator(SwerveBaseConstants.kinematics,
         getHeading(), getModulePositions(),
         new Pose2d(0, 0, navX.getRotation2d()), VisionConstants.STATE_STDS, VisionConstants.VISION_STDS);
-    // poseEstimator = new SwerveDrivePoseEstimator(
-    // SwerveBaseConstants.kinematics,
-    // getHeading(),
-    // getModulePositions(), new Pose2d(0, 0, navX.getRotation2d()));
 
   }
 
   @Override
   public void periodic() {
 
-    // update the odometry every 20ms
-    // odometry.update(getHeading(), getModulePositions());
-
     // Add vision to pose estimator
     final Optional<EstimatedRobotPose> optionalEstimatedPose = vision
         .getEstimatedGlobalPose(poseEstimator.getEstimatedPosition());
-    // if (optionalEstimatedPose.isPresent() && RobotState.isTeleop()) {
-    // final EstimatedRobotPose estimatedPose = optionalEstimatedPose.get();
-    // poseEstimator.addVisionMeasurement(estimatedPose.estimatedPose.toPose2d(),
-    // estimatedPose.timestampSeconds);
-
-    // }
 
     if (optionalEstimatedPose.isPresent()) {
       final EstimatedRobotPose estimatedPose = optionalEstimatedPose.get();
@@ -167,41 +154,10 @@ public class SwerveBase extends SubsystemBase {
     poseEstimator.update(
         getHeading(), getModulePositions());
 
-    // if (Math.abs(poseEstimator.getEstimatedPosition().getRotation().getDegrees())
-    // >= 178) {
-    // zeroHeading();
-    // }
-
     Logger.recordOutput("Current Pose", getPose());
 
-    SmartDashboard.putString("Robot pose",
-        getPose().toString());
-    SmartDashboard.putNumber("navX Heading",
-        getHeading().getDegrees());
-
-    // SmartDashboard.putNumber("yaw",
-    // navX.getYaw());
-
-    // SmartDashboard.putNumber("pitch",
-    // navX.getPitch());
-
-    // for (SwerveModule module : modules) {
-    // SmartDashboard.putNumber(module.getModuleID() + "velocity setpoint",
-    // module.velolictySetpoint);
-    // SmartDashboard.putNumber(module.getModuleID() + "actual velocity",
-    // module.currentDriveVelocity);
-    // SmartDashboard.putNumber(module.getModuleID() + "angular setpoint",
-    // module.angularSetpoint);
-    // SmartDashboard.putNumber(module.getModuleID() + "actual angle",
-    // module.actualAngle);
-
-    // SmartDashboard.putNumber(module.getModuleID() + "actual CAN angle",
-    // module.getCanCoderAngle().getRotations());
-    // }
-
-    // SmartDashboard.putNumber("distance to speaker",
-    // vision.getDistancetoSpeaker(poseEstimator.getEstimatedPosition()));
-
+    SmartDashboard.putString("Robot pose", getPose().toString());
+    SmartDashboard.putNumber("navX Heading", getHeading().getDegrees());
   }
 
   public void configureAutoBuilder() {
@@ -249,7 +205,6 @@ public class SwerveBase extends SubsystemBase {
     ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02);
     SwerveModuleState[] newStates = Constants.SwerveBaseConstants.kinematics.toSwerveModuleStates(discreteSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(newStates, Constants.SwerveBaseConstants.maxSpeed);
-    // commanded.set(newStates);
     setModuleStates(newStates);
 
   }
