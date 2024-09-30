@@ -24,7 +24,7 @@ public class Climber extends SubsystemBase {
 
         climberMotor = new CANSparkMax(ClimberConstants.climberWinchMotorID, MotorType.kBrushless);
         climberMotor.setIdleMode(IdleMode.kBrake);
-        bottomHallEffect = new DigitalInput(DIOConstants.climberHallEffectDIO);
+        bottomHallEffect = new DigitalInput(DIOConstants.kClimberHallEffectDIO);
 
     }
 

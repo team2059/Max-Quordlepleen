@@ -30,7 +30,7 @@ public class SwerveModule extends SubsystemBase {
   public static double DrivePIDOutput = 0;
   public static double feedForwardOutputVoltage = 0;
   public static double driveOutput = 0;
-  public static double velolictySetpoint = 0;
+  public static double velocitySetpoint = 0;
   public static double currentDriveVelocity = 0;
 
   public static double angularSetpoint = 0;
@@ -38,8 +38,6 @@ public class SwerveModule extends SubsystemBase {
 
   private final CANSparkMax driveMotor;
   private final CANSparkMax rotationMotor;
-
-  private final PIDController driveController = new PIDController(SwerveModuleConstants.drivekP, 0, 0);
 
   public CANSparkMax getDriveMotor() {
     return driveMotor;
@@ -129,11 +127,6 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public Rotation2d getCanCoderAngle() {
-
-    // double unsignedAngle =
-    // (Units.degreesToRadians(canCoder.getAbsolutePosition()) -
-    // offset.getRadians())
-    // % (2 * Math.PI);
 
     double unsignedAngle = (Math.PI * 2 *
         canCoder.getAbsolutePosition().getValueAsDouble()) - offset.getRadians()
@@ -259,17 +252,13 @@ public class SwerveModule extends SubsystemBase {
 
     actualAngle = getIntegratedAngle().getRadians();
 
-    velolictySetpoint = optimizedDesiredState.speedMetersPerSecond;
+    velocitySetpoint = optimizedDesiredState.speedMetersPerSecond;
 
     currentDriveVelocity = getCurrentVelocityMetersPerSecond();
 
-    // DrivePIDOutput = driveController.calculate(currentDriveVelocity,
-    // velolictySetpoint);
-    feedForwardOutputVoltage = (SwerveModuleConstants.driveFF.calculate(velolictySetpoint));
-    // driveOutput = (DrivePIDOutput + feedForwardOutputVoltage);
+    feedForwardOutputVoltage = (SwerveModuleConstants.driveFF.calculate(velocitySetpoint));
 
     rotationMotor.set(rotationController.calculate(actualAngle, angularSetpoint));
-    // driveMotor.setVoltage(-driveOutput);
     driveMotor.setVoltage(-feedForwardOutputVoltage);
 
   }
