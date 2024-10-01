@@ -58,7 +58,7 @@ public final class Constants {
 
                 public static final double alignToCollectorPos = -45; // 0.78; // encoder value for getting note from
                                                                       // collector
-                public static final double restPos = -90;// 0.91;
+                public static final double restPos = -84;// 0.91;
 
                 // To measure Ks
                 // manually, slowly increase the voltage to the mechanism until it starts to

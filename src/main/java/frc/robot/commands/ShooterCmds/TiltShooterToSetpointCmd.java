@@ -19,9 +19,9 @@ public class TiltShooterToSetpointCmd extends Command {
     double setpoint;
     // PIDController tiltController = new PIDController(2, 0, 0.05);
 
-    ProfiledPIDController tiltController = new ProfiledPIDController(0.03,
-            0, 0.0,
-            new TrapezoidProfile.Constraints(180, 135));
+    ProfiledPIDController tiltController = new ProfiledPIDController(0.01,
+            0, 0,
+            new TrapezoidProfile.Constraints(100, 135));
 
     /** Creates a new MoveCollectorCmd. */
 

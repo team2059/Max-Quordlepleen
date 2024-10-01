@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.ClimberConstants;
+import frc.robot.Constants.ScoringPresets;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.ShooterAndCollectorIndexerCmd;
 import frc.robot.commands.TeleopSwerveCmd;
@@ -275,7 +276,14 @@ public class RobotContainer {
 
                 /* ELEVATOR DOWN */
                 new JoystickButton(buttonBox, 5)
-                        .whileTrue(new MoveShooterElevatorDownCmd(shooter, 1));
+                        .whileTrue(new ParallelCommandGroup(
+                                new TiltShooterToSetpointCmd(shooter, -60).unless(shooter::isBottomLimitReached),
+                                new SequentialCommandGroup(
+                                        new WaitCommand(1),
+                                        new MoveShooterElevatorDownCmd(shooter, 1),
+                                        new TiltShooterToSetpointCmd(shooter, -88)
+                                )
+                        ));
 
                 /* AMP */
                 new JoystickButton(buttonBox, 6)

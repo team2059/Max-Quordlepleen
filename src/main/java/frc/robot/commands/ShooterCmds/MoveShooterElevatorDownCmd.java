@@ -58,29 +58,12 @@ public class MoveShooterElevatorDownCmd extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+      currentPosition = shooter.elevatorMotor.getEncoder().getPosition();
 
-    currentPosition = shooter.elevatorMotor.getEncoder().getPosition();
+      // goal = final target of mechanism
+      double pidOutput = pidController.calculate(currentPosition, setPoint);
 
-    // goal = final target of mechanism
-    double pidOutput = pidController.calculate(currentPosition,
-        setPoint);
-
-    double pidVelocitySetpoint = profiledPIDController.getSetpoint().velocity;
-    // SmartDashboard.putNumber("desiredVelocity", pidVelocitySetpoint);
-
-    // double ffOutput = elevatorFeedforward.calculate(pidVelocitySetpoint);
-
-    // SmartDashboard.putNumber("ffOutput", ffOutput);
-
-    // m_motor.set(MathUtil.clamp(-new Joystick(0).getRawAxis(1), -0.25, 0.25));
-
-    // if (shooter.isTopLimitReached() || currentPosition >=
-    // ShooterConstants.TOP_LIMIT) {
-    // System.out.println("stopped!!!!!");
-    // shooter.elevatorMotor.set(0);
-    // } else {
-    shooter.elevatorMotor.set(pidOutput);
-    // }
+      shooter.elevatorMotor.set(pidOutput);
   }
 
   // Called once the command ends or is interrupted.

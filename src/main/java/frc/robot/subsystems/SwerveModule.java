@@ -160,7 +160,7 @@ public class SwerveModule extends SubsystemBase {
 
   }
 
-  public double getCurrentDistanceMetersPerSecond() {
+  public double getCurrentDistanceMeters() {
     return driveEncoder.getPosition();
     // return driveEncoder.getPosition() * (Swerve.wheelDiameter / 2.0);
   }
