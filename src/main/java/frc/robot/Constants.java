@@ -19,14 +19,14 @@ public final class Constants {
         }
 
         public static final class DIOConstants {
-                public static final int collectorOpticalDIO = 0;
-                public static final int collectorTiltThruBoreDIO = 1;
-                public static final int shooterTiltThruBoreEncoderDIO = 2;
-                public static final int shooterOpticalDIO = 3;
-                public static final int climberHallEffectDIO = 8;
+                public static final int kCollectorOpticalDIO = 0;
+                public static final int kCollectorTiltThruBoreDIO = 1;
+                public static final int kShooterTiltThruBoreEncoderDIO = 2;
+                public static final int kShooterOpticalDIO = 3;
+                public static final int kClimberHallEffectDIO = 8;
 
-                public static final int topShooterElevatorHallEffectDIO = 9;
-                public static final int bottomShooterElevatorHallEffectDIO = 5;
+                public static final int kTopShooterElevatorHallEffectDIO = 9;
+                public static final int kBottomShooterElevatorHallEffectDIO = 5;
 
         }
 
@@ -58,7 +58,7 @@ public final class Constants {
 
                 public static final double alignToCollectorPos = -45; // 0.78; // encoder value for getting note from
                                                                       // collector
-                public static final double restPos = -90;// 0.91;
+                public static final double restPos = -84;// 0.91;
 
                 // To measure Ks
                 // manually, slowly increase the voltage to the mechanism until it starts to

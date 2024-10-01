@@ -50,13 +50,13 @@ public class Shooter extends SubsystemBase {
     static PolynomialSplineFunction angleFunction = interpolator.interpolate(ShooterRegressionConstants.distances,
             ShooterRegressionConstants.angles);
 
-    public DigitalInput shooterNoteSensor = new DigitalInput(DIOConstants.shooterOpticalDIO);
+    public DigitalInput shooterNoteSensor = new DigitalInput(DIOConstants.kShooterOpticalDIO);
 
     public DutyCycleEncoder shooterTiltThruBoreEncoder = new DutyCycleEncoder(
-            DIOConstants.shooterTiltThruBoreEncoderDIO);
+            DIOConstants.kShooterTiltThruBoreEncoderDIO);
 
-    public DigitalInput topElevatorHallEffect = new DigitalInput(DIOConstants.topShooterElevatorHallEffectDIO);
-    public DigitalInput bottomElevatorHallEffect = new DigitalInput(DIOConstants.bottomShooterElevatorHallEffectDIO);
+    public DigitalInput topElevatorHallEffect = new DigitalInput(DIOConstants.kTopShooterElevatorHallEffectDIO);
+    public DigitalInput bottomElevatorHallEffect = new DigitalInput(DIOConstants.kBottomShooterElevatorHallEffectDIO);
 
     public Shooter() {
 

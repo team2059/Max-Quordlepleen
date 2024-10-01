@@ -23,7 +23,7 @@ public class Collector extends SubsystemBase {
 
     public DutyCycleEncoder tiltThruBore;
 
-    public DigitalInput collectorNoteSensor = new DigitalInput(DIOConstants.collectorOpticalDIO);
+    public DigitalInput collectorNoteSensor = new DigitalInput(DIOConstants.kCollectorOpticalDIO);
 
     /** Creates a new Collector. */
     public Collector() {
@@ -35,7 +35,7 @@ public class Collector extends SubsystemBase {
         tiltMotor.setIdleMode(IdleMode.kBrake);
         rollerMotor.setInverted(false);
 
-        tiltThruBore = new DutyCycleEncoder(DIOConstants.collectorTiltThruBoreDIO);
+        tiltThruBore = new DutyCycleEncoder(DIOConstants.kCollectorTiltThruBoreDIO);
     }
 
     @Override
