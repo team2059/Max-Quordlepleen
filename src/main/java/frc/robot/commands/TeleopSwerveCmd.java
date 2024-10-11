@@ -30,7 +30,6 @@ public class TeleopSwerveCmd extends Command {
   private final DoubleSupplier rotation;
   private final DoubleSupplier slowSlider;
   private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
-  private final Supplier<Boolean> fieldOrientedFunction;
   private final Supplier<Boolean> inverted;
   private final Supplier<Boolean> strafeOnly;
   private final Supplier<Boolean> slowAll;
@@ -41,7 +40,7 @@ public class TeleopSwerveCmd extends Command {
       DoubleSupplier fwdY,
       DoubleSupplier rot,
       DoubleSupplier slowSlider,
-      Supplier<Boolean> fieldOrientedFunction, Supplier<Boolean> inverted,
+      Supplier<Boolean> inverted,
       Supplier<Boolean> strafeOnly,
       Supplier<Boolean> slowAll) {
 
@@ -51,7 +50,6 @@ public class TeleopSwerveCmd extends Command {
     rotation = rot;
     this.slowSlider = slowSlider;
 
-    this.fieldOrientedFunction = fieldOrientedFunction;
     this.inverted = inverted;
     this.strafeOnly = strafeOnly;
     this.slowAll = slowAll;
@@ -108,7 +106,7 @@ public class TeleopSwerveCmd extends Command {
           fwdX *= slowVal * 0.5,
           fwdY *= slowVal * 0.5,
           rot *= slowVal * 0.5,
-          fieldOrientedFunction.get());
+          SwerveBase.isFieldRelative);
     }
 
     if (strafeOnly.get() == true) {
@@ -128,7 +126,7 @@ public class TeleopSwerveCmd extends Command {
         -MathUtil.applyDeadband(fwdX, 0.1, 0.75),
         -MathUtil.applyDeadband(fwdY, 0.3, 0.75),
         -MathUtil.applyDeadband(rot * 0.5, 0.3, 0.75),
-        fieldOrientedFunction.get());
+        SwerveBase.isFieldRelative);
 
   }
 

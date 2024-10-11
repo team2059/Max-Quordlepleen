@@ -21,12 +21,11 @@ public final class Constants {
         public static final class DIOConstants {
                 public static final int kCollectorOpticalDIO = 0;
                 public static final int kCollectorTiltThruBoreDIO = 1;
-                public static final int kShooterTiltThruBoreEncoderDIO = 2;
+                public static final int kShooterTiltThruBoreEncoderDIO = 4;
                 public static final int kShooterOpticalDIO = 3;
-                public static final int kClimberHallEffectDIO = 8;
-
-                public static final int kTopShooterElevatorHallEffectDIO = 9;
                 public static final int kBottomShooterElevatorHallEffectDIO = 5;
+                public static final int kClimberHallEffectDIO = 8;
+                public static final int kTopShooterElevatorHallEffectDIO = 9;
 
         }
 

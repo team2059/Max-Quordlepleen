@@ -210,7 +210,6 @@ public class RobotContainer {
                                 () -> logitech.getRawAxis(kLogitechStrafeAxis),
                                 () -> logitech.getRawAxis(kLogitechRotationAxis),
                                 () -> logitech.getRawAxis(kLogitechSliderAxis),
-                                () -> !logitech.getRawButton(kFieldOriented),
                                 () -> logitech.getRawButton(kInverted), 
                                 () -> logitech.getRawButton(kStrafeOnly),
                                 () -> logitech.getRawButton(kSlowEverything)
@@ -329,6 +328,9 @@ public class RobotContainer {
                 /* RIGHT BUMPER - RUN SHOOTER INDEXER (FIRE NOTE) */
                 new JoystickButton(controller, 6)
                         .whileTrue(new RunIndexerCmd(shooter));
+
+                /* SET FIELD RELATIVITY */
+                new JoystickButton(logitech, 11).whileTrue(new InstantCommand(() -> swerveBase.setFieldRelativity()));
 
         }
 

@@ -85,6 +85,8 @@ public class SwerveBase extends SubsystemBase {
   private final SwerveDrivePoseEstimator poseEstimator;
   private Vision vision = Vision.getInstance();
 
+  public static boolean isFieldRelative = true;
+
   /**
    * odometry for the robot, measured in meters for linear motion and radians for
    * rotational motion
@@ -158,6 +160,8 @@ public class SwerveBase extends SubsystemBase {
 
     SmartDashboard.putString("Robot pose", getPose().toString());
     SmartDashboard.putNumber("navX Heading", getHeading().getDegrees());
+
+    SmartDashboard.putBoolean("Field Relative?", isFieldRelative);
   }
 
   public void configureAutoBuilder() {
@@ -371,6 +375,14 @@ public class SwerveBase extends SubsystemBase {
     frontRight.stop();
     rearRight.stop();
     rearLeft.stop();
+  }
+
+  public void setFieldRelativity() {
+    if (isFieldRelative) {
+      isFieldRelative = false;
+    } else {
+      isFieldRelative = true;
+    }
   }
 
 }
