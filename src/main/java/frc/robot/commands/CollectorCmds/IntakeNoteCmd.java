@@ -6,6 +6,7 @@ package frc.robot.commands.CollectorCmds;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -51,6 +52,7 @@ public class IntakeNoteCmd extends Command {
           .schedule(new SequentialCommandGroup(
               new ParallelCommandGroup(new TiltShooterToCollectorCmd(shooter).withTimeout(1),
                   new TiltCollectorToShooterCmd(collector)),
+              new InstantCommand(() -> shooter.setIndexMotorSpeed(-0.5)),
               new WaitCommand(0.25),
               new ShooterAndCollectorIndexerCmd(collector, shooter)));
 
