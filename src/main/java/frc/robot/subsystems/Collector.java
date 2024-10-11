@@ -45,7 +45,7 @@ public class Collector extends SubsystemBase {
 
         SmartDashboard.putNumber("collector thrubore pos", tiltThruBore.getAbsolutePosition());
 
-        SmartDashboard.putBoolean("HAS NOTE?", isNotePresent());
+        SmartDashboard.putBoolean("Collector Has Note", isNotePresent());
 
         // if (isNotePresent()) {
         // rollerMotor.set(0);

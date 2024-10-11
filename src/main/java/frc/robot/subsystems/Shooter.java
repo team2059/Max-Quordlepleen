@@ -164,6 +164,8 @@ public class Shooter extends SubsystemBase {
         Logger.recordOutput("LowerMotorRPMs ", currentShooterUpperMotorRPMs);
         Logger.recordOutput("shooter optical", isNotePresent());
 
+        SmartDashboard.putBoolean("Shooter Has Note", isNotePresent());
+
     }
 
     public boolean isTopLimitReached() {
