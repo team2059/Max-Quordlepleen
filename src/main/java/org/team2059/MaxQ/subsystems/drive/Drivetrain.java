@@ -9,7 +9,6 @@ import org.littletonrobotics.junction.Logger;
 import org.team2059.MaxQ.Constants;
 import org.team2059.MaxQ.Constants.DrivetrainConstants;
 
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -64,11 +63,8 @@ public class Drivetrain extends SubsystemBase {
             DrivetrainConstants.frontLeftCanCoderId,
             DrivetrainConstants.frontLeftOffsetRad,
             false,
-            true,
-            0.18707,
-            1.972,
-            0.2846,
-            0.0));
+            true
+        ));
     frontRight = new SwerveModule(
         2,
         new SwerveModuleIOReal(
@@ -77,11 +73,8 @@ public class Drivetrain extends SubsystemBase {
             DrivetrainConstants.frontRightCanCoderId,
             DrivetrainConstants.frontRightOffsetRad,
             true,
-            true,
-            0.17367,
-            2.0218,
-            0.30097,
-            0.0));
+            true
+        ));
     backLeft = new SwerveModule(
         3,
         new SwerveModuleIOReal(
@@ -90,11 +83,8 @@ public class Drivetrain extends SubsystemBase {
             DrivetrainConstants.backLeftCanCoderId,
             DrivetrainConstants.backLeftOffsetRad,
             false,
-            true,
-            0.1846,
-            1.9744,
-            0.28488,
-            0.0));
+            true
+        ));
     backRight = new SwerveModule(
         4,
         new SwerveModuleIOReal(
@@ -103,11 +93,8 @@ public class Drivetrain extends SubsystemBase {
             DrivetrainConstants.backRightCanCoderId,
             DrivetrainConstants.backRightOffsetRad,
             true,
-            true,
-            0.16226,
-            2.0166,
-            0.27832,
-            0.0));
+            true
+        ));
 
     // Gyro keeps track of field-relative rotation
     this.gyro = gyro;
