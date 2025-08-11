@@ -32,6 +32,7 @@ public final class Constants
         /* ===== */
 
         public static final int logitechPort = 0;
+        public static final int xboxPort = 1;
 
         /* ==== */
         /* AXES */
@@ -141,5 +142,12 @@ public final class Constants
         // kA: voltage needed to accelerate
         public static final SimpleMotorFeedforward driveFF = new SimpleMotorFeedforward(0.17821, 1.9047, 0.14686);
         public static final SimpleMotorFeedforward turnFF = new SimpleMotorFeedforward(0, 0, 0);
+    }
+
+    public static class CollectorConstants {
+        public static final double collectorOutPos = 0.155;
+        public static final double collectorInPos = 0.5;
+
+        public static final double tiltkP = 1.0;
     }
 }

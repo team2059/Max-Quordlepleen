@@ -6,16 +6,19 @@
 package org.team2059.MaxQ;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import org.team2059.MaxQ.commands.TeleopDriveCmd;
+import org.team2059.MaxQ.commands.*;
+import org.team2059.MaxQ.subsystems.LEDStrip;
+import org.team2059.MaxQ.subsystems.collector.Collector;
 import org.team2059.MaxQ.subsystems.drive.Drivetrain;
 import org.team2059.MaxQ.subsystems.drive.GyroIONavX;
 
 import org.team2059.MaxQ.Constants.OperatorConstants;
+import org.team2059.MaxQ.subsystems.shooter.Shooter;
 
 
 /**
@@ -28,16 +31,26 @@ public class RobotContainer
 {
     // The robot's subsystems and commands are defined here...
     public static Drivetrain drivetrain;
+    public static Collector collector;
+    public static Shooter shooter;
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
     public static Joystick logitech;
+    public static XboxController xbox;
+
+    public static LEDStrip ledStrip;
     
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer()
     {
         drivetrain = new Drivetrain(new GyroIONavX());
+        collector = new Collector();
+        shooter = new Shooter();
 
         logitech = new Joystick(Constants.OperatorConstants.logitechPort);
+        xbox = new XboxController(Constants.OperatorConstants.xboxPort);
+
+        ledStrip = new LEDStrip();
 
         drivetrain.setDefaultCommand(
           new TeleopDriveCmd(
@@ -74,9 +87,30 @@ public class RobotContainer
         /* SWITCH FIELD/ROBOT RELATIVITY IN TELEOP */
         new JoystickButton(logitech, OperatorConstants.JoystickRobotRelative)
           .whileTrue(new InstantCommand(() -> drivetrain.setFieldRelativity()));
+
+        /* SPINUP SHOOTER MOTORS */
+        new JoystickButton(logitech, 2)
+          .whileTrue(new SpinupShooterMotorsCmd(shooter));
+
+        /* RUN SHOOTER ROLLERS (SHOOT NOTE) */
+        new JoystickButton(logitech, 1)
+          .whileTrue(new InstantCommand(() -> shooter.setRollerMotorSpeed(1)))
+          .onFalse(new InstantCommand(() -> shooter.setRollerMotorSpeed(0)));
+
+        new JoystickButton(xbox, 1) // A BUTTON
+          .toggleOnTrue(new IntakeNoteSequence(collector, shooter));
+
+        new JoystickButton(xbox, 2) // B BUTTON
+          .whileTrue(new InstantCommand(() -> collector.setRollerMotorSpeed(-0.25)))
+          .onFalse(new InstantCommand(() -> collector.setRollerMotorSpeed(0)));
+
+        new JoystickButton(xbox, 3) // X BUTTON
+          .onTrue(new CollectorTiltSetpointCmd(collector, Constants.CollectorConstants.collectorOutPos));
+
+        new JoystickButton(xbox, 4) // Y BUTTON
+          .onTrue(new CollectorTiltSetpointCmd(collector, Constants.CollectorConstants.collectorInPos));
     }
-    
-    
+
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *
