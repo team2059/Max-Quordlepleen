@@ -10,7 +10,7 @@ public class HandoffNoteCmd extends Command {
   private final Shooter shooter;
 
   private final double collectorReleaseSpeed = -0.25;
-  private final double shooterIntakeSpeed = 0.25;
+  private final double shooterIntakeSpeed = 0.1;
 
   public HandoffNoteCmd(Collector collector, Shooter shooter) {
     this.collector = collector;

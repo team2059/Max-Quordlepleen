@@ -34,8 +34,6 @@ public class RobotContainer
     public static Collector collector;
     public static Shooter shooter;
 
-    // Replace with CommandPS4Controller or CommandJoystick if needed
-    public static Joystick logitech;
     public static XboxController xbox;
 
     public static LEDStrip ledStrip;
@@ -47,7 +45,6 @@ public class RobotContainer
         collector = new Collector();
         shooter = new Shooter();
 
-        logitech = new Joystick(Constants.OperatorConstants.logitechPort);
         xbox = new XboxController(Constants.OperatorConstants.xboxPort);
 
         ledStrip = new LEDStrip();
@@ -55,12 +52,20 @@ public class RobotContainer
         drivetrain.setDefaultCommand(
           new TeleopDriveCmd(
             drivetrain,
-            () -> -logitech.getRawAxis(OperatorConstants.JoystickTranslationAxis), // forwardX
-            () -> -logitech.getRawAxis(OperatorConstants.JoystickStrafeAxis), // forwardY
-            () -> -logitech.getRawAxis(OperatorConstants.JoystickRotationAxis), // rotation
-            () -> logitech.getRawAxis(OperatorConstants.JoystickSliderAxis), // slider
-            () -> logitech.getRawButton(OperatorConstants.JoystickStrafeOnly), // Strafe Only Button
-            () -> logitech.getRawButton(OperatorConstants.JoystickInvertedDrive) // Inverted button
+            () -> -xbox.getLeftY(),  // forwardX
+            () -> -xbox.getLeftX(),  // forwardY
+            () -> -xbox.getRightX(), // rotation
+            () -> xbox.getPOV()
+
+          )
+        );
+
+        shooter.setDefaultCommand(
+          Commands.run(
+            () -> {
+                shooter.setRollerMotorSpeed(xbox.getRightTriggerAxis());
+            },
+            shooter
           )
         );
 
@@ -81,33 +86,33 @@ public class RobotContainer
     private void configureBindings()
     {
         /* RESET NAVX HEADING */
-        new JoystickButton(logitech, OperatorConstants.JoystickResetHeading)
+        new JoystickButton(xbox, OperatorConstants.XboxResetHeading)
           .whileTrue(new InstantCommand(() -> drivetrain.zeroHeading()));
 
         /* SWITCH FIELD/ROBOT RELATIVITY IN TELEOP */
-        new JoystickButton(logitech, OperatorConstants.JoystickRobotRelative)
+        new JoystickButton(xbox, OperatorConstants.XboxFieldRelativeSwitch)
           .whileTrue(new InstantCommand(() -> drivetrain.setFieldRelativity()));
 
         /* SPINUP SHOOTER MOTORS */
-        new JoystickButton(logitech, 2)
+        new JoystickButton(xbox, OperatorConstants.XboxSpinupShooterMotors)
           .whileTrue(new SpinupShooterMotorsCmd(shooter));
 
         /* RUN SHOOTER ROLLERS (SHOOT NOTE) */
-        new JoystickButton(logitech, 1)
-          .whileTrue(new InstantCommand(() -> shooter.setRollerMotorSpeed(1)))
-          .onFalse(new InstantCommand(() -> shooter.setRollerMotorSpeed(0)));
+//        new JoystickButton(logitech, 1)
+//          .whileTrue(new InstantCommand(() -> shooter.setRollerMotorSpeed(1)))
+//          .onFalse(new InstantCommand(() -> shooter.setRollerMotorSpeed(0)));
 
-        new JoystickButton(xbox, 1) // A BUTTON
+        new JoystickButton(xbox, OperatorConstants.XboxIntakeNoteSequence) // A BUTTON
           .toggleOnTrue(new IntakeNoteSequence(collector, shooter));
 
-        new JoystickButton(xbox, 2) // B BUTTON
+        new JoystickButton(xbox, OperatorConstants.XboxOuttakeNote) // B BUTTON
           .whileTrue(new InstantCommand(() -> collector.setRollerMotorSpeed(-0.25)))
           .onFalse(new InstantCommand(() -> collector.setRollerMotorSpeed(0)));
 
-        new JoystickButton(xbox, 3) // X BUTTON
+        new JoystickButton(xbox, OperatorConstants.XboxCollectorOutPos) // X BUTTON
           .onTrue(new CollectorTiltSetpointCmd(collector, Constants.CollectorConstants.collectorOutPos));
 
-        new JoystickButton(xbox, 4) // Y BUTTON
+        new JoystickButton(xbox, OperatorConstants.XboxCollectorInPos) // Y BUTTON
           .onTrue(new CollectorTiltSetpointCmd(collector, Constants.CollectorConstants.collectorInPos));
     }
 

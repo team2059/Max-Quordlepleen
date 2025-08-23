@@ -31,26 +31,20 @@ public final class Constants
         /* PORTS */
         /* ===== */
 
-        public static final int logitechPort = 0;
-        public static final int xboxPort = 1;
+        public static final int xboxPort = 0;
 
-        /* ==== */
-        /* AXES */
-        /* ==== */
+        /* ============== */
+        /* BUTTONS / AXES */
+        /* ============== */
 
-        public static final int JoystickTranslationAxis = 1;
-        public static final int JoystickStrafeAxis = 0;
-        public static final int JoystickRotationAxis = 2;
-        public static final int JoystickSliderAxis = 3;
-
-        /* ======= */
-        /* BUTTONS */
-        /* ======= */
-
-        public static final int JoystickResetHeading = 5;
-        public static final int JoystickRobotRelative = 6;
-        public static final int JoystickInvertedDrive = 4;
-        public static final int JoystickStrafeOnly = 3;
+        public static final int XboxResetHeading = 7;
+        public static final int XboxFieldRelativeSwitch = 8;
+        public static final int XboxSpinupShooterMotors = 6;
+        public static final int XboxShooterIndexerAxis = 3; // variable control since this is an axis?
+        public static final int XboxIntakeNoteSequence = 1;
+        public static final int XboxOuttakeNote = 2;
+        public static final int XboxCollectorOutPos = 3;
+        public static final int XboxCollectorInPos = 4;
     }
 
     public static class DrivetrainConstants {

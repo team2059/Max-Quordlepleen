@@ -6,7 +6,9 @@ package org.team2059.MaxQ.commands;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import java.util.function.IntSupplier;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.team2059.MaxQ.Constants.DrivetrainConstants;
 import org.team2059.MaxQ.subsystems.drive.Drivetrain;
 
@@ -15,99 +17,101 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class TeleopDriveCmd extends Command {
+
   private final Drivetrain drivetrain;
-  private final DoubleSupplier forwardX, forwardY, rotation, slider;
-  private final BooleanSupplier strafeOnly, inverted;
+  private final DoubleSupplier forwardX, forwardY, rotation;
+  private final IntSupplier pov;
   private final SlewRateLimiter xLimiter, yLimiter, rotLimiter;
 
-  /** Creates a new TeleopDriveCmd. */
-  public TeleopDriveCmd(
-    Drivetrain drivetrain,
-    DoubleSupplier forwardX,
-    DoubleSupplier forwardY,
-    DoubleSupplier rotation,
-    DoubleSupplier slider,
-    BooleanSupplier strafeOnly,
-    BooleanSupplier inverted
-  ) {
+  public static double speedFactor = 0.25;
+
+  /** Creates a new SwerveJoystickCommand. */
+  public TeleopDriveCmd(Drivetrain drivetrain, DoubleSupplier forwardX, DoubleSupplier forwardY, DoubleSupplier rotation, IntSupplier pov) {
 
     this.drivetrain = drivetrain;
     this.forwardX = forwardX;
     this.forwardY = forwardY;
     this.rotation = rotation;
-    this.slider = slider;
-    this.strafeOnly = strafeOnly;
-    this.inverted = inverted;
+    this.pov = pov;
 
     this.xLimiter = new SlewRateLimiter(DrivetrainConstants.maxAcceleration);
     this.yLimiter = new SlewRateLimiter(DrivetrainConstants.maxAcceleration);
     this.rotLimiter = new SlewRateLimiter(DrivetrainConstants.maxAngularAcceleration);
 
-    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
+    // Account for speed factor (POV up/down buttons)
+    switch(pov.getAsInt()) {
+      case 0:
+        // Up pressed
+        speedFactor += 0.01;
+        break;
+
+      case 180:
+        // Down pressed
+        speedFactor -= 0.01;
+        break;
+
+      default:
+        // Everything else (do nothing)
+
+    }
+    if (speedFactor < 0.11) {
+      speedFactor = 0.11;
+    } else if (speedFactor > 1.0) {
+      speedFactor = 1.0;
+    }
+    SmartDashboard.putNumber("Speed Limit", speedFactor);
+
     /**
-     * Units are given in meters/sec and radians/sec
-     * Since joysticks give output from -1 to 1, we multiply outputs by the max speed
-     * Otherwise, the max speed would be 1 m/s and 1 rad/s
+     * Units are given in meters per second radians per second
+     * Since joysticks give output from -1 to 1, we multiply the outputs by the max
+     * speed
+     * Otherwise, our max speed would be 1 meter per second and 1 radian per second
      */
 
-    // Get joystick input as x, y, and rotation
-    double xSpeed = -forwardX.getAsDouble();
-    double ySpeed = -forwardY.getAsDouble();
-    double rot = -rotation.getAsDouble();
+    // get joystick input as x, y, and rotation
+    double xSpeed = forwardX.getAsDouble();
+    double ySpeed = forwardY.getAsDouble();
+    double rot = rotation.getAsDouble();
 
     // Apply deadband
-    xSpeed = Math.abs(xSpeed) > 0.25 ? xSpeed : 0.0;
-    ySpeed = Math.abs(ySpeed) > 0.35 ? ySpeed : 0.0;
-    rot = Math.abs(rot) > 0.4 ? rot : 0.0;
+    xSpeed = Math.abs(xSpeed) > 0.14 ? xSpeed : 0.0;
+    ySpeed = Math.abs(ySpeed) > 0.14 ? ySpeed : 0.0;
+    rot = Math.abs(rot) > 0.1 ? rot : 0.0;
 
     // Make the driving smoother
     xSpeed = xLimiter.calculate(xSpeed) * DrivetrainConstants.kTeleDriveMaxSpeed;
     ySpeed = yLimiter.calculate(ySpeed) * DrivetrainConstants.kTeleDriveMaxSpeed;
     rot = rotLimiter.calculate(rot) * DrivetrainConstants.kTeleDriveMaxAngularSpeed;
 
-    // Apply slider limit
-    double sliderVal = (-slider.getAsDouble() + 1) / 2;
-    sliderVal = sliderVal < 0.15 ? 0.15 : sliderVal;
-    xSpeed *= sliderVal;
-    ySpeed *= sliderVal;
-    rot *= sliderVal;
+    xSpeed *= speedFactor;
+    ySpeed *= speedFactor;
+    rot *= speedFactor;
 
-    xSpeed = -MathUtil.applyDeadband(xSpeed, 0.1, 1);
-    ySpeed = -MathUtil.applyDeadband(ySpeed, 0.1, 1);
-    rot = -MathUtil.applyDeadband(rot, 0.3, 0.75);
+    drivetrain.drive(
+      MathUtil.applyDeadband(xSpeed, 0.1, 0.75),
+      MathUtil.applyDeadband(ySpeed, 0.3, 0.75),
+      MathUtil.applyDeadband(rot, 0.3, 0.75),
+      Drivetrain.fieldRelativeStatus
+    );
 
-    if (inverted.getAsBoolean()) { // Invert all axes if requested
-      drivetrain.drive(
-        -xSpeed,
-        ySpeed,
-        -rot,
-        Drivetrain.fieldRelativeStatus
-      );
-    } else if (strafeOnly.getAsBoolean()) { // Strafe only relative to robot
-      drivetrain.drive(
-        0,
-        ySpeed,
-        0,
-        true
-      );
-    } else { // Drive normally
-      drivetrain.drive(
-        xSpeed,
-        ySpeed,
-        rot,
-        Drivetrain.fieldRelativeStatus
-      );
-    }
+    // Rumble xbox controller
+    // z^2 = x^2 + y^2
+    // RobotContainer.xboxController.setRumble(
+    //   RumbleType.kBothRumble,
+    //   0.7 * Math.sqrt(Math.pow(Math.abs(xSpeed), 2) + Math.pow(Math.abs(ySpeed), 2))
+    // );
   }
 
   // Called once the command ends or is interrupted.

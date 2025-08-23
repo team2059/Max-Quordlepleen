@@ -30,7 +30,7 @@ public class LEDStrip extends SubsystemBase {
     strip.start();
 
     gradient.applyTo(buffer);
-    strip.setData(buffer);
+//    strip.setData(buffer);
   }
 
   @Override
