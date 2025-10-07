@@ -40,7 +40,7 @@ public final class Constants
         public static final int XboxResetHeading = 7;
         public static final int XboxFieldRelativeSwitch = 8;
         public static final int XboxSpinupShooterMotors = 6;
-        public static final int XboxShooterIndexerAxis = 3; // variable control since this is an axis?
+        public static final int XboxShootNote = 5;
         public static final int XboxIntakeNoteSequence = 1;
         public static final int XboxOuttakeNote = 2;
         public static final int XboxCollectorOutPos = 3;

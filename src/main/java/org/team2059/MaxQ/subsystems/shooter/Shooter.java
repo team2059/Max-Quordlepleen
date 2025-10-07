@@ -29,11 +29,7 @@ public class Shooter extends SubsystemBase {
   private final SparkFlex lowerShooterMotor;
   private final SparkFlexConfig lowerShooterMotorConfig = new SparkFlexConfig();
 
-  // REV color sensor
-  private final I2C.Port i2cPort = I2C.Port.kOnboard;
-  private final ColorSensorV3 colorSensor = new ColorSensorV3(i2cPort);
-  private final ColorMatch colorMatcher = new ColorMatch();
-  private final Color noteColor = new Color(153, 76, 19);
+  private final DigitalInput noteSensor;
 
   public Shooter() {
 
@@ -53,7 +49,7 @@ public class Shooter extends SubsystemBase {
       .inverted(true);
     lowerShooterMotor.configure(lowerShooterMotorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
-    colorMatcher.addColorMatch(noteColor);
+    noteSensor = new DigitalInput(2);
   }
 
   public void setRollerMotorSpeed(double speed) {
@@ -74,20 +70,11 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean hasNote() {
-    Color detectedColor = colorSensor.getColor();
-
-    ColorMatchResult match = colorMatcher.matchClosestColor(detectedColor);
-
-    Logger.recordOutput("ColorConfidence", match.confidence);
-
-    return match.confidence >= 0.9;
+    return !noteSensor.get();
   }
 
   @Override
   public void periodic() {
     Logger.recordOutput("ShooterNote", hasNote());
-    Logger.recordOutput("ColorR", colorSensor.getColor().red);
-    Logger.recordOutput("ColorG", colorSensor.getColor().green);
-    Logger.recordOutput("ColorB", colorSensor.getColor().blue);
   }
 }

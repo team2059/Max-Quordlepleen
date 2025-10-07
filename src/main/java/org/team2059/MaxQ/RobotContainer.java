@@ -98,9 +98,9 @@ public class RobotContainer
           .whileTrue(new SpinupShooterMotorsCmd(shooter));
 
         /* RUN SHOOTER ROLLERS (SHOOT NOTE) */
-//        new JoystickButton(logitech, 1)
-//          .whileTrue(new InstantCommand(() -> shooter.setRollerMotorSpeed(1)))
-//          .onFalse(new InstantCommand(() -> shooter.setRollerMotorSpeed(0)));
+        new JoystickButton(xbox, OperatorConstants.XboxShootNote)
+          .whileTrue(new InstantCommand(() -> shooter.setRollerMotorSpeed(1)))
+          .onFalse(new InstantCommand(() -> shooter.setRollerMotorSpeed(0)));
 
         new JoystickButton(xbox, OperatorConstants.XboxIntakeNoteSequence) // A BUTTON
           .toggleOnTrue(new IntakeNoteSequence(collector, shooter));
